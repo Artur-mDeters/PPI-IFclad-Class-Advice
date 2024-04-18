@@ -1,11 +1,17 @@
-import Container from '@mui/material/Container'
-
+import { CssBaseline, ThemeProvider} from '@mui/material'
+import { defaultDark } from '../../themes/themes'
+import SideBar from '../../components/sidebar/SideBar'
 
 const Home = () => {
+
+
   return (
-    <Container maxWidth="xs">
-      <img src="../../assets/Education-amico.png" alt="Ola" />
-    </Container>
+    <div>
+        <ThemeProvider theme={defaultDark}>
+          <CssBaseline />
+          <SideBar />
+        </ThemeProvider>
+    </div>
   )
 }
 
