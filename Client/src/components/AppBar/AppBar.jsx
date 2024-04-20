@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -8,10 +9,14 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
+import { Avatar } from "@mui/material";
 import Badge from "@mui/material/Badge";
-import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import MailIcon from "@mui/icons-material/Mail";
+
 import { defaultDark } from "../../themes/themes";
+// import Notification from "../Notification/Notification";
+
 
 // icons
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
@@ -23,24 +28,6 @@ import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const drawerWidth = 265;
 
@@ -67,6 +54,7 @@ const Drawer = styled(MuiDrawer, {
 })(({ theme, open }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
+    overflowX: "hidden",
     whiteSpace: "nowrap",
     width: drawerWidth,
     transition: theme.transitions.create("width", {
@@ -89,8 +77,8 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-export default function Dashboard() {
-  const [open, setOpen] = React.useState(true);
+export default function UiAppBar() {
+  const [open, setOpen] = React.useState(false);
   const [mouseOver, setMouseOver] = React.useState(false);
 
   // Estilos
@@ -137,9 +125,8 @@ export default function Dashboard() {
             }}
           ></Toolbar>
           <Divider />
-          <List component="nav"  >
-            <Box sx={{
-            }}> 
+          <List component="nav">
+            <Box sx={{}}>
               {/* // ! Lista de Abas */}
               <Box sx={boxButtonStyle}>
                 {/* Icone  */}
@@ -174,15 +161,6 @@ export default function Dashboard() {
                 {/* label  */}
                 <Typography variant="h6" sx={typographyButtonStyle}>
                   Disciplinas
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <LocalLibraryIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Alunos
                 </Typography>
               </Box>
 
@@ -231,9 +209,15 @@ export default function Dashboard() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: "24px", // keep right padding when drawer closed
+              pr: "24px",
+              justifyContent: "flex-end", // keep right padding when drawer closed
             }}
-          ></Toolbar>
+          >
+            <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
+              <Avatar />
+              {/* <Notification /> */}
+            </Stack>
+          </Toolbar>
         </AppBar>
         <Box
           component="main"
