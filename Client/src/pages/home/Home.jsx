@@ -9,27 +9,36 @@ import Mostra from '../../components/mostra-de-ciencias/Mostra.jsx'
 import Professores from '../../components/professores/Professores.jsx'
 import Setores from '../../components/Setores/Setores.jsx'
 import Turmas from '../../components/turmas/Turmas.jsx'
+import { useState } from 'react'
 
 
 const renderizar = (cond) => {
-  if (cond == "turmas") return <Turmas/>
+  if (cond == 1) return <Turmas/>
   else if (cond == "professores") return <Professores />
   else if (cond == "config") return <Configuracoes />
-  else if (cond == "curso") return <Curso />
-  else if (cond == "dis") return <Disciplinas />
-  else if (cond == "prof") return <MinhaConta />
+  else if (cond == "cursos") return <Curso />
+  else if (cond == "disciplinas") return <Disciplinas />
+  else if (cond == "professores") return <MinhaConta />
   else if (cond == "mostra") return <Mostra />
   else if (cond == "setores") return <Setores />
+  else if (cond == "conta") return <MinhaConta />
 }
 
 const Home = () => {
+  const [page, setPage] = useState(null)
+  
+  const handlePage = (data) => {
+    setPage(data)
+    console.log(data)
+  }
+
 
   return (
     <div>
         <ThemeProvider theme={defaultDark}>
           <CssBaseline />
-          <AppBar>
-            {renderizar('')}
+          <AppBar page={handlePage}>
+            {renderizar(page)}
           </AppBar>
         </ThemeProvider>
     </div>
