@@ -1,6 +1,10 @@
 import * as React from "react";
 
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import './AppBar.css'
+
+import logo from '../../assets/logoIF.png'
+
+import { styled, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -9,10 +13,11 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { Avatar } from "@mui/material";
+import { Avatar, Paper } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 import MailIcon from "@mui/icons-material/Mail";
+import Button from '@mui/material/Button'
 
 import { defaultDark } from "../../themes/themes";
 // import Notification from "../Notification/Notification";
@@ -77,20 +82,11 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-export default function UiAppBar() {
+export default function UiAppBar(internal) {
   const [open, setOpen] = React.useState(false);
   const [mouseOver, setMouseOver] = React.useState(false);
 
   // Estilos
-
-  const boxButtonStyle = {
-    display: "flex",
-    alignItems: "center",
-    height: "55px",
-    cursor: "pointer",
-    paddingLeft: "15px",
-    marginBottom: "5px",
-  };
 
   const typographyButtonStyle = {
     marginLeft: "25px",
@@ -106,6 +102,8 @@ export default function UiAppBar() {
     setOpen(false);
   };
 
+  const itens = [1, 2, 3, 4, 5, 6, 7, 8, 9] ;
+
   return (
     <ThemeProvider theme={defaultDark}>
       <Box sx={{ display: "flex" }}>
@@ -116,19 +114,20 @@ export default function UiAppBar() {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <Toolbar
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              px: [1],
-            }}
-          ></Toolbar>
-          <Divider />
-          <List component="nav">
-            <Box sx={{}}>
+          
+          {/* <Divider /> */}
+          <List component="nav" sx={{display: 'flex', flexDirection: 'column', height: '100%'}}>
+
+            <Box className="AppBoxLogo"> 
+              <img src={logo} alt="IF" className="imglogo"/>
+              <Typography variant="h6"  sx={{typographyButtonStyle, marginLeft: "52px"}}>
+                Clad - Class Advice
+              </Typography>
+            </Box>
+            
+            <Box className="AppBox">
               {/* // ! Lista de Abas */}
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <GraphicEqIcon fontSize="large" />
                 {/* label  */}
@@ -137,7 +136,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <SchoolIcon fontSize="large" />
                 {/* label  */}
@@ -146,7 +145,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <GroupIcon fontSize="large" />
                 {/* label  */}
@@ -155,7 +154,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <AutoStoriesIcon fontSize="large" />
                 {/* label  */}
@@ -164,7 +163,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <DonutSmallIcon fontSize="large" />
                 {/* label  */}
@@ -173,7 +172,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <BiotechIcon fontSize="large" />
                 {/* label  */}
@@ -185,8 +184,8 @@ export default function UiAppBar() {
 
             <Divider />
 
-            <Box sx={{}}>
-              <Box sx={boxButtonStyle}>
+            <Box className="UserBox">
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <PersonIcon fontSize="large" />
                 {/* label  */}
@@ -195,7 +194,7 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box className="ButtonBox">
                 {/* Icone  */}
                 <SettingsIcon fontSize="large" />
                 {/* label  */}
@@ -229,9 +228,11 @@ export default function UiAppBar() {
             flexGrow: 1,
             height: "100vh",
             overflow: "auto",
+            padding: "90px 20px 20px 20px ",
           }}
         >
-          <Toolbar />
+          {/* // ! Box principal (main) */}
+          {internal.children}
         </Box>
       </Box>
     </ThemeProvider>
