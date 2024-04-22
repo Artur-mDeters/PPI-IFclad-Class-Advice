@@ -1,6 +1,10 @@
 import * as React from "react";
 
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
+import "./AppBar.css";
+
+import logo from "../../assets/logoIF.png";
+
+import { styled, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -9,25 +13,20 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { Avatar } from "@mui/material";
+import { Avatar, Paper } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 import MailIcon from "@mui/icons-material/Mail";
+import Button from "@mui/material/Button";
 
 import { defaultDark } from "../../themes/themes";
 // import Notification from "../Notification/Notification";
 
-
 // icons
-import GraphicEqIcon from "@mui/icons-material/GraphicEq";
-import SchoolIcon from "@mui/icons-material/School";
-import GroupIcon from "@mui/icons-material/Group";
-import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
-import DonutSmallIcon from "@mui/icons-material/DonutSmall";
-import BiotechIcon from "@mui/icons-material/Biotech";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
+
+import dataButtons from "./dataButtons.jsx";
 
 const drawerWidth = 265;
 
@@ -77,20 +76,17 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-export default function UiAppBar() {
+export default function UiAppBar({ page, children }) {
   const [open, setOpen] = React.useState(false);
   const [mouseOver, setMouseOver] = React.useState(false);
+  let cont = 0;
+  const handleOpen = (data) => {
+    page(data);
+    cont += 1;
+    console.log(data, cont);
+  };
 
   // Estilos
-
-  const boxButtonStyle = {
-    display: "flex",
-    alignItems: "center",
-    height: "55px",
-    cursor: "pointer",
-    paddingLeft: "15px",
-    marginBottom: "5px",
-  };
 
   const typographyButtonStyle = {
     marginLeft: "25px",
@@ -106,6 +102,8 @@ export default function UiAppBar() {
     setOpen(false);
   };
 
+  // const itens = [1, 2, 3, 4, 5, 6, 7, 8, 9] ;
+
   return (
     <ThemeProvider theme={defaultDark}>
       <Box sx={{ display: "flex" }}>
@@ -116,77 +114,49 @@ export default function UiAppBar() {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <Toolbar
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              px: [1],
-            }}
-          ></Toolbar>
-          <Divider />
-          <List component="nav">
-            <Box sx={{}}>
+          {/* <Divider /> */}
+          <List
+            component="nav"
+            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+          >
+            <Box className="AppBoxLogo">
+              <img src={logo} alt="IF" className="imglogo" />
+              <Typography
+                variant="h6"
+                sx={{ typographyButtonStyle, marginLeft: "52px" }}
+              >
+                Clad - Class Advice
+              </Typography>
+            </Box>
+
+            <Box className="AppBox">
               {/* // ! Lista de Abas */}
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <GraphicEqIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Turmas
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <SchoolIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Cursos
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <GroupIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Professores
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <AutoStoriesIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Disciplinas
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <DonutSmallIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Setores
-                </Typography>
-              </Box>
-
-              <Box sx={boxButtonStyle}>
-                {/* Icone  */}
-                <BiotechIcon fontSize="large" />
-                {/* label  */}
-                <Typography variant="h6" sx={typographyButtonStyle}>
-                  Mostra de Ciências
-                </Typography>
-              </Box>
+              
+              {dataButtons.map((button) => (
+                <Box
+                  className="ButtonBox"
+                  onClick={() => {
+                    handleOpen(button.page);
+                  }}
+                  key={button.id}
+                  >
+                  {button.icon}
+                  <Typography variant="h6" sx={typographyButtonStyle}>
+                    {button.title}
+                  </Typography>
+                </Box>
+              ))}             
             </Box>
 
             <Divider />
 
-            <Box sx={{}}>
-              <Box sx={boxButtonStyle}>
+            <Box className="UserBox">
+              <Box
+                className="ButtonBox"
+                onClick={() => {
+                  handleOpen("conta");
+                }}
+              >
                 {/* Icone  */}
                 <PersonIcon fontSize="large" />
                 {/* label  */}
@@ -195,7 +165,12 @@ export default function UiAppBar() {
                 </Typography>
               </Box>
 
-              <Box sx={boxButtonStyle}>
+              <Box
+                className="ButtonBox"
+                onClick={() => {
+                  handleOpen("config");
+                }}
+              >
                 {/* Icone  */}
                 <SettingsIcon fontSize="large" />
                 {/* label  */}
@@ -229,11 +204,14 @@ export default function UiAppBar() {
             flexGrow: 1,
             height: "100vh",
             overflow: "auto",
+            padding: "90px 20px 20px 20px ",
           }}
         >
-          <Toolbar />
+          {/* // ! Box principal (main) */}
+          {children}
         </Box>
       </Box>
+      {/* {pageSet} */}
     </ThemeProvider>
   );
 }
