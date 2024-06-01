@@ -20,7 +20,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfrimPassword] = useState("");
+  const [confirmPassword, setConfimPassword] = useState("");
   const [name, setName] = useState("");
   const [siape, setSiape] = useState("");
   const [type, setType] = useState(undefined);
@@ -32,7 +32,7 @@ const Register = () => {
   const handleSetPassword = (e) => setPassword(e.target.value);
   const handleSetName = (e) => setName(e.target.value);
   const handleSetSiape = (e) => setSiape(e.target.value);
-  const handleSetConfirmPassword = (e) => setConfrimPassword(e.target.value);
+  const handleSetConfirmPassword = (e) => setConfimPassword(e.target.value);
 
   const handleShowPassword = () => {
     const pass = !showPassword;
@@ -45,7 +45,7 @@ const Register = () => {
 
   const handleSubmit = () => {
     axios
-      .post("http://localhost:3030/register", {
+      .post("http://localhost:3030/users", {
         email: email,
         password: password,
         name: name,
@@ -191,7 +191,6 @@ const Register = () => {
           </Box>
         </Box>
         <Box sx={{ background: "#5d1c8b", height: "100vh", width: "100%" }}>
-          {confirmPassword}
         </Box>
       </Box>
     </ThemeProvider>

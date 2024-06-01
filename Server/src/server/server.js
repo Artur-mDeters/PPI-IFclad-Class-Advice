@@ -1,15 +1,16 @@
 const express = require("express");
 const cors = require("cors");
-const { default: routes } = require("../routes/routes");
+const apiRoutes = require('../routes/routes')
+const PORT = process.env.PORT || 3030;
 
 const app = express();
-const PORT = 3030;
 
 app.use(cors()); 
 app.use(express.json()); 
 
-app.use(routes)
+
+app.use(apiRoutes)
 
 app.listen(PORT, () => {
-  console.warn(`App rodando em http://localhost:${PORT}`);
+  console.log(`App rodando em http://localhost:${PORT}`);
 });
