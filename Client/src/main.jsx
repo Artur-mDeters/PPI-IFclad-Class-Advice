@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Login from './pages/login/Login.jsx'
 import ErrorPage from './pages/error/ErrorPage.jsx'
 import Home from './pages/home/Home.jsx'
+import Register from './pages/register/Register.jsx'
 // import Configuracoes from './pages/config/Configuracoes.jsx'
 // import Curso from './pages/curso/Curso.jsx'
 // import Disciplinas from './pages/disciplinas/Disciplinas.jsx'
@@ -25,6 +26,11 @@ const route = createBrowserRouter([
     element: <Home />,
     errorElement: <ErrorPage />
   },
+  {
+    path: '/register',
+    element: <Register/>,
+    errorElement: <ErrorPage/>
+  }
   // {
   //   path: '/turmas',
   //   element: <Turmas />,
