@@ -20,7 +20,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfimPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [siape, setSiape] = useState("");
   const [type, setType] = useState(undefined);
@@ -32,7 +32,7 @@ const Register = () => {
   const handleSetPassword = (e) => setPassword(e.target.value);
   const handleSetName = (e) => setName(e.target.value);
   const handleSetSiape = (e) => setSiape(e.target.value);
-  const handleSetConfirmPassword = (e) => setConfimPassword(e.target.value);
+  const handleSetConfirmPassword = (e) => setConfirmPassword(e.target.value);
 
   const handleShowPassword = () => {
     const pass = !showPassword;
