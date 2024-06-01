@@ -1,5 +1,16 @@
 const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require('bcrypt')
+
+const hashPassword = async (password) => {
+  try {
+    const saltsRounds = 10 // número de saltos para aumentar a segurança do hash 
+    const hashedPassword = await bcrypt.hash(password, saltsRounds)
+    return hashedPassword 
+  } catch (err) {
+    throw new Error('Erro ao criar um hash da senha')
+  }
+}
 
 
 exports.getUsers = async (req, res) => {
@@ -18,9 +29,11 @@ exports.addUser = async (req, res) => {
   const { email, password, name, type, siape } = req.body;
   try {
     const id_usuario = uuidv4();
+    const hashedPassword = await hashPassword(password)
+    console.log(hashedPassword)
     await db.query(
       "INSERT INTO usuario (email, senha, nome, siape, usuario_tipo, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
-      [email, password, name, siape, type, id_usuario]
+      [email, hashedPassword, name, siape, type, id_usuario]
     );
     res.status(200).send("Usuário registrado com sucesso");
   } catch (err) {

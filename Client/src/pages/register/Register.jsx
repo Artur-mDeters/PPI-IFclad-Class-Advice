@@ -50,7 +50,7 @@ const Register = () => {
         password: password,
         name: name,
         siape: siape,
-        type: type,
+        type: type
       })
       .then((response) => {
         console.log(response);
