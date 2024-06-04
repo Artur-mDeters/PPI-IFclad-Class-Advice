@@ -16,7 +16,7 @@ O sistema tem como objetivo auxiliar o Instituto Federal Farroupilha na organiza
 
 Clonar o repositório:
 
-```bash
+```git
     git clone https://github.com/Artur-mDeters/PPI-IFclad-Class-Advice.git
 ``` 
 
@@ -28,13 +28,13 @@ Ir ao Diretório do projeto > Client:
 
 Instale as dependências: 
 
-```bash 
+```node 
     npm install
 ```
 
 Inicie o App: 
 
-```bash 
+```node
     npm run dev
 ```
 
@@ -46,13 +46,13 @@ Ir ao diretório Server
 
 Instale as dependências: 
 
-```bash 
+```node
     npm install
 ```
 
 Inicie o servidor: 
 
-```bash 
+```node 
     node src/server/server.js
 ```
 
