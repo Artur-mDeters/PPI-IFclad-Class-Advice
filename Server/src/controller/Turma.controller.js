@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid")
 
 exports.getTurmas = async (req, res) => {
     try {
-        const response = db.query("SELECT * FROM turma")
+        const response = await db.query("SELECT * FROM turma")
         res.status(200).json(response)
     } catch (err) {
         console.error('GET TURMAS', err)
@@ -28,15 +28,20 @@ exports.addTurma = async (req, res) => {
     const { nome, ano_inicio, curso } = req.body // curso: adm, info, agro
     try {
         const id_turma = uuidv4()
-        const fk_curso_id_curso = await db.query('SELECT id_curso WHERE nome = $1', [curso] )
-        if (String(fk_curso_id_curso).length < 0) {
-            console.error('Este curso não existe')
-            res.status(404)
-        } else {
-            const response = await db.query('INSERT INTO turma (id_turma, nome, ano_inicio, fk_curso_id_curso) VALUES ($1, $2, $3, $4)', 
-                [id_turma, nome, ano_inicio, fk_curso_id_curso])
+        
+        // TODO: const fk_curso_id_curso = await db.query('SELECT id_curso WHERE nome = $1', [curso] )  
+
+        //! if (String(fk_curso_id_curso).length < 0) {
+        //!    console.error('Este curso não existe')
+        //!   res.status(404)
+        //!} 
+        // else {
+
+            const response = await db.query('INSERT INTO turma (id_turma, nome, ano_inicio, curso) VALUES ($1, $2, $3, $4)', 
+                [id_turma, nome, ano_inicio, curso])
             res.status(200).json(response)
-        }
+            
+        // }
     } catch (err) {
         res.status(500).send(err)
     }

@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   Box,
   Button,
@@ -7,10 +7,14 @@ import {
 } from "@mui/material";
 
 
+// import getDataTurmas from "./core/getDataTurmas.js";
+
 
 // import SearchIcon from "@mui/icons-material/Search";
 import turmas from "./Turmas.json";
 import SearchBar from "../UI/SearchBar/SearchBar.jsx";
+import { useEffect, useState } from "react";
+
 
 
 // ? Styles #########################
@@ -27,7 +31,42 @@ const boxTurmas = {
   flexWrap: "wrap",
 };
 
+// sssssssssssssssssssssssssssssssssssssssssssss
+import axios from "axios"
+
+const getDataTurmas = async () => {
+  const response = await axios.get("http://localhost:3030/turmas")
+  try {
+    return response.data
+  } catch (err) {
+    console.error(err)
+  }
+}
+// sssssssssssssssssssssssssssssssssssssssssssss
+
+
 const Turmas = () => {
+
+  const [dataTurmas, setDataTurmas] = useState([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getDataTurmas()
+        setDataTurmas(result)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  
+    fetchData()
+  
+    console.log(typeof dataTurmas, "data turmas")
+    console.log(typeof turmas, 'turmas')
+  }, [])
+
+  
+
   return (
     <Box sx={principalBox}>
       <SearchBar>
@@ -36,9 +75,9 @@ const Turmas = () => {
 
       </SearchBar>
       <Box sx={boxTurmas}>
-        {turmas.map((turma) => (
+        {dataTurmas.map((turma) => (
           <Paper
-            key={turma.id}
+            key={turma.id_turma}
             elevation={8}
             sx={{
               display: "flex",
@@ -50,9 +89,9 @@ const Turmas = () => {
           >
             <Box sx={{ flex: 1 }}>
               <Typography variant="h4" mb={5}>
-                {turma.turma}
+                {turma.nome}
               </Typography>
-              <Typography variant="body1">{turma.aluno} Alunos</Typography>
+              <Typography variant="body1">{turma.ano_inicio} Ano</Typography>
             </Box>
             <Box
               sx={{
@@ -66,7 +105,11 @@ const Turmas = () => {
               <Button variant="contained">Notas</Button>
             </Box>
           </Paper>
+
+          
         ))}
+        
+
       </Box>
     </Box>
   );
