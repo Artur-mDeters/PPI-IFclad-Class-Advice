@@ -14,6 +14,10 @@ O sistema tem como objetivo auxiliar o Instituto Federal Farroupilha na organiza
 
 ## Rodando Localmente
 
+Para executar o projeto é preciso ter o Node Js na versão v20.14.0(LTS) instalado localmente.
+
+[Instalar o Node js](https://nodejs.org/en/download/package-manager)
+
 Clonar o repositório:
 
 ```git
