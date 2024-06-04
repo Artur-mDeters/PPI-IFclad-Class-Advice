@@ -69,11 +69,12 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+// eslint-disable-next-line react/prop-types
 export default function UiAppBar({ page, children }) {
 
   const [open, setOpen] = React.useState(false);
   const [mouseOver, setMouseOver] = React.useState(false);
-
+    
   const handleOpen = (data) => {
     page(data);
   };
