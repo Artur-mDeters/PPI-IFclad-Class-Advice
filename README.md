@@ -4,8 +4,8 @@ Este projeto é parte de uma tarefa de Prática Profissional Integrada (PPI), de
 
 ## Autores
 
--[Artur da Motta Deters] (https://github.com/Artur-mDeters)
--[Matheus Gabriel Farias] (https://github.com/MatheusFarias2)
+- [Artur da Motta Deters] (https://github.com/Artur-mDeters)
+- [Matheus Gabriel Farias] (https://github.com/MatheusFarias2)
 
 ## Objetivo
 
