@@ -1,4 +1,4 @@
-# Gerenciador de Notas e Dados de Alunos do Instituto Federal
+# IF Clad - Class Advice
 
 Este projeto é parte de uma tarefa de Prática Profissional Integrada (PPI), desenvolvido por [seu nome] e mais três colegas. Trata-se de um site de gerenciamento de notas e outros dados de alunos do Instituto Federal, construído com React e Node.js.
 
