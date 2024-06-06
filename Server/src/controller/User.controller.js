@@ -12,7 +12,6 @@ const hashPassword = async (password) => {
   }
 }
 
-
 exports.getUsers = async (req, res) => {
   try {
     const resposta = await db.query("SELECT * FROM usuario");
