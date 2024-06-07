@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material'
 import React from 'react'
-import SearchBar from '../UI/SearchBar/SearchBar'
+import SearchBar from '../../../components/UI/SearchBar/SearchBar'
 
 const Disciplinas = () => {
   return (
