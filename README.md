@@ -10,7 +10,9 @@ Este projeto é parte de uma tarefa de Prática Profissional Integrada (PPI), de
 
 ## Objetivo
 
-O sistema tem como objetivo auxiliar o Instituto Federal Farroupilha na organização e recuperação de dados dos estudantes matriculados nos cursos técnicos integrados ao ensino médio, bem como suas disciplinas e respectivos professores. Sua implementação se dará nos conselhos de classes formados por professores e direção da escola, visando acompanhar o desempenho escolar dos estudantes. O sistema busca trazer uma melhor organização e praticidade, facilitando consultas avulsas e a criação automática de pareceres escolares.
+O sistema tem como objetivo auxiliar o Instituto Federal Farroupilha na organização e recuperação de dados referentes aos estudantes matriculados nos cursos técnicos integrados ao ensino médio, bem como suas disciplinas e respectivos professores, não tendo ligação com outros sistemas próprios da instituição.   
+Ele será implementado diariamente pelos servidores em seu trabalho, nas entregas de notas e conselhos de classe, visando trazer qualidade e praticidade ao ambiente escolar. 
+
 
 ## Tecnologias Utilizadas
 
