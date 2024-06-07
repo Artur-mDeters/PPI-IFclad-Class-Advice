@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import "./AppBar.css";
-
+import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
+import dataButtons from "./dataButtons.jsx";
 
 import { styled, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,20 +14,12 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import { Avatar, Paper } from "@mui/material";
-import Badge from "@mui/material/Badge";
+import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import MailIcon from "@mui/icons-material/Mail";
-import Button from "@mui/material/Button";
-
-import { defaultDark } from "../../themes/themes";
-// import Notification from "../Notification/Notification";
 
 // icons
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
-
-import dataButtons from "./dataButtons.jsx";
 
 const drawerWidth = 265;
 
@@ -76,17 +69,15 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
+// eslint-disable-next-line react/prop-types
 export default function UiAppBar({ page, children }) {
+
   const [open, setOpen] = React.useState(false);
   const [mouseOver, setMouseOver] = React.useState(false);
-  let cont = 0;
+    
   const handleOpen = (data) => {
     page(data);
-    cont += 1;
-    console.log(data, cont);
   };
-
-  // Estilos
 
   const typographyButtonStyle = {
     marginLeft: "25px",
@@ -102,8 +93,6 @@ export default function UiAppBar({ page, children }) {
     setOpen(false);
   };
 
-  // const itens = [1, 2, 3, 4, 5, 6, 7, 8, 9] ;
-
   return (
     <ThemeProvider theme={defaultDark}>
       <Box sx={{ display: "flex" }}>
@@ -114,7 +103,6 @@ export default function UiAppBar({ page, children }) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* <Divider /> */}
           <List
             component="nav"
             sx={{ display: "flex", flexDirection: "column", height: "100%" }}
@@ -131,21 +119,22 @@ export default function UiAppBar({ page, children }) {
 
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
-              
+
               {dataButtons.map((button) => (
+                
                 <Box
                   className="ButtonBox"
                   onClick={() => {
                     handleOpen(button.page);
                   }}
                   key={button.id}
-                  >
+                >
                   {button.icon}
                   <Typography variant="h6" sx={typographyButtonStyle}>
                     {button.title}
                   </Typography>
                 </Box>
-              ))}             
+              ))}
             </Box>
 
             <Divider />
@@ -157,9 +146,7 @@ export default function UiAppBar({ page, children }) {
                   handleOpen("conta");
                 }}
               >
-                {/* Icone  */}
                 <PersonIcon fontSize="large" />
-                {/* label  */}
                 <Typography variant="h6" sx={typographyButtonStyle}>
                   Minha Conta
                 </Typography>
@@ -171,9 +158,7 @@ export default function UiAppBar({ page, children }) {
                   handleOpen("config");
                 }}
               >
-                {/* Icone  */}
                 <SettingsIcon fontSize="large" />
-                {/* label  */}
                 <Typography variant="h6" sx={typographyButtonStyle}>
                   Configurações
                 </Typography>
@@ -185,12 +170,12 @@ export default function UiAppBar({ page, children }) {
           <Toolbar
             sx={{
               pr: "24px",
-              justifyContent: "flex-end", // keep right padding when drawer closed
+              justifyContent: "flex-end",
             }}
           >
             <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
               <Avatar />
-              {/* <Notification /> */}
+              
             </Stack>
           </Toolbar>
         </AppBar>

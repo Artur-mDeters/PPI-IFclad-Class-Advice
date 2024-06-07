@@ -11,14 +11,12 @@ import Setores from '../../components/Setores/Setores.jsx'
 import Turmas from '../../components/turmas/Turmas.jsx'
 import { useState } from 'react'
 
-
-const renderizar = (cond) => {
-  if (cond == 1) return <Turmas/>
+const render = (cond) => {
+  if (cond == "turmas") return <Turmas/>
   else if (cond == "professores") return <Professores />
   else if (cond == "config") return <Configuracoes />
   else if (cond == "cursos") return <Curso />
   else if (cond == "disciplinas") return <Disciplinas />
-  else if (cond == "professores") return <MinhaConta />
   else if (cond == "mostra") return <Mostra />
   else if (cond == "setores") return <Setores />
   else if (cond == "conta") return <MinhaConta />
@@ -29,7 +27,6 @@ const Home = () => {
   
   const handlePage = (data) => {
     setPage(data)
-    console.log(data)
   }
 
 
@@ -38,7 +35,7 @@ const Home = () => {
         <ThemeProvider theme={defaultDark}>
           <CssBaseline />
           <AppBar page={handlePage}>
-            {renderizar(page)}
+            {render(page)}
           </AppBar>
         </ThemeProvider>
     </div>

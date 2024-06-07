@@ -2,14 +2,14 @@ import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import SchoolIcon from "@mui/icons-material/School";
 import GroupIcon from "@mui/icons-material/Group";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-// import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import BiotechIcon from "@mui/icons-material/Biotech";
+
 const dataButtons = [
     {
         id: 1,
         title: "Turmas",
-        page: 1,
+        page: "turmas",
         icon: <GraphicEqIcon fontSize='large'/>,
     },
     {
@@ -19,7 +19,7 @@ const dataButtons = [
         icon: <SchoolIcon fontSize="large" />,
     },
     {
-        id: 2,
+        id: 3,
         title: "Professores",
         page: 'professores',
         icon: <GroupIcon fontSize="large" />,
