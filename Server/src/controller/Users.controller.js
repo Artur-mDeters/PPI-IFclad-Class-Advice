@@ -30,7 +30,6 @@ exports.addUser = async (req, res) => {
   try {
     const id_usuario = uuidv4();
     const hashedPassword = await hashPassword(password)
-    console.log(hashedPassword)
     await db.query(
       "INSERT INTO usuario (email, senha, nome, siape, usuario_tipo, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
       [email, hashedPassword, name, siape, type, id_usuario]

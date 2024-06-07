@@ -116,8 +116,6 @@ const Login = () => {
               </Box>
             </Box>
           </Box>
-          {email}
-          {password}
         </Box>
       </div>
     </ThemeProvider>
