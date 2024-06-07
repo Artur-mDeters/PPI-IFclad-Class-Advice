@@ -44,7 +44,7 @@ const Turmas = () => {
 
     console.log(typeof dataTurmas, "data turmas");
     console.log(typeof turmas, "turmas");
-  }, []);
+  });
 
   return (
     <Box sx={principalBox}>
@@ -81,7 +81,7 @@ const Turmas = () => {
                 height: "100%",
               }}
             >
-              <Button variant="contained">Editar</Button>
+              <a href="/edit"><Button variant="contained">Editar</Button></a>
               <Button variant="contained">Notas</Button>
             </Box>
           </Paper>
