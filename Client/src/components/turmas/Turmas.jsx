@@ -1,21 +1,8 @@
-
-import {
-  Box,
-  Button,
-  Typography,
-  Paper,
-} from "@mui/material";
-
-
-// import getDataTurmas from "./core/getDataTurmas.js";
-
+import { Box, Button, Typography, Paper } from "@mui/material";
 
 // import SearchIcon from "@mui/icons-material/Search";
-import turmas from "./Turmas.json";
 import SearchBar from "../UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
-
-
 
 // ? Styles #########################
 
@@ -23,56 +10,49 @@ const principalBox = {
   color: "#fff",
 };
 
-
-
 const boxTurmas = {
   display: "flex",
   gap: "10px",
   flexWrap: "wrap",
 };
 
-// sssssssssssssssssssssssssssssssssssssssssssss
-import axios from "axios"
+import axios from "axios";
 
 const getDataTurmas = async () => {
-  const response = await axios.get("http://localhost:3030/turmas")
+  const response = await axios.get("http://localhost:3030/turmas");
   try {
-    return response.data
+    return response.data;
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-}
-// sssssssssssssssssssssssssssssssssssssssssssss
-
+};
 
 const Turmas = () => {
-
-  const [dataTurmas, setDataTurmas] = useState([])
+  const [dataTurmas, setDataTurmas] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getDataTurmas()
-        setDataTurmas(result)
+        const result = await getDataTurmas();
+        setDataTurmas(result);
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
-    }
-  
-    fetchData()
-  
-    console.log(typeof dataTurmas, "data turmas")
-    console.log(typeof turmas, 'turmas')
-  }, [])
+    };
 
-  
+    fetchData();
+
+    console.log(typeof dataTurmas, "data turmas");
+    console.log(typeof turmas, "turmas");
+  });
 
   return (
     <Box sx={principalBox}>
       <SearchBar>
-        <Button variant="contained" sx={{margin: '0 15px'}}>Adicionar Turma</Button>
+        <Button variant="contained" sx={{ margin: "0 15px" }}>
+          Adicionar Turma
+        </Button>
         <Button variant="contained">Agendar Conselho </Button>
-
       </SearchBar>
       <Box sx={boxTurmas}>
         {dataTurmas.map((turma) => (
@@ -101,15 +81,11 @@ const Turmas = () => {
                 height: "100%",
               }}
             >
-              <Button variant="contained">Editar</Button>
+              <a href="/edit"><Button variant="contained">Editar</Button></a>
               <Button variant="contained">Notas</Button>
             </Box>
           </Paper>
-
-          
         ))}
-        
-
       </Box>
     </Box>
   );
