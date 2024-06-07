@@ -1,17 +1,16 @@
 import { Box, Button } from '@mui/material'
-import SearchBar from '../UI/SearchBar/SearchBar'
-import React from 'react'
+import SearchBar from '../../../components/UI/SearchBar/SearchBar'
 
-const Mostra = () => {
+const Curso = () => {
   return (
     <Box>
       <SearchBar>
         <Button variant="contained">
-          Adicionar Grupo
+          Adicionar Curso
         </Button>
       </SearchBar>
     </Box>
   )
 }
 
-export default Mostra
+export default Curso

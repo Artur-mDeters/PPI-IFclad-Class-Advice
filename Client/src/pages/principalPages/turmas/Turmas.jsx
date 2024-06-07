@@ -1,7 +1,7 @@
 import { Box, Button, Typography, Paper } from "@mui/material";
 
 // import SearchIcon from "@mui/icons-material/Search";
-import SearchBar from "../UI/SearchBar/SearchBar.jsx";
+import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
 // ? Styles #########################

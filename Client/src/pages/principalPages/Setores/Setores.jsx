@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button } from '@mui/material'
-import SearchBar from '../UI/SearchBar/SearchBar.jsx'
+import SearchBar from '../../../components/UI/SearchBar/SearchBar.jsx'
 
 
 const Setores = () => {
