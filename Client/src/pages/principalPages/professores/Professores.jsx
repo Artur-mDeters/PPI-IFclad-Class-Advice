@@ -1,5 +1,5 @@
 import React from 'react'
-import SearchBar from '../UI/SearchBar/SearchBar'
+import SearchBar from '../../../components/UI/SearchBar/SearchBar'
 import { Button, Box } from '@mui/material'
 
 
