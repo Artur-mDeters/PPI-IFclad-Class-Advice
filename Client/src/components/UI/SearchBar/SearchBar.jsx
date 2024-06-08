@@ -1,6 +1,5 @@
-import React from "react";
 
-import { Button, Box, Divider, TextField } from "@mui/material";
+import {Box, Divider, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const navBox = {
@@ -13,6 +12,7 @@ const inputStyle = {
     width: '450px',
 }
 
+// eslint-disable-next-line react/prop-types
 const SearchBar = ({ children }) => {
     
   return (
