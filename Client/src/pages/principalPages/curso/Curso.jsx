@@ -5,15 +5,14 @@ import { defaultDark } from "../../../themes/themes";
 
 const Curso = () => {
   return (
-    <ThemeProvider theme={defaultDark}>
+    <ThemeProvider theme={defaultDark} >
       <CssBaseline />
-      <UiAppBar>
+      <UiAppBar onFocus="curso">
         <SearchBar>
           <Button variant="contained">Adicionar Curso</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}
-          
         </Box>
       </UiAppBar>
     </ThemeProvider>
