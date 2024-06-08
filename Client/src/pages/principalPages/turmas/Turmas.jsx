@@ -1,14 +1,14 @@
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, CssBaseline, ThemeProvider } from "@mui/material";
 
 // import SearchIcon from "@mui/icons-material/Search";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
+import UiAppBar from "../../../components/AppBar/AppBar";
+import { defaultDark } from "../../../themes/themes";
+
 // ? Styles #########################
 
-const principalBox = {
-  color: "#fff",
-};
 
 const boxTurmas = {
   display: "flex",
@@ -47,7 +47,10 @@ const Turmas = () => {
   });
 
   return (
-    <Box sx={principalBox}>
+
+    <ThemeProvider theme={defaultDark}>
+      <CssBaseline />
+      <UiAppBar>
       <SearchBar>
         <Button variant="contained" sx={{ margin: "0 15px" }}>
           Adicionar Turma
@@ -87,7 +90,8 @@ const Turmas = () => {
           </Paper>
         ))}
       </Box>
-    </Box>
+      </UiAppBar>
+    </ThemeProvider>
   );
 };
 
