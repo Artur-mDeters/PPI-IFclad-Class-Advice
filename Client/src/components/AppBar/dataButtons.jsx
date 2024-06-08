@@ -9,37 +9,37 @@ const dataButtons = [
     {
         id: 1,
         title: "Turmas",
-        page: "turmas",
+        page: "/turmas",
         icon: <GraphicEqIcon fontSize='large'/>,
     },
     {
         id: 2,
         title: "Cursos",
-        page: 'cursos',
+        page: '/cursos',
         icon: <SchoolIcon fontSize="large" />,
     },
     {
         id: 3,
         title: "Professores",
-        page: 'professores',
+        page: '/professores',
         icon: <GroupIcon fontSize="large" />,
     },
     {
         id: 4,
         title: 'Disciplinas',
-        page: 'disciplinas',
+        page: '/disciplinas',
         icon: <AutoStoriesIcon fontSize="large" />,
     },
     {
         id: 5,
         title: 'Setores',
-        page: 'setores',
+        page: '/setores',
         icon: <DonutSmallIcon fontSize="large" />,
     },
     {
         id: 6,
         title: 'Mostra de Ciencias',
-        page: 'mostra',
+        page: '/mostra',
         icon: <BiotechIcon fontSize="large" />,
     },
 ]

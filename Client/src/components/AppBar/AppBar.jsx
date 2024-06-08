@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { useNavigate } from 'react-router-dom'
+
 import "./AppBar.css";
 import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
@@ -70,13 +72,15 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 // eslint-disable-next-line react/prop-types
-export default function UiAppBar({ page, children }) {
+export default function UiAppBar({children }) {
+  const navigate = useNavigate()
 
   const [open, setOpen] = React.useState(false);
-  const [mouseOver, setMouseOver] = React.useState(false);
+  const [mouseOver, setMouseOver] = React.useState(true);
     
-  const handleOpen = (data) => {
-    page(data);
+  const handleOpen = (page) => {
+    navigate("/")
+    navigate(page)
   };
 
   const typographyButtonStyle = {
@@ -117,24 +121,27 @@ export default function UiAppBar({ page, children }) {
               </Typography>
             </Box>
 
+            
+
+
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
+              {dataButtons.map((button) => {
 
-              {dataButtons.map((button) => (
-                
-                <Box
-                  className="ButtonBox"
-                  onClick={() => {
-                    handleOpen(button.page);
-                  }}
+                return (
+                  <Box
+                  className={'ButtonBox '}
+                  onClick={() => handleOpen(button.page)}
                   key={button.id}
+                  
                 >
                   {button.icon}
                   <Typography variant="h6" sx={typographyButtonStyle}>
                     {button.title}
                   </Typography>
                 </Box>
-              ))}
+                )
+              })}
             </Box>
 
             <Divider />
