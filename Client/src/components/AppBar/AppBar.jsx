@@ -1,8 +1,7 @@
 import * as React from "react";
-
-import { useNavigate } from 'react-router-dom'
-
 import "./AppBar.css";
+
+
 import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
@@ -19,6 +18,7 @@ import Divider from "@mui/material/Divider";
 import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
+import { useNavigate } from 'react-router-dom'
 // icons
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";

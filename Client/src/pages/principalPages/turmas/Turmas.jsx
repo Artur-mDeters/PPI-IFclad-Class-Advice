@@ -43,8 +43,8 @@ const Turmas = () => {
     fetchData();
 
     console.log(typeof dataTurmas, "data turmas");
-    console.log(typeof turmas, "turmas");
-  });
+    console.log( dataTurmas, "turmas");
+  }, []);
 
   return (
 
