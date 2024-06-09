@@ -21,3 +21,13 @@ export const defaultLight = createTheme({
         }
     }
 })
+export const greenDark = createTheme({
+    palette:{
+        mode: 'dark',
+        primary: {
+            main: '#196d00',
+            light: '#28a300',
+            dark: '#32c900'
+        }
+    }
+})

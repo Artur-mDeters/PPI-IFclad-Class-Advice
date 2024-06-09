@@ -9,19 +9,9 @@ import {
 } from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
-
-import axios from "axios";
 import { useEffect, useState } from "react";
+import getDataCursos from "./core/GetDataCuros";
 
-const getDataCursos = async () => {
-  const response = await axios.get("http://localhost:3030/cursos");
-
-  try {
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
 
 const dataBox = {
   display: "flex",
@@ -44,7 +34,7 @@ const Curso = () => {
 
     fetchData();
   }, []);
-
+  
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />

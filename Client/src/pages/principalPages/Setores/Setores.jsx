@@ -10,7 +10,7 @@ const Setores = () => {
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Curso</Button>
+          <Button variant="contained">Adicionar Setor</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}
