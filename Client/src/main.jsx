@@ -18,6 +18,7 @@ import Setores from './pages/principalPages/Setores/Setores.jsx'
 import Turmas from './pages/principalPages/turmas/Turmas.jsx'
 import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
 
+
 const route = createBrowserRouter([
   {
     path: "/login",
