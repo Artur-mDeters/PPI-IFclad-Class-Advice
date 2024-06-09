@@ -1,8 +1,7 @@
 import * as React from "react";
-
-import { useNavigate } from 'react-router-dom'
-
 import "./AppBar.css";
+
+
 import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
@@ -19,6 +18,7 @@ import Divider from "@mui/material/Divider";
 import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
+import { useNavigate } from 'react-router-dom'
 // icons
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -72,11 +72,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 // eslint-disable-next-line react/prop-types
-export default function UiAppBar({ children }) {
+export default function UiAppBar({children }) {
   const navigate = useNavigate()
 
   const [open, setOpen] = React.useState(false);
-  const [mouseOver, setMouseOver] = React.useState(false);
+  const [mouseOver, setMouseOver] = React.useState(true);
     
   const handleOpen = (page) => {
     navigate("/")
@@ -121,22 +121,27 @@ export default function UiAppBar({ children }) {
               </Typography>
             </Box>
 
+            
+
+
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
+              {dataButtons.map((button) => {
 
-              {dataButtons.map((button) => (
-                
-                <Box
-                  className="ButtonBox"
+                return (
+                  <Box
+                  className={'ButtonBox '}
                   onClick={() => handleOpen(button.page)}
                   key={button.id}
+                  
                 >
                   {button.icon}
                   <Typography variant="h6" sx={typographyButtonStyle}>
                     {button.title}
                   </Typography>
                 </Box>
-              ))}
+                )
+              })}
             </Box>
 
             <Divider />

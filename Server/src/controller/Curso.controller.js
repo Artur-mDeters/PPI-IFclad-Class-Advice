@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid")
 
 exports.getCursos = async (req, res) => {
     try {
-        const response = db.query('SELECT * FROM curso')
+        const response = await db.query('SELECT * FROM curso')
         res.status(200).json(response)
     } catch (err) {
         res.status(500).send(err)
@@ -13,7 +13,7 @@ exports.getCursos = async (req, res) => {
 exports.getCursoById = async (req, res) => {
     const {id_curso} = req.params.id
     try {
-        const response = db.query('SELECT * FROM curso WHERE id_curso = $1', [id_curso])
+        const response = await db.query('SELECT * FROM curso WHERE id_curso = $1', [id_curso])
         res.status(200).json(response)
     } catch (err) {
         res.status(500).send(err)

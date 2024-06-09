@@ -2,6 +2,8 @@ import { CssBaseline, ThemeProvider} from '@mui/material'
 import { defaultDark } from '../../themes/themes'
 import AppBar  from '../../components/AppBar/AppBar'
 
+
+
 const Home = () => {
 
   return (
@@ -9,7 +11,6 @@ const Home = () => {
         <ThemeProvider theme={defaultDark}>
           <CssBaseline />
           <AppBar>
-            Home
           </AppBar>
         </ThemeProvider>
     </div>
