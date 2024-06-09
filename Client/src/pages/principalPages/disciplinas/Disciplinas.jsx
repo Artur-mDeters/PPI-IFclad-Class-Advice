@@ -9,7 +9,7 @@ const Disciplinas = () => {
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Curso</Button>
+          <Button variant="contained">Adicionar Disciplina</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}

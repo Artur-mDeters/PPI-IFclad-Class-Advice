@@ -10,7 +10,7 @@ const Professores = () => {
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Curso</Button>
+          <Button variant="contained">Adicionar Professor</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}

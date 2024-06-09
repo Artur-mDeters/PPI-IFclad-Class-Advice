@@ -9,7 +9,7 @@ const Mostra = () => {
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Curso</Button>
+          <Button variant="contained">Adicionar Grupo</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}

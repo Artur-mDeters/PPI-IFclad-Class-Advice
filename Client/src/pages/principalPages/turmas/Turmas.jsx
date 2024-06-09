@@ -5,12 +5,12 @@ import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { defaultDark } from "../../../themes/themes";
+import { defaultDark} from "../../../themes/themes";
 
 import { useNavigate } from "react-router-dom";
+import getDataTurmas from "./core/GetDataTurmas.jsx";
 
 // ? Styles #########################
-
 
 const boxTurmas = {
   display: "flex",
@@ -18,16 +18,6 @@ const boxTurmas = {
   flexWrap: "wrap",
 };
 
-import axios from "axios";
-
-const getDataTurmas = async () => {
-  const response = await axios.get("http://localhost:3030/turmas");
-  try {
-    return response.data;
-  } catch (err) {
-    console.error(err);
-  }
-};
 
 const Turmas = () => {
   const [dataTurmas, setDataTurmas] = useState([]);
@@ -50,8 +40,8 @@ const Turmas = () => {
     console.log( dataTurmas, "turmas");
   }, []);
 
-  const redirect = (id) => {
-    navigate(`editar/${id}`)
+  function redirect(id) {
+    navigate(`editar/${id}`);
   }
 
   return (
@@ -93,7 +83,7 @@ const Turmas = () => {
               }}
             >
               <Button variant="contained" onClick={() => redirect(turma.id_turma)}>Editar</Button>
-              <Button variant="contained">Notas</Button>
+              <Button variant="contained">Notas</Button>  
             </Box>
           </Paper>
         ))}
