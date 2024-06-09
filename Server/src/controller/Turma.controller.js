@@ -47,4 +47,14 @@ exports.addTurma = async (req, res) => {
     }
 }
 
+exports.editTurma = async (req, res) => {
+    const id_turma = req.params.id
+    try {
+        const result = db.query('SELECT * FROM turma WHERE id_turma = $1', [id_turma])
+        res.send(result)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
+
 

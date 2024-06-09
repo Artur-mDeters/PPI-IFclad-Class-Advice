@@ -16,6 +16,7 @@ import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
 import Professores from './pages/principalPages/professores/Professores.jsx'
 import Setores from './pages/principalPages/Setores/Setores.jsx'
 import Turmas from './pages/principalPages/turmas/Turmas.jsx'
+import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
 
 const route = createBrowserRouter([
   {
@@ -76,6 +77,11 @@ const route = createBrowserRouter([
   {
     path: '/turmas',
     element: <Turmas/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/turmas/editar/:id',
+    element: <EditarTurmas/>,
     errorElement: <ErrorPage/>
   },
   

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import UiAppBar from "../../../components/AppBar/AppBar";
 import { defaultDark } from "../../../themes/themes";
 
+import { useNavigate } from "react-router-dom";
+
 // ? Styles #########################
 
 
@@ -30,6 +32,8 @@ const getDataTurmas = async () => {
 const Turmas = () => {
   const [dataTurmas, setDataTurmas] = useState([]);
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,6 +49,10 @@ const Turmas = () => {
     console.log(typeof dataTurmas, "data turmas");
     console.log( dataTurmas, "turmas");
   }, []);
+
+  const redirect = (id) => {
+    navigate(`editar/${id}`)
+  }
 
   return (
 
@@ -84,7 +92,7 @@ const Turmas = () => {
                 height: "100%",
               }}
             >
-              <a href="/edit"><Button variant="contained">Editar</Button></a>
+              <Button variant="contained" onClick={() => redirect(turma.id_turma)}>Editar</Button>
               <Button variant="contained">Notas</Button>
             </Box>
           </Paper>
