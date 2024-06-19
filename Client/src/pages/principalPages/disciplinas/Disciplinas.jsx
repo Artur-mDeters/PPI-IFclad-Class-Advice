@@ -1,17 +1,24 @@
-import { Box, Button } from '@mui/material'
-import React from 'react'
-import SearchBar from '../../../components/UI/SearchBar/SearchBar'
+import UiAppBar from "../../../components/AppBar/AppBar";
+import { Box, Button, CssBaseline, ThemeProvider } from "@mui/material";
+import SearchBar from "../../../components/UI/SearchBar/SearchBar";
+import { defaultDark } from "../../../themes/themes";
 
 const Disciplinas = () => {
   return (
-    <Box>
-      <SearchBar>
-        <Button variant="contained" >
-          Adicionar Disciplina
-        </Button>
-      </SearchBar>
-    </Box>
+    <ThemeProvider theme={defaultDark}>
+      <CssBaseline />
+      <UiAppBar>
+        <SearchBar>
+          <Button variant="contained">Adicionar Disciplina</Button>
+        </SearchBar>
+        <Box>
+          {/* DataContainer  */}
+          
+        </Box>
+      </UiAppBar>
+    </ThemeProvider>
   )
 }
 
 export default Disciplinas
+

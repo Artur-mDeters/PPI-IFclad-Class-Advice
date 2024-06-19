@@ -6,15 +6,16 @@ import Login from './pages/login/Login.jsx'
 import ErrorPage from './pages/error/ErrorPage.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
-import EditTurmas from './pages/editTurmas/EditTurmas.jsx'
-// import Configuracoes from './pages/config/Configuracoes.jsx'
-// import Curso from './pages/curso/Curso.jsx'
-// import Disciplinas from './pages/disciplinas/Disciplinas.jsx'
-// import MinhaConta from './pages/minha-conta/MinhaConta.jsx'
-// import Mostra from './pages/mostra-de-ciencias/Mostra.jsx'
-// import Professores from './pages/professores/Professores.jsx'
-// import Setores from './pages/Setores/Setores.jsx'
-// import Turmas from './pages/turmas/Turmas.jsx'
+import Curso from './pages/principalPages/curso/Curso.jsx'
+import Configuracoes from './pages/principalPages/config/Configuracoes.jsx'
+import Disciplinas from './pages/principalPages/disciplinas/Disciplinas.jsx'
+import MinhaConta from './pages/principalPages/minha-conta/MinhaConta.jsx'
+import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
+import Professores from './pages/principalPages/professores/Professores.jsx'
+import Setores from './pages/principalPages/Setores/Setores.jsx'
+import Turmas from './pages/principalPages/turmas/Turmas.jsx'
+import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
+
 
 const route = createBrowserRouter([
   {
@@ -32,11 +33,51 @@ const route = createBrowserRouter([
     element: <Register/>,
     errorElement: <ErrorPage/>
   },
-  { 
-    path: '/edit',
-    element: <EditTurmas/>,
+  {
+    path: '/cursos',
+    element: <Curso/>,
     errorElement: <ErrorPage/>
-  }
+  },
+  {
+    path: '/config',
+    element: <Configuracoes/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/disciplinas',
+    element: <Disciplinas/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/minha-conta',
+    element: <MinhaConta/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/mostra',
+    element: <Mostra/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/setores',
+    element: <Setores/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/professores',
+    element: <Professores/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/turmas',
+    element: <Turmas/>,
+    errorElement: <ErrorPage/>
+  },
+  {
+    path: '/turmas/editar/:id',
+    element: <EditarTurmas/>,
+    errorElement: <ErrorPage/>
+  },
   
 ])
 

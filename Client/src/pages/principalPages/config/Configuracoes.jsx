@@ -1,15 +1,15 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { Box, Button, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
 
-const Mostra = () => {
+const Configuracoes = () => {
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Grupo</Button>
+          
         </SearchBar>
         <Box>
           {/* DataContainer  */}
@@ -17,7 +17,7 @@ const Mostra = () => {
         </Box>
       </UiAppBar>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default Mostra
+export default Configuracoes;
