@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { defaultDark } from "../../../../themes/themes";
 import { useNavigate } from "react-router-dom";
+import classes from "../styles/EditarTurmas";
 
 
 const EditarTurmas = () => {
@@ -22,59 +23,30 @@ const EditarTurmas = () => {
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <Box
-        sx={{
-          width: "100vw",
-          height: "100vh",
-        }}
+        sx={classes.principalBox}
       >
         <Box
-          sx={{
-            width: "100%",
-            height: "60px",
-            backgroundColor: "#5d1c8b",
-          }}
+          sx={classes.topCard}
         >
           <Typography variant="h3">Editar turmas</Typography>
         </Box>
         <Box
-          sx={{
-            width: "50%",
-            margin: "auto",
-            borderLeft: "1px solid #222",
-            borderBottom: "1px solid #222",
-            borderRight: "1px solid #222",
-            height: "90%",
-            borderRadius: "0 0 8px 8px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}
+          sx={classes.boxComponents}
         >
-          <Box textAlign={"center"} marginTop={"40px"}>
+          <Box sx={classes.typographyBox}>
             <Typography marginBottom="20px" variant="h4">Altere os parametros desejados</Typography>
             <Typography variant="body1">
               Lembre-se de salvar antes de sair da página
             </Typography>
           </Box>
-          <Box sx={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '10%'
-          }}>
+          <Box sx={classes.boxCentralize}>
             <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "300px",
-                margin: "30px auto",
-                gap: 3
-              }}
+              sx={classes.textFieldBox}
             >
               <TextField id="name" label="Nome" variant="filled" />
               <TextField id="ano" label="Ano de início" variant="filled" />
             </Box>
-            <Box sx={{ width: "200"}}>
+            <Box sx={classes.buttonBox}>
               <Button sx={{ marginRight: '20px'}} size="large" variant="contained" onClick={saveAndRedirect}>‎ ‎ ‎ Salvar ‎ ‎ ‎ </Button>
               <Button color="error" size="large" variant="contained">
                 Cancelar
