@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, ThemeProvider, CssBaseline, Button} from '@mui/material'
 import { defaultDark } from '../../../../themes/themes'
-
+import classes from '../styles/EditarTurmas'
    
 
 const EditarTurmas = () => {
@@ -9,10 +9,7 @@ const EditarTurmas = () => {
   return (
     <ThemeProvider theme={defaultDark}>
         <CssBaseline />
-        <Box sx={{
-            width: '100%',
-            height: '100%'
-        }}>
+        <Box sx={classes.principalBox}>
             <Box sx={{
                 width: '100%',
                 height: '60px',
