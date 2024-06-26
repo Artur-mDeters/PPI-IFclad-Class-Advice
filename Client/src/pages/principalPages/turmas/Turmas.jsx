@@ -44,13 +44,17 @@ const Turmas = () => {
     navigate(`editar/${id}`);
   }
 
+  function redirectCreateTurma() {
+    navigate('create')
+  }
+
   return (
 
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <UiAppBar>
       <SearchBar>
-        <Button variant="contained" sx={classes.buttonAddTurma}>
+        <Button variant="contained" sx={classes.buttonAddTurma} onClick={redirectCreateTurma}>
           Adicionar Turma
         </Button>
         <Button variant="contained">Agendar Conselho </Button>
