@@ -3,3 +3,28 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Para estilizar a barra de rolagem */
+::-webkit-scrollbar {
+  width: 12px; /* Largura da barra de rolagem */
+  height: 12px;
+}
+
+/* Para estilizar a parte da trilha da barra de rolagem */
+::-webkit-scrollbar-track {
+ /* Altura da barra de rolagem horizontal (se aplicável) */
+  background: #2e2e2e; /* Cor da trilha */
+  border-radius: 10px; /* Bordas arredondadas na trilha */
+}
+
+/* Para estilizar o polegar da barra de rolagem */
+::-webkit-scrollbar-thumb {
+    border: 3px solid #2e2e2e;
+  background: #5d1c8b; /* Cor do polegar */
+  border-radius: 10px; /* Bordas arredondadas no polegar */
+}
+
+/* Para estilizar o polegar ao passar o mouse */
+::-webkit-scrollbar-thumb:hover {
+  background: #451c8b; /* Cor do polegar ao passar o mouse */
+}

@@ -55,7 +55,7 @@ const Turmas = () => {
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <UiAppBar>
-        <SearchBar>
+        <SearchBar sx={classes.searchbar}>
           <Button
             variant="contained"
             sx={classes.buttonAddTurma}
@@ -72,7 +72,7 @@ const Turmas = () => {
                 <Typography variant="h4" mb={5}>
                   {turma.nome}
                 </Typography>
-                <Typography variant="body1">{turma.ano_inicio} Ano</Typography>
+                <Typography variant="body1">Ano: {turma.ano_inicio}</Typography>
               </Box>
               <Box sx={classes.buttonBoxPaper}>
                 <Button
