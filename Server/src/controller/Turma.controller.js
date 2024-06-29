@@ -14,10 +14,10 @@ exports.getTurmas = async (req, res) => {
 }
 
 exports.getTurmaById = async (req, res) => {
-    const { id_turma } = req.params.id
+    const id_turma = req.params.id
     try {
-        const response = db.query("SELECT * FROM turma WHERE id_turma = $1", [id_turma])
-        res.status(200).json(response)
+        const response = await db.query("SELECT * FROM turma WHERE id_turma = $1", [id_turma])
+        res.status(200).send(response)
     } catch (err) {
         console.error("GET TURMA BY ID", err)
         res.status(500).send(err)
@@ -25,20 +25,14 @@ exports.getTurmaById = async (req, res) => {
 }
 
 exports.addTurma = async (req, res) => {
-    const { nome, ano_inicio, curso } = req.body // curso: adm, info, agro
+    const { nome, ano_inicio } = req.body // curso: adm, info, agro
     try {
         const id_turma = uuidv4()
         
-        // TODO: const fk_curso_id_curso = await db.query('SELECT id_curso WHERE nome = $1', [curso] )  
-
-        //! if (String(fk_curso_id_curso).length < 0) {
-        //!    console.error('Este curso não existe')
-        //!   res.status(404)
-        //!} 
         // else {
 
-            const response = await db.query('INSERT INTO turma (id_turma, nome, ano_inicio, curso) VALUES ($1, $2, $3, $4)', 
-                [id_turma, nome, ano_inicio, curso])
+            const response = await db.query('INSERT INTO turma (id_turma, nome, ano_inicio) VALUES ($1, $2, $3)', 
+                [id_turma, nome, ano_inicio])
             res.status(200).json(response)
             
         // }
@@ -49,9 +43,19 @@ exports.addTurma = async (req, res) => {
 
 exports.editTurma = async (req, res) => {
     const id_turma = req.params.id
+    const {ano_inicio, nome} = req.body
     try {
-        const result = db.query('SELECT * FROM turma WHERE id_turma = $1', [id_turma])
+        const result = await db.query('UPDATE turma SET nome = $1, ano_inicio = $2 WHERE id_turma = $3 ', [nome, ano_inicio, id_turma])
         res.send(result)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
+exports.deleteTurma = async (req, res) => {
+    const id_turma = req.params.id
+    try {
+        await db.query('DELETE FROM turma WHERE id_turma = $1 ', [id_turma])
+        res.status(204).send()
     } catch (err) {
         res.status(500).json(err)
     }

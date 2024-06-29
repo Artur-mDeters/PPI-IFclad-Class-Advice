@@ -23,6 +23,9 @@ const classes = {
     justifyContent: "space-between",
     height: "100%",
   },
+  searchbar: {
+    position: 'fixed'
+  }
 };
 
 export default classes;

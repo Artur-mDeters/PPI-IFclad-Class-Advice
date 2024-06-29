@@ -25,6 +25,7 @@ const classes = {
     display: "flex",
     flexDirection: "column",
     marginTop: "10%",
+    flex: 1
   },
   textFieldBox: {
     display: "flex",
@@ -37,7 +38,10 @@ const classes = {
     textAlign: "center",
     marginTop: "40px",
   },
-  buttonBox: { width: "200" },
+  buttonBox: {
+    width: "200",
+  },
+  buttonDeleteBox: { width: "200", marginBottom: '30px'},
 };
 
 export default classes;

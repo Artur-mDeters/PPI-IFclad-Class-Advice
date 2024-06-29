@@ -16,7 +16,8 @@ const ErrorPage = () => {
         padding: 50,
         textAlign: 'center'
       }}>
-        <Typography variant="h1" >:/ Ocorreu um erro...</Typography>
+        <Typography variant="h1" >:/ Ocorreu um erro...
+        </Typography>
         <a href="/"><Typography variant="h5">← Retorne a página inicial</Typography></a>
       </Box>
     </ThemeProvider>

@@ -1,9 +1,11 @@
+import './index.css'
+import ErrorPage from './pages/error/ErrorPage.jsx'
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
+
 import Login from './pages/login/Login.jsx'
-import ErrorPage from './pages/error/ErrorPage.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
 import Curso from './pages/principalPages/curso/Curso.jsx'
@@ -15,74 +17,79 @@ import Professores from './pages/principalPages/professores/Professores.jsx'
 import Setores from './pages/principalPages/Setores/Setores.jsx'
 import Turmas from './pages/principalPages/turmas/Turmas.jsx'
 import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
+import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
 
 
 const route = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
-    errorElement: <ErrorPage/>
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/',
+    path: "/",
     element: <Home />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/register',
-    element: <Register/>,
-    errorElement: <ErrorPage/>
+    path: "/register",
+    element: <Register />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/cursos',
-    element: <Curso/>,
-    errorElement: <ErrorPage/>
+    path: "/cursos",
+    element: <Curso />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/config',
-    element: <Configuracoes/>,
-    errorElement: <ErrorPage/>
+    path: "/config",
+    element: <Configuracoes />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/disciplinas',
-    element: <Disciplinas/>,
-    errorElement: <ErrorPage/>
+    path: "/disciplinas",
+    element: <Disciplinas />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/minha-conta',
-    element: <MinhaConta/>,
-    errorElement: <ErrorPage/>
+    path: "/minha-conta",
+    element: <MinhaConta />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/mostra',
-    element: <Mostra/>,
-    errorElement: <ErrorPage/>
+    path: "/mostra",
+    element: <Mostra />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/setores',
-    element: <Setores/>,
-    errorElement: <ErrorPage/>
+    path: "/setores",
+    element: <Setores />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/professores',
-    element: <Professores/>,
-    errorElement: <ErrorPage/>
+    path: "/professores",
+    element: <Professores />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/turmas',
-    element: <Turmas/>,
-    errorElement: <ErrorPage/>
+    path: "/turmas",
+    element: <Turmas />,
+    errorElement: <ErrorPage />,
   },
   {
-    path: '/turmas/editar/:id',
-    element: <EditarTurmas/>,
-    errorElement: <ErrorPage/>
+    path: "/turmas/editar/:id",
+    element: <EditarTurmas />,
+    errorElement: <ErrorPage />,
   },
-  
-])
+  {
+    path: "/turmas/create",
+    element: <CreateTurmas />,
+    errorElement: <ErrorPage />,
+  },
+]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={route}/>
-  </React.StrictMode>,
-)
+    <RouterProvider router={route} />
+  </React.StrictMode>
+);

@@ -6,7 +6,7 @@ import {
   Button,
 } from "@mui/material";
 import { defaultDark } from "../../../../themes/themes";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import classes from "../styles/EditarTurmas";
 import { useState } from "react";
 // import GetDataTurmasById from "../core/GetDataTurmasById";
@@ -19,26 +19,15 @@ import Select from "@mui/material/Select";
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
 
-const EditarTurmas = () => {
+const CreateTurmas = () => {
   const [nome, setNome] = useState("");
   const [ano, setAno] = useState("");
-  const { id } = useParams();
 
   const navigate = useNavigate();
 
-  const handleDelete = () => { 
-    axios.delete('http://localhost:3030/turmas/'+ id).then((response) => {
-      console.log(response);
-      navigate("/turmas");
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  }
-
   const saveAndRedirect = () => {
     axios
-      .put("http://localhost:3030/turmas/editar/" + id, {
+      .post("http://localhost:3030/turmas/", {
         nome: nome,
         ano_inicio: ano,
       })
@@ -65,12 +54,12 @@ const EditarTurmas = () => {
       <CssBaseline />
       <Box sx={classes.principalBox}>
         <Box sx={classes.topCard}>
-          <Typography variant="h3">Editar turmas</Typography>
+          <Typography variant="h3">Criar turma</Typography>
         </Box>
         <Box sx={classes.boxComponents}>
           <Box sx={classes.typographyBox}>
             <Typography marginBottom="20px" variant="h4">
-              Altere os parâmetros desejados
+              Insira os parâmetros desejados
             </Typography>
             <Typography variant="body1">
               Lembre-se de salvar antes de sair da página
@@ -142,11 +131,6 @@ const EditarTurmas = () => {
               </Button>
             </Box>
           </Box>
-          <Box sx={classes.buttonDeleteBox}>
-            <Button color="error" variant="contained" onClick={handleDelete}>
-              excluir turma
-            </Button>
-          </Box>
         </Box>
       </Box>
     </ThemeProvider>
@@ -154,4 +138,4 @@ const EditarTurmas = () => {
 };
 
 // ‎ Caractere invisível
-export default EditarTurmas;
+export default CreateTurmas;

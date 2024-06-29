@@ -9,5 +9,6 @@ routes.get('/turmas/:id', turmaController.getTurmaById)
 routes.get('/turmas', turmaController.getTurmas)
 routes.put('/turmas/editar/:id', turmaController.editTurma)
 routes.get('/turmas/editar/:id', turmaController.getTurmaById)
+routes.delete('/turmas/:id', turmaController.deleteTurma)
 
 module.exports = routes 
