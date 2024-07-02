@@ -16,7 +16,7 @@ import { defaultDark } from "../../../themes/themes";
 
 import { useNavigate } from "react-router-dom";
 import getDataTurmas from "./core/GetDataTurmas.jsx";
-import classes from "./styles/Turmas.js";
+import classes from "./style/Turma.js";
 
 // ? Styles #########################
 

@@ -39,7 +39,8 @@ const classes = {
     marginTop: "40px",
   },
   buttonBox: {
-    width: "200",
+    width: "100",
+    margin: '0 auto'
   },
   buttonDeleteBox: { width: "200", marginBottom: '30px'},
 };
