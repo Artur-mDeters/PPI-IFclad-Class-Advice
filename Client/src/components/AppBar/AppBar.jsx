@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import * as React from "react";
 import "./AppBar.css";
 
 
-import { defaultDark } from "../../themes/themes";
+import { defaultDark, defaultLight } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
 
@@ -19,7 +20,6 @@ import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
 
 import { useNavigate } from 'react-router-dom'
-// icons
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -98,7 +98,7 @@ export default function UiAppBar({children }) {
   };
 
   return (
-    <ThemeProvider theme={defaultDark}>
+    <ThemeProvider theme={defaultLight}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <Drawer
@@ -115,10 +115,12 @@ export default function UiAppBar({children }) {
               <img src={logo} alt="IF" className="imglogo" />
               <Typography
                 variant="h6"
-                sx={{ typographyButtonStyle, marginLeft: "52px" }}
+                color="white"
+                sx={{ typographyButtonStyle,  marginLeft: "52px" }}
               >
                 Clad - Class Advice
               </Typography>
+              
             </Box>
 
             
@@ -133,10 +135,10 @@ export default function UiAppBar({children }) {
                   className={'ButtonBox '}
                   onClick={() => handleOpen(button.page)}
                   key={button.id}
-                  
+                  color="white"
                 >
                   {button.icon}
-                  <Typography variant="h6" sx={typographyButtonStyle}>
+                  <Typography variant="h6" color="white" sx={typographyButtonStyle}>
                     {button.title}
                   </Typography>
                 </Box>
@@ -152,9 +154,10 @@ export default function UiAppBar({children }) {
                 onClick={() => {
                   handleOpen("conta");
                 }}
+                color="white"
               >
-                <PersonIcon fontSize="large" />
-                <Typography variant="h6" sx={typographyButtonStyle}>
+                <PersonIcon fontSize="large"  />
+                <Typography variant="h6" color="white" sx={typographyButtonStyle}>
                   Minha Conta
                 </Typography>
               </Box>
@@ -164,9 +167,10 @@ export default function UiAppBar({children }) {
                 onClick={() => {
                   handleOpen("config");
                 }}
+                color="white"
               >
                 <SettingsIcon fontSize="large" />
-                <Typography variant="h6" sx={typographyButtonStyle}>
+                <Typography variant="h6" color="white" sx={typographyButtonStyle}>
                   Configurações
                 </Typography>
               </Box>

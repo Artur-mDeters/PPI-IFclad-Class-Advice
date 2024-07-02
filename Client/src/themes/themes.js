@@ -18,6 +18,10 @@ export const defaultLight = createTheme({
             main: '#5d1c8b',
             light: '#7666e0',
             dark: '#451c8b'
+        },
+        text: {
+            white: '#ffff',
+            secondary: '#222'
         }
     }
 })

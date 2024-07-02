@@ -12,7 +12,7 @@ import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { defaultDark } from "../../../themes/themes";
+import { defaultLight } from "../../../themes/themes";
 
 import { useNavigate } from "react-router-dom";
 import getDataTurmas from "./core/GetDataTurmas.jsx";
@@ -46,13 +46,16 @@ const Turmas = () => {
   function redirect(id) {
     navigate(`editar/${id}`);
   }
+  function redirect1() {
+    navigate(`/cursos`);
+  }
 
   function redirectCreateTurma() {
     navigate("create");
   }
 
   return (
-    <ThemeProvider theme={defaultDark}>
+    <ThemeProvider theme={defaultLight}>
       <CssBaseline />
       <UiAppBar>
         <SearchBar sx={classes.searchbar}>
@@ -67,7 +70,7 @@ const Turmas = () => {
         </SearchBar>
         <Box sx={classes.boxTurmas}>
           {dataTurmas.map((turma) => (
-            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma}>
+            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma} onClick={redirect1}>
               <Box sx={classes.flex1}>
                 <Typography variant="h4" mb={5}>
                   {turma.nome}
