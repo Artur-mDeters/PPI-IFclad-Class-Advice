@@ -18,6 +18,7 @@ import Setores from './pages/principalPages/Setores/Setores.jsx'
 import Turmas from './pages/principalPages/turmas/Turmas.jsx'
 import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
 import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
+import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.jsx'
 
 
 const route = createBrowserRouter([
@@ -84,6 +85,11 @@ const route = createBrowserRouter([
   {
     path: "/turmas/create",
     element: <CreateTurmas />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/cursos/create",
+    element: <CreateCurso />,
     errorElement: <ErrorPage />,
   },
 ]);
