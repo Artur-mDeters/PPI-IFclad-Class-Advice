@@ -12,5 +12,9 @@ app.use(express.json());
 app.use(apiRoutes)
 
 app.listen(PORT, () => {
-  console.log(`App rodando em http://localhost:${PORT}`);
+  try {
+    console.log(`App rodando em http://localhost:${PORT}`);
+  } catch (error) {
+    console.error(error);
+  }
 });

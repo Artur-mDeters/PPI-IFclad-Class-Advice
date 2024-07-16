@@ -19,6 +19,7 @@ import Turmas from './pages/principalPages/turmas/Turmas.jsx'
 import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
 import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
 import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.jsx'
+import EditCurso from './pages/principalPages/curso/EditCurso/EditCurso.jsx'
 
 
 const route = createBrowserRouter([
@@ -90,6 +91,11 @@ const route = createBrowserRouter([
   {
     path: "/cursos/create",
     element: <CreateCurso />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/cursos/edit/:id",
+    element: <EditCurso />,
     errorElement: <ErrorPage />,
   },
 ]);

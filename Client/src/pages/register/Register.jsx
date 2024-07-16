@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ThemeProvider } from "@emotion/react";
-import { Box, Typography, TextField, Button, FilledInput } from "@mui/material";
+import { Box, Typography, TextField, Button, FilledInput, OutlinedInput } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import { defaultDark } from "../../themes/themes";
 import { useState } from "react";
@@ -98,7 +98,7 @@ const Register = () => {
               label="Nome Completo"
               value={name}
               onChange={handleSetName}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
             <TextField
@@ -106,14 +106,14 @@ const Register = () => {
               label="E-mail"
               value={email}
               onChange={handleSetEmail}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
             <FormControl sx={inputClasses} variant="filled">
               <InputLabel htmlFor="standard-adornment-password">
                 Senha
               </InputLabel>
-              <FilledInput
+              <OutlinedInput
                 id="standard-adornment-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -136,7 +136,7 @@ const Register = () => {
               <InputLabel htmlFor="standard-adornment-confirm-password">
                 Confirme sua senha
               </InputLabel>
-              <FilledInput
+              <OutlinedInput
                 id="standard-adornment-confirm-password"
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
@@ -149,7 +149,7 @@ const Register = () => {
               label="Siape"
               value={siape}
               onChange={handleSetSiape}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
             <Box sx={{}} className="groupInputTypeUser">

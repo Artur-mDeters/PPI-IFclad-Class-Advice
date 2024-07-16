@@ -98,7 +98,7 @@ export default function UiAppBar({children }) {
   };
 
   return (
-    <ThemeProvider theme={defaultLight}>
+    <ThemeProvider theme={defaultDark}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <Drawer

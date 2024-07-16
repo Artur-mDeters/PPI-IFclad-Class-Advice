@@ -46,12 +46,13 @@ const Turmas = () => {
   function redirect(id) {
     navigate(`editar/${id}`);
   }
-  function redirect1() {
-    navigate(`/cursos`);
-  }
 
   function redirectCreateTurma() {
     navigate("create");
+  }
+
+  function redir() {
+    navigate(`/`)
   }
 
   return (
@@ -70,8 +71,8 @@ const Turmas = () => {
         </SearchBar>
         <Box sx={classes.boxTurmas}>
           {dataTurmas.map((turma) => (
-            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma} onClick={redirect1}>
-              <Box sx={classes.flex1}>
+            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma}>
+              <Box sx={classes.flex1} onClick={redir}>
                 <Typography variant="h4" mb={5}>
                   {turma.nome}
                 </Typography>
