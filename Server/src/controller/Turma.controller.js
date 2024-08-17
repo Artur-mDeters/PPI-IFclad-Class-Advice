@@ -58,6 +58,7 @@ exports.editTurma = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
 exports.deleteTurma = async (req, res) => {
   const id_turma = req.params.id;
   try {

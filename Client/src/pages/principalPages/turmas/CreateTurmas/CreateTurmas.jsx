@@ -63,7 +63,7 @@ const CreateTurmas = () => {
     <CreatePage title="Criar Turma" buttonSaveFunction={saveAndRedirect} returnTo="/turmas">
       <FormControl fullWidth>
         <InputLabel id="nome-label">Nome</InputLabel>
-        <Select
+        <Select 
           labelId="nome-label"
           id="nome"
           label="Nome"

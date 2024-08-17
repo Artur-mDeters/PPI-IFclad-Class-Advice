@@ -18,7 +18,7 @@ const SearchBar = ({ children }) => {
   return (
     <>
       <Box component="nav" sx={navBox}>
-        <Box flex={1}>{children}</Box>
+        <Box flex={1} >{children}</Box>
         <Box>
           <TextField
             id="campo-busca"

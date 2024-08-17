@@ -20,6 +20,7 @@ import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurma
 import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
 import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.jsx'
 import EditCurso from './pages/principalPages/curso/EditCurso/EditCurso.jsx'
+import Alunos from './pages/principalPages/turmas/Alunos/Alunos.jsx'
 
 
 const route = createBrowserRouter([
@@ -89,6 +90,11 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/turmas/alunos/:id",
+    element: <Alunos/>,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/cursos/create",
     element: <CreateCurso />,
     errorElement: <ErrorPage />,
@@ -98,8 +104,8 @@ const route = createBrowserRouter([
     element: <EditCurso />,
     errorElement: <ErrorPage />,
   },
-]);
 
+]);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={route} />

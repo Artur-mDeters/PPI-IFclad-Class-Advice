@@ -21,7 +21,7 @@ exports.getCursoById = async (req, res) => {
     res.status(500).send(err);
   }
 };
-
+ 
 exports.addCurso = async (req, res) => {
   const { nome} = req.body;
   try {

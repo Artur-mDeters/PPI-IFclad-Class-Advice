@@ -3,7 +3,7 @@ import * as React from "react";
 import "./AppBar.css";
 
 
-import { defaultDark, defaultLight } from "../../themes/themes";
+import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
 
