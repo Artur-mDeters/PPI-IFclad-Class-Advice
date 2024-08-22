@@ -91,12 +91,12 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/turmas/alunos/:id",
+    path: "/turmas/alunos/:idTurma",
     element: <Alunos/>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/turmas/alunos/AddAlunos/:id",
+    path: "/turmas/alunos/:idTurma/AddAlunos/",
     element: <AddAlunos/>,
     errorElement: <ErrorPage />,
   },

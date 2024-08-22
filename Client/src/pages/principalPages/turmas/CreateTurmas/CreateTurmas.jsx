@@ -61,22 +61,7 @@ const CreateTurmas = () => {
 
   return (
     <CreatePage title="Criar Turma" buttonSaveFunction={saveAndRedirect} returnTo="/turmas">
-      <FormControl fullWidth>
-        <InputLabel id="nome-label">Nome</InputLabel>
-        <Select 
-          labelId="nome-label"
-          id="nome"
-          label="Nome"
-          onChange={handleNome}
-          value={nome}
-        >
-          {["T11", "T12", "T13", "T14", "T15", "T21", "T22", "T23", "T24", "T25", "T31", "T32", "T33", "T34", "T35"].map((nomeTurma) => (
-            <MenuItem key={nomeTurma} value={nomeTurma}>
-              {nomeTurma}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      
       <FormControl fullWidth>
         <InputLabel id="ano-label">Ano de Início</InputLabel>
         <Select
@@ -105,6 +90,22 @@ const CreateTurmas = () => {
           {dataCurso.map((curso) => (
             <MenuItem key={curso.id_curso} value={curso.id_curso}>
               {curso.nome}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth>
+        <InputLabel id="nome-label">Nome</InputLabel>
+        <Select 
+          labelId="nome-label"
+          id="nome"
+          label="Nome"
+          onChange={handleNome}
+          value={nome}
+        >
+          {["T11", "T12", "T13", "T14", "T15", "T21", "T22", "T23", "T24", "T25", "T31", "T32", "T33", "T34", "T35"].map((nomeTurma) => (
+            <MenuItem key={nomeTurma} value={nomeTurma}>
+              {nomeTurma}
             </MenuItem>
           ))}
         </Select>

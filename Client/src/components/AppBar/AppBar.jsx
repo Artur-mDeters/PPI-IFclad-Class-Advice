@@ -44,7 +44,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open", 
 })(({ theme, open }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
@@ -122,9 +122,6 @@ export default function UiAppBar({children }) {
               </Typography>
               
             </Box>
-
-            
-
 
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
