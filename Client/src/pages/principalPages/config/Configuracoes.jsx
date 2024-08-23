@@ -1,12 +1,11 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
-import { defaultDark } from "../../../themes/themes";
+import Theme from "../../../theme";
 
 const Configuracoes = () => {
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
+    <Theme>
       <UiAppBar>
         <SearchBar>
           
@@ -16,7 +15,7 @@ const Configuracoes = () => {
           
         </Box>
       </UiAppBar>
-    </ThemeProvider>
+    </Theme>
   );
 };
 

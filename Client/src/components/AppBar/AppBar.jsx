@@ -22,6 +22,7 @@ import Stack from "@mui/material/Stack";
 import { useNavigate } from 'react-router-dom'
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Theme from "../../theme.jsx";
 
 const drawerWidth = 265;
 
@@ -98,9 +99,9 @@ export default function UiAppBar({children }) {
   };
 
   return (
-    <ThemeProvider theme={defaultDark}>
+    <Theme>
       <Box sx={{ display: "flex" }}>
-        <CssBaseline />
+        {/* <CssBaseline /> */}
         <Drawer
           variant="permanent"
           open={open || mouseOver}
@@ -205,6 +206,6 @@ export default function UiAppBar({children }) {
         </Box>
       </Box>
       {/* {pageSet} */}
-    </ThemeProvider>
+    </Theme>
   );
 }

@@ -19,6 +19,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import FileSelector from "../../components/UI/FileSelector/FileSelector";
+import Theme from "../../theme";
 
 
 const Register = () => {
@@ -82,8 +83,8 @@ const Register = () => {
 
     console.log(selectedFile)
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
+    <Theme>
+      {/* <CssBaseline /> */}
       <Box sx={{ display: "flex" }}>
         <Box
           sx={{
@@ -213,7 +214,7 @@ const Register = () => {
         <Box sx={{ background: "#5d1c8b", height: "100vh", width: "100%" }}>
         </Box>
       </Box>
-    </ThemeProvider>
+    </Theme>
   );
 };
 
