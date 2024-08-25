@@ -1,9 +1,10 @@
 import UiAppBar from "../../../../../components/AppBar/AppBar"
-import { Box, Typography, Divider, Table, TableContainer, TableHead, TableRow, TableBody, TableCell, styled, Paper, Button, TextField } from "@mui/material"
+import { Box, Typography, Divider, Table, TableContainer, TableHead, TableRow, TableBody, TableCell, styled, Paper, Button, TextField, Alert } from "@mui/material"
 import classes from "../style/style"
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 // TODO: inserção dos alunos na tabela por um formulário
 
@@ -28,6 +29,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const AddAlunos = () => {
+  const { idTurma } = useParams()
+  const [alert, setAlert] = useState(false)
   const [rows, setRows] = useState([]);
   const [name, setName] = useState("");
   const [matricula, setMatricula] = useState("");
@@ -39,7 +42,10 @@ const AddAlunos = () => {
   const [interno, setInterno] = useState("");
   const [foto, setFoto] = useState("");
 
+  const navigate = useNavigate()
+
   const addItem = () => {
+    
     if (interno == "s") {
       setInterno(true)
     } else {
@@ -76,29 +82,33 @@ const AddAlunos = () => {
   const saveAndRedirect = async () => {
     try {
       for (const aluno of rows) {
-        const response = await axios.post('http://localhost:3030/alunos', {
-          nome: aluno.name,
-          matricula: aluno.matricula,
-          email: aluno.email,
-          sexo: aluno.sexo,
-          nascimento: aluno.dataNascimento,
-          cidade: aluno.cidade,
-          uf: aluno.uf,
-          interno: aluno.interno
-        });
-        console.log(response);
-        // console.log(aluno.name)
-        // console.log(aluno.matricula)
-        // console.log(aluno.email)
-        // console.log(aluno.interno)
+        console.log(aluno.name == "")
+        if (aluno.name == "") {
+          setAlert(true)
+        } else {
+          const response = await axios.post('http://localhost:3030/alunos', {
+            nome: aluno.name,
+            matricula: aluno.matricula,
+            email: aluno.email,
+            sexo: aluno.sexo,
+            nascimento: aluno.dataNascimento,
+            cidade: aluno.cidade,
+            uf: aluno.uf,
+            interno: aluno.interno
+          });
+          console.log(response);
+          navigate("../turmas/alunos/"+idTurma)
+        }
+
       }
-      
-      // Redirecionar ou fazer outra ação após o sucesso de todas as requisições
-      // por exemplo: window.location.href = '/somewhere';
       
     } catch (err) {
       console.error(err);
     }
+  }
+
+  const handleCancel = () => {
+    navigate("../turmas/alunos/"+idTurma)
   }
 
   return (
@@ -177,8 +187,9 @@ const AddAlunos = () => {
       </Box>
       <Box>
         <Button variant="contained" onClick={saveAndRedirect}>Salvar</Button>
-        <Button variant="contained" color="error">Cancelar</Button>
+        <Button variant="contained" onClick={handleCancel} color="error">Cancelar</Button>
       </Box>
+    {alert == true? <Alert severity="warning">insere os valores ai</Alert> : null}
     </UiAppBar>
   );
 };
