@@ -1,6 +1,6 @@
 import UiAppBar from "../../../../../components/AppBar/AppBar"
 import { Box, Typography, Divider, Table, TableContainer, TableHead, TableRow, TableBody, TableCell, styled, Paper, Button, TextField, Alert } from "@mui/material"
-import classes from "../style/style"
+import classes from "./style/style"
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useState } from "react";
 import axios from "axios";
@@ -94,7 +94,8 @@ const AddAlunos = () => {
             nascimento: aluno.dataNascimento,
             cidade: aluno.cidade,
             uf: aluno.uf,
-            interno: aluno.interno
+            interno: aluno.interno,
+            fk_turma_id_turma: idTurma
           });
           console.log(response);
           navigate("../turmas/alunos/"+idTurma)

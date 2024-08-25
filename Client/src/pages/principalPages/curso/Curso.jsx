@@ -10,7 +10,7 @@ import {
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
 import { useEffect, useState } from "react";
-import getDataCursos from "./core/GetDataCuros";
+import getDataCursos from "./core/GetDataCursos";
 import { useNavigate } from "react-router-dom";
 
 const dataBox = {
