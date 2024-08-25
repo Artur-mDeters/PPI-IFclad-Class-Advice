@@ -3,6 +3,7 @@ import { Box, Typography, Divider, Table, TableContainer, TableHead, TableRow, T
 import classes from "../style/style"
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useState } from "react";
+import axios from "axios";
 
 // TODO: inserção dos alunos na tabela por um formulário
 
@@ -39,6 +40,11 @@ const AddAlunos = () => {
   const [foto, setFoto] = useState("");
 
   const addItem = () => {
+    if (interno == "s") {
+      setInterno(true)
+    } else {
+      setInterno(false)
+    }
     const newRow = {
       name,
       matricula,
@@ -66,6 +72,34 @@ const AddAlunos = () => {
 
     console.log(rows)
   };
+
+  const saveAndRedirect = async () => {
+    try {
+      for (const aluno of rows) {
+        const response = await axios.post('http://localhost:3030/alunos', {
+          nome: aluno.name,
+          matricula: aluno.matricula,
+          email: aluno.email,
+          sexo: aluno.sexo,
+          nascimento: aluno.dataNascimento,
+          cidade: aluno.cidade,
+          uf: aluno.uf,
+          interno: aluno.interno
+        });
+        console.log(response);
+        // console.log(aluno.name)
+        // console.log(aluno.matricula)
+        // console.log(aluno.email)
+        // console.log(aluno.interno)
+      }
+      
+      // Redirecionar ou fazer outra ação após o sucesso de todas as requisições
+      // por exemplo: window.location.href = '/somewhere';
+      
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
     <UiAppBar>
@@ -142,7 +176,7 @@ const AddAlunos = () => {
         </TableContainer>
       </Box>
       <Box>
-        <Button variant="contained">Salvar</Button>
+        <Button variant="contained" onClick={saveAndRedirect}>Salvar</Button>
         <Button variant="contained" color="error">Cancelar</Button>
       </Box>
     </UiAppBar>
