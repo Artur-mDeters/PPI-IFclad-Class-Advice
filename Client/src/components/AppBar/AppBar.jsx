@@ -18,7 +18,6 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
-
 import { useNavigate } from 'react-router-dom'
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";

@@ -1,8 +1,5 @@
 import axios from "axios";
-import { ThemeProvider } from "@emotion/react";
 import { Box, Typography, TextField, Button, OutlinedInput } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import { defaultDark } from "../../themes/themes";
 import { useState } from "react";
 
 import Radio from "@mui/material/Radio";

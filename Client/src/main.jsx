@@ -9,7 +9,7 @@ import Login from './pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
 import Curso from './pages/principalPages/curso/Curso.jsx'
-import Configuracoes from './pages/principalPages/config/Configuracoes.jsx'
+// import Configuracoes from './pages/principalPages/config/Configuracoes.jsx'
 import Disciplinas from './pages/principalPages/disciplinas/Disciplinas.jsx'
 import MinhaConta from './pages/principalPages/minha-conta/MinhaConta.jsx'
 import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
@@ -45,11 +45,11 @@ const route = createBrowserRouter([
     element: <Curso />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/config",
-    element: <Configuracoes />,
-    errorElement: <ErrorPage />,
-  },
+  // {
+  //   path: "/config",
+  //   element: <Configuracoes />,
+  //   errorElement: <ErrorPage />,
+  // },
   {
     path: "/disciplinas",
     element: <Disciplinas />,
