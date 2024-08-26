@@ -6,6 +6,9 @@ import SearchBar from "../../../../components/UI/SearchBar/SearchBar"
 import { useNavigate, useParams } from "react-router-dom"
 import { useState, useEffect } from "react" 
 import axios from "axios"
+import padrao from "./img/fotos/padrao.png"
+
+import classes from "./style/Aluno"
 
 
 const Alunos = () => {
@@ -40,6 +43,7 @@ const Alunos = () => {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -51,12 +55,17 @@ const Alunos = () => {
                 <Button variant="contained" sx={{marginRight: "15px"}} onClick={() => redirectToAddAluno(idTurma)}>Adicionar Alunos</Button>
                 <Button variant="contained">Notas da Turma</Button>
             </SearchBar>
-            <Box>
+            <Box sx={classes.boxAlunos}>
                 {dataAluno.map((aluno) => (
-                  <Paper key={aluno.id_aluno} elevation={8} sx={{margin: '10px'}}> 
-                    <Typography variant="body1" >{aluno.nome}</Typography>
+                  <Paper key={aluno.id_aluno} elevation={8} sx={classes.paperAluno}> 
+                    <Box sx={classes.foto}>
+                      <img src={padrao} alt="Imagem do aluno" style={{height: "130px", borderRadius: "5px"}}/>
+                    </Box>
+                    <Box>
+                    <Typography variant="h5" >{aluno.nome}</Typography>
                     <Typography variant="body1" >{aluno.matricula}</Typography>
                     <Typography variant="body1" >{aluno.email}</Typography>
+                    </Box>
                   </Paper>
                 ))} 
             </Box>

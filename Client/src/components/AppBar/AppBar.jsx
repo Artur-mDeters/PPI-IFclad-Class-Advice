@@ -2,7 +2,6 @@
 import * as React from "react";
 import "./AppBar.css";
 
-
 import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
@@ -18,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Theme from "../../theme.jsx";
@@ -44,7 +43,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open", 
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   "& .MuiDrawer-paper": {
     position: "relative",
@@ -72,15 +71,15 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 // eslint-disable-next-line react/prop-types
-export default function UiAppBar({children }) {
-  const navigate = useNavigate()
+export default function UiAppBar({ children }) {
+  const navigate = useNavigate();
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [mouseOver, setMouseOver] = React.useState(true);
-    
+
   const handleOpen = (page) => {
-    navigate("/")
-    navigate(page)
+    navigate("/");
+    navigate(page);
   };
 
   const typographyButtonStyle = {
@@ -104,42 +103,48 @@ export default function UiAppBar({children }) {
         <Drawer
           variant="permanent"
           open={open || mouseOver}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          // onMouseEnter={handleMouseEnter}
+          // onMouseLeave={handleMouseLeave}
         >
           <List
             component="nav"
             sx={{ display: "flex", flexDirection: "column", height: "100%" }}
           >
-            <Box className="AppBoxLogo">
-              <img src={logo} alt="IF" className="imglogo" />
+            <Box className="AppBoxLogo" onClick={() => navigate("/")}>
+              <img
+                src={logo}
+                alt="IF"
+                className="imglogo"
+              />
               <Typography
                 variant="h6"
                 color="white"
-                sx={{ typographyButtonStyle,  marginLeft: "52px" }}
+                sx={{ typographyButtonStyle, marginLeft: "52px" }}
               >
                 Clad - Class Advice
               </Typography>
-              
             </Box>
 
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
               {dataButtons.map((button) => {
-
                 return (
                   <Box
-                  className={'ButtonBox '}
-                  onClick={() => handleOpen(button.page)}
-                  key={button.id}
-                  color="white"
-                >
-                  {button.icon}
-                  <Typography variant="h6" color="white" sx={typographyButtonStyle}>
-                    {button.title}
-                  </Typography>
-                </Box>
-                )
+                    className={"ButtonBox "}
+                    onClick={() => handleOpen(button.page)}
+                    key={button.id}
+                    color="white"
+                  >
+                    {button.icon}
+                    <Typography
+                      variant="h6"
+                      color="white"
+                      sx={typographyButtonStyle}
+                    >
+                      {button.title}
+                    </Typography>
+                  </Box>
+                );
               })}
             </Box>
 
@@ -153,8 +158,12 @@ export default function UiAppBar({children }) {
                 }}
                 color="white"
               >
-                <PersonIcon fontSize="large"  />
-                <Typography variant="h6" color="white" sx={typographyButtonStyle}>
+                <PersonIcon fontSize="large" />
+                <Typography
+                  variant="h6"
+                  color="white"
+                  sx={typographyButtonStyle}
+                >
                   Minha Conta
                 </Typography>
               </Box>
@@ -167,7 +176,11 @@ export default function UiAppBar({children }) {
                 color="white"
               >
                 <SettingsIcon fontSize="large" />
-                <Typography variant="h6" color="white" sx={typographyButtonStyle}>
+                <Typography
+                  variant="h6"
+                  color="white"
+                  sx={typographyButtonStyle}
+                >
                   Configurações
                 </Typography>
               </Box>
@@ -183,7 +196,6 @@ export default function UiAppBar({children }) {
           >
             <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
               <Avatar />
-              
             </Stack>
           </Toolbar>
         </AppBar>
