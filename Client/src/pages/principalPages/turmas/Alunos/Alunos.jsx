@@ -64,7 +64,7 @@ const Alunos = () => {
                     <Box>
                     <Typography variant="h5" >{aluno.nome}</Typography>
                     <Typography variant="body1" >{aluno.matricula}</Typography>
-                    <Typography variant="body1" >{aluno.email}</Typography>
+
                     </Box>
                   </Paper>
                 ))} 

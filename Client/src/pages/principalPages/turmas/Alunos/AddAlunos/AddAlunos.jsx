@@ -139,15 +139,15 @@ const AddAlunos = () => {
             <TableBody>
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="right">{row.name}</StyledTableCell>
-                  <StyledTableCell align="right">{row.matricula}</StyledTableCell>
-                  <StyledTableCell align="right">{row.email}</StyledTableCell>
-                  <StyledTableCell align="right">{row.sexo}</StyledTableCell>
-                  <StyledTableCell align="right">{row.dataNascimento}</StyledTableCell>
-                  <StyledTableCell align="right">{row.cidade}</StyledTableCell>
-                  <StyledTableCell align="right">{row.uf}</StyledTableCell>
-                  <StyledTableCell align="right">{row.interno}</StyledTableCell>
-                  <StyledTableCell align="right">{row.foto}</StyledTableCell>
+                  <StyledTableCell align="center">{row.name}</StyledTableCell>
+                  <StyledTableCell align="center">{row.matricula}</StyledTableCell>
+                  <StyledTableCell align="center">{row.email}</StyledTableCell>
+                  <StyledTableCell align="center">{row.sexo}</StyledTableCell>
+                  <StyledTableCell align="center">{row.dataNascimento}</StyledTableCell>
+                  <StyledTableCell align="center">{row.cidade}</StyledTableCell>
+                  <StyledTableCell align="center">{row.uf}</StyledTableCell>
+                  <StyledTableCell align="center">{row.interno}</StyledTableCell>
+                  <StyledTableCell align="center">{row.foto}</StyledTableCell>
                 </StyledTableRow>
               ))}
               <StyledTableRow>
