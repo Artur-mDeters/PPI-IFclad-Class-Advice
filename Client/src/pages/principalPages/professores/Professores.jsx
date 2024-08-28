@@ -1,14 +1,23 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { Box, Button, CssBaseline, ThemeProvider, Typography, Paper} from "@mui/material";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  ThemeProvider,
+  Typography,
+  Paper,
+} from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
 import { useState, useEffect } from "react";
 import getTeacher from "./core/getTeacher";
 import { useNavigate } from "react-router-dom";
+import foto from "./img/fotos/padrao.png";
 
+import classes from "./style/Professores";
 
 const Professores = () => {
-  const [userData, setUserData] = useState([])
+  const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,31 +39,38 @@ const Professores = () => {
   }, []);
 
   const redirectToRegister = () => {
-    navigate('/register')
-  }
+    navigate("/register");
+  };
 
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained" onClick={redirectToRegister}>Adicionar Professor</Button>
+          <Button variant="contained" onClick={redirectToRegister}>
+            Adicionar Professor
+          </Button>
         </SearchBar>
-     
-        <Box>
+
+        <Box sx={classes.boxProfessores}>
           {userData.map((user) => (
-            <Paper item key={user.id_usuario} sx={{padding: 1, margin: 1}}>
-  
-                <Typography variant="body">{user.nome}    |    Siape: </Typography>
-                <Typography variant="body">{user.siape}    |</Typography>
-              
-            </Paper> 
+            <Paper item key={user.id_usuario} sx={classes.paperProfessor}>
+              <Box sx={classes.foto}>
+                <img
+                  src={foto}
+                  style={{ height: "130px", borderRadius: "5px" }}
+                  alt="deu pau"
+                />
+              </Box>
+              <Typography variant="body">{user.nome} | Siape: </Typography>
+              <Typography variant="body">{user.siape} |</Typography>
+              <Button variant="contained">Editar</Button>
+            </Paper>
           ))}
-          
         </Box>
       </UiAppBar>
     </ThemeProvider>
-  )
-}
+  );
+};
 
-export default Professores
+export default Professores;
