@@ -5,7 +5,6 @@ import {
   Button,
   ThemeProvider,
 } from "@mui/material";
-
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -15,8 +14,6 @@ import imgTest from "../../assets/Education-amico.svg";
 import { defaultLight } from "../../themes/themes";
 import { useState } from "react";
 import axios from "axios";
-
-
 
 const boxFormStyle = {
   border: "1px solid #ccc",
@@ -48,7 +45,6 @@ const Login = () => {
         console.error(err)
     })
 }
-
 
   return (
     <ThemeProvider theme={defaultLight}>

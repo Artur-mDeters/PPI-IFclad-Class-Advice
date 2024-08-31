@@ -1,8 +1,5 @@
 import axios from "axios";
-import { ThemeProvider } from "@emotion/react";
-import { Box, Typography, TextField, Button, FilledInput } from "@mui/material";
-import CssBaseline from "@mui/material/CssBaseline";
-import { defaultDark } from "../../themes/themes";
+import { Box, Typography, TextField, Button, OutlinedInput } from "@mui/material";
 import { useState } from "react";
 
 import Radio from "@mui/material/Radio";
@@ -10,12 +7,17 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 
+
 import IconButton from "@mui/material/IconButton";
 // import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
+import FileSelector from "../../components/UI/FileSelector/FileSelector";
+import Theme from "../../theme";
+
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -24,8 +26,8 @@ const Register = () => {
   const [name, setName] = useState("");
   const [siape, setSiape] = useState("");
   const [type, setType] = useState(undefined);
+  const [selectedFile, setSelectedFile] = useState([]);
   
-
   const [showPassword, setShowPassWord] = useState(false);
 
   const handleSetEmail = (e) => setEmail(e.target.value);
@@ -33,6 +35,8 @@ const Register = () => {
   const handleSetName = (e) => setName(e.target.value);
   const handleSetSiape = (e) => setSiape(e.target.value);
   const handleSetConfirmPassword = (e) => setConfirmPassword(e.target.value);
+
+  const navigate = useNavigate()
 
   const handleShowPassword = () => {
     const pass = !showPassword;
@@ -43,16 +47,25 @@ const Register = () => {
     e.preventDefault();
   };
 
-  const handleSubmit = () => {
-    axios
+  const handleFileChange = (file) => {
+    setSelectedFile(file);
+  };
+
+
+  const redirect = () => {
+    navigate("/professores")
+  }
+  const handleSubmit = async () => {
+    await axios
       .post("http://localhost:3030/users", {
         email: email,
         password: password,
         name: name,
         siape: siape,
-        type: type
+        type: type,
       })
       .then((response) => {
+        redirect()
         console.log(response);
       })
       .catch((err) => {
@@ -64,9 +77,11 @@ const Register = () => {
     paddingBottom: 2,
   };
 
+
+    console.log(selectedFile)
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
+    <Theme>
+      {/* <CssBaseline /> */}
       <Box sx={{ display: "flex" }}>
         <Box
           sx={{
@@ -98,7 +113,7 @@ const Register = () => {
               label="Nome Completo"
               value={name}
               onChange={handleSetName}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
             <TextField
@@ -106,14 +121,14 @@ const Register = () => {
               label="E-mail"
               value={email}
               onChange={handleSetEmail}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
             <FormControl sx={inputClasses} variant="filled">
               <InputLabel htmlFor="standard-adornment-password">
                 Senha
               </InputLabel>
-              <FilledInput
+              <OutlinedInput
                 id="standard-adornment-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -136,7 +151,7 @@ const Register = () => {
               <InputLabel htmlFor="standard-adornment-confirm-password">
                 Confirme sua senha
               </InputLabel>
-              <FilledInput
+              <OutlinedInput
                 id="standard-adornment-confirm-password"
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
@@ -149,9 +164,12 @@ const Register = () => {
               label="Siape"
               value={siape}
               onChange={handleSetSiape}
-              variant="filled"
+              variant="outlined"
               sx={inputClasses}
             />
+           
+           <FileSelector onFileChange={handleFileChange}/>
+       
             <Box sx={{}} className="groupInputTypeUser">
               <FormControl>
                 <RadioGroup
@@ -193,7 +211,7 @@ const Register = () => {
         <Box sx={{ background: "#5d1c8b", height: "100vh", width: "100%" }}>
         </Box>
       </Box>
-    </ThemeProvider>
+    </Theme>
   );
 };
 

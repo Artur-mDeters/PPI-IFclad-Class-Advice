@@ -10,16 +10,27 @@ import {
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
 import { useEffect, useState } from "react";
-import getDataCursos from "./core/GetDataCuros";
-
+import getDataCursos from "./core/GetDataCursos";
+import { useNavigate } from "react-router-dom";
 
 const dataBox = {
   display: "flex",
-  with: "100%",
+  gap: "10px",
+  flexWrap: "wrap",
 };
 
 const Curso = () => {
   const [dataCurso, setDataCurso] = useState([]);
+
+  const navigate = useNavigate();
+
+  const redirect = () => {
+    navigate("/cursos/create");
+  };
+
+  function redirectToEdit(id) {
+    navigate(`/cursos/edit/${id}`);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,13 +45,15 @@ const Curso = () => {
 
     fetchData();
   }, []);
-  
+
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
       <UiAppBar>
         <SearchBar>
-          <Button variant="contained">Adicionar Curso</Button>
+          <Button variant="contained" onClick={redirect}>
+            Adicionar Curso
+          </Button>
         </SearchBar>
         <Box sx={dataBox}>
           {dataCurso.map((curso) => (
@@ -49,15 +62,18 @@ const Curso = () => {
               sx={{
                 display: "flex",
                 width: "500px",
-                height: "400px",
+                height: "300px",
                 margin: "15px",
                 padding: "20px",
                 justifyContent: 'center',
-                alignItems: 'center'
+                flexDirection: "column"
               }}
               elevation={8}
             >
               <Typography variant="h4">{curso.nome}</Typography>
+              <Box>
+                <Button variant="contained" onClick={() => redirectToEdit(curso.id_curso)}>Editar</Button>
+              </Box>
             </Paper>
           ))}
         </Box>

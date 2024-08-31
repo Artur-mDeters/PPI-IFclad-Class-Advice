@@ -46,12 +46,13 @@ const Turmas = () => {
   function redirect(id) {
     navigate(`editar/${id}`);
   }
-  function redirect1() {
-    navigate(`/cursos`);
-  }
 
   function redirectCreateTurma() {
     navigate("create");
+  }
+
+  function redir(id) {
+    navigate("/turmas/"+id+"/alunos/")
   }
 
   return (
@@ -66,12 +67,12 @@ const Turmas = () => {
           >
             Adicionar Turma
           </Button>
-          <Button variant="contained">Agendar Conselho </Button>
+          
         </SearchBar>
         <Box sx={classes.boxTurmas}>
           {dataTurmas.map((turma) => (
-            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma} onClick={redirect1}>
-              <Box sx={classes.flex1}>
+            <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma}>
+              <Box sx={classes.flex1} onClick={() => redir(turma.id_turma)}>
                 <Typography variant="h4" mb={5}>
                   {turma.nome}
                 </Typography>

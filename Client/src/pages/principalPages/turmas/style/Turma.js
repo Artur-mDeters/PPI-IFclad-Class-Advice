@@ -16,6 +16,7 @@ const classes = {
     },
     flex1: {
       flex: 1,
+      cursor: "pointer"
     },
     buttonBoxPaper: {
       display: "flex",

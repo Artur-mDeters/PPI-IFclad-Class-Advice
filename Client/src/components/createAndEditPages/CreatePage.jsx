@@ -2,19 +2,17 @@
 import {
   Box,
   Typography,
-  ThemeProvider,
-  CssBaseline,
   Button,
 } from "@mui/material";
-import { defaultDark } from "../../themes/themes.js";
+
 import { useNavigate } from "react-router-dom";
 import classes from "./classes.js";
+import Theme from "../../theme.jsx";
 
 export default function CreatePage({ title, buttonSaveFunction, returnTo, children }) {
   const navigate = useNavigate();
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
+    <Theme >
       <Box sx={classes.principalBox}>
         <Box sx={classes.topCard}>
           <Typography variant="h3">{title}</Typography>
@@ -53,6 +51,6 @@ export default function CreatePage({ title, buttonSaveFunction, returnTo, childr
           </Box>
         </Box>
       </Box>
-    </ThemeProvider>
+    </Theme>
   );
 }
