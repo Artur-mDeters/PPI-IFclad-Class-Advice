@@ -1,6 +1,6 @@
 import { ThemeProvider, CssBaseline } from "@mui/material";
 // eslint-disable-next-line no-unused-vars
-import { defaultDark, defaultLight } from "./themes/themes";
+import { defaultDark, defaultLight, greenDark } from "./themes/themes";
 
 let theme = defaultDark;
 

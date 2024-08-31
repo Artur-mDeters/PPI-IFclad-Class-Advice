@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import foto from "./img/fotos/padrao.png";
 
 import classes from "./style/Professores";
-
+const id = 2
 const Professores = () => {
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
@@ -42,6 +42,10 @@ const Professores = () => {
     navigate("/register");
   };
 
+  const redirectToProfessor = () => {
+    navigate("/professores/"+id)
+  }
+
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
@@ -64,7 +68,7 @@ const Professores = () => {
               </Box>
               <Typography variant="body">{user.nome} | Siape: </Typography>
               <Typography variant="body">{user.siape} |</Typography>
-              <Button variant="contained">Editar</Button>
+              <Button onClick={redirectToProfessor} variant="contained">Editar</Button>
             </Paper>
           ))}
         </Box>

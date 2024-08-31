@@ -20,9 +20,12 @@ const Alunos = () => {
   const redirectToAddAluno = () => {
     navigate("AddAlunos/");
   }
+  const redirectToEditAluno = (id) => {
+    navigate("./EditAluno/"+id);
+  }
 
   const getDataAlunos = async () => {
-    const response = await axios.get("http://localhost:3030/alunos/"+idTurma)
+    const response = await axios.get("http://localhost:3030/"+idTurma+"/alunos/")
     try {
       return response.data
     } catch(err) {
@@ -57,14 +60,14 @@ const Alunos = () => {
             </SearchBar>
             <Box sx={classes.boxAlunos}>
                 {dataAluno.map((aluno) => (
-                  <Paper key={aluno.id_aluno} elevation={8} sx={classes.paperAluno}> 
+                  <Paper key={aluno.id_aluno} elevation={8} sx={classes.paperAluno} onClick={() => redirectToEditAluno(aluno.id_aluno)}>  
                     <Box sx={classes.foto}>
                       <img src={padrao} alt="Imagem do aluno" style={{height: "130px", borderRadius: "5px"}}/>
                     </Box>
                     <Box>
                     <Typography variant="h5" >{aluno.nome}</Typography>
                     <Typography variant="body1" >{aluno.matricula}</Typography>
-
+                    <Button variant="contained">ver notas</Button>
                     </Box>
                   </Paper>
                 ))} 

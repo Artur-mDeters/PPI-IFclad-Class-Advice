@@ -52,7 +52,7 @@ const Turmas = () => {
   }
 
   function redir(id) {
-    navigate(`/turmas/alunos/`+id)
+    navigate("/turmas/"+id+"/alunos/")
   }
 
   return (

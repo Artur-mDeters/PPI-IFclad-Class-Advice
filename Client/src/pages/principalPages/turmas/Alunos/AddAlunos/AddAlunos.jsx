@@ -98,7 +98,7 @@ const AddAlunos = () => {
             fk_turma_id_turma: idTurma
           });
           console.log(response);
-          navigate("../turmas/alunos/"+idTurma)
+          navigate("../turmas/"+idTurma+"/alunos/")
         }
 
       }
@@ -109,7 +109,7 @@ const AddAlunos = () => {
   }
 
   const handleCancel = () => {
-    navigate("../turmas/alunos/"+idTurma)
+    navigate("../turmas/"+idTurma+"/alunos/")
   }
 
   return (

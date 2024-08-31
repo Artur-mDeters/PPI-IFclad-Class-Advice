@@ -9,7 +9,7 @@ import Login from './pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
 import Curso from './pages/principalPages/curso/Curso.jsx'
-// import Configuracoes from './pages/principalPages/config/Configuracoes.jsx'
+
 import Disciplinas from './pages/principalPages/disciplinas/Disciplinas.jsx'
 import MinhaConta from './pages/principalPages/minha-conta/MinhaConta.jsx'
 import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
@@ -22,6 +22,8 @@ import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.js
 import EditCurso from './pages/principalPages/curso/EditCurso/EditCurso.jsx'
 import Alunos from './pages/principalPages/turmas/Alunos/Alunos.jsx'
 import AddAlunos from './pages/principalPages/turmas/Alunos/AddAlunos/AddAlunos.jsx'
+import Professor from './pages/principalPages/professores/professor/Professor.jsx'
+import EditAluno from './pages/principalPages/turmas/Alunos/EditAluno/EditAluno.jsx'
 
 
 const route = createBrowserRouter([
@@ -76,6 +78,11 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/professores/:id",
+    element: <Professor />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/turmas",
     element: <Turmas />,
     errorElement: <ErrorPage />,
@@ -91,12 +98,17 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/turmas/alunos/:idTurma",
+    path: "/turmas/:idTurma/alunos/",
     element: <Alunos/>,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/turmas/alunos/:idTurma/AddAlunos/",
+    path: "/turmas/:id/alunos/EditAluno/:idAluno",
+    element: <EditAluno/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/:idTurma/alunos/AddAlunos/",
     element: <AddAlunos/>,
     errorElement: <ErrorPage />,
   },
