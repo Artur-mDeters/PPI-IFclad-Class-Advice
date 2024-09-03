@@ -6,16 +6,23 @@ import TextField from "@mui/material/TextField";
 import { useParams } from "react-router-dom";
 
 const EditCurso = () => {
-  const [nome, setNome] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
+  const [dataCurso, setDataCurso] = useState({ nomeCurso: "", padrao: null });
 
-  const handleNome = (e) => setNome(e.target.value);
+  const handleInput = (e) => {
+    const { id, value } = e.target;
+    setDataCurso((prevState) => {
+      const updatedCurso = { ...prevState[0], [id]: value };
+      return [updatedCurso];
+    });
+  };
 
   const saveAndRedirect = async () => {
     await axios
-      .put(`http://localhost:3030/cursos/edit/${id}`, {
-        nome: nome,
+      .put(`http://localhost:3030/cursos/${id}`, {
+        nome: dataCurso[0]?.nomeCurso,
+        padrao: dataCurso[0]?.padrao,
       })
       .then((response) => {
         console.log(response);
@@ -37,7 +44,7 @@ const EditCurso = () => {
         console.error(err);
       });
   };
-  
+
   return (
     <EditPage
       title="Editar Curso"
@@ -46,7 +53,18 @@ const EditCurso = () => {
       buttonExcludeName="Excluir Curso"
       returnTo="/cursos"
     >
-      <TextField id="nome" label="Nome" value={nome} onChange={handleNome} />
+      <TextField
+        id="nomeCurso"
+        label="Nome"
+        value={dataCurso[0]?.nomeCurso}
+        onChange={handleInput}
+      />
+      <TextField
+        id="padrao"
+        label="Padrão de nome de turma"
+        value={dataCurso[0]?.padrao}
+        onChange={handleInput}
+      />
     </EditPage>
   );
 };
