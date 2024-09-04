@@ -24,19 +24,19 @@ const classes = {
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
-    marginTop: "10%",
+    marginTop: "10px",
     flex: 1
   },
   textFieldBox: {
     display: "flex",
     flexDirection: "column",
-    width: "300px",
+    width: "700px",
     margin: "30px auto",
     gap: 3,
   },
   typographyBox: {
     textAlign: "center",
-    marginTop: "40px",
+    marginTop: "10%",
   },
   buttonBox: {
     width: "100",

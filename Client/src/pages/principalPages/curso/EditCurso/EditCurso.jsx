@@ -6,38 +6,42 @@ import TextField from "@mui/material/TextField";
 import { useParams } from "react-router-dom";
 
 const EditCurso = () => {
-  const [nome, setNome] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
+  const [dataCurso, setDataCurso] = useState({ nomeCurso: "", padrao: "" });
 
-  const handleNome = (e) => setNome(e.target.value);
+  const handleInput = (e) => {
+    const { id, value } = e.target;
+    setDataCurso((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
 
   const saveAndRedirect = async () => {
-    await axios
-      .put(`http://localhost:3030/cursos/edit/${id}`, {
-        nome: nome,
+    console.log(dataCurso)
+    try {
+      const response = await axios.put("http://localhost:3030/cursos/edit/"+id , {
+        nome: dataCurso.nomeCurso,
+        padrao: dataCurso.padrao
       })
-      .then((response) => {
-        console.log(response);
-        navigate("/cursos");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      console.log(response);
+      navigate("/cursos");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDelete = async () => {
-    await axios
-      .delete(`http://localhost:3030/cursos/${id}`)
-      .then((response) => {
-        console.log(response);
-        navigate("/cursos");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    try {
+      const response = await axios.delete(`http://localhost:3030/cursos/${id}`);
+      console.log(response);
+      navigate("/cursos");
+    } catch (err) {
+      console.error(err);
+    }
   };
-  
+
   return (
     <EditPage
       title="Editar Curso"
@@ -46,7 +50,18 @@ const EditCurso = () => {
       buttonExcludeName="Excluir Curso"
       returnTo="/cursos"
     >
-      <TextField id="nome" label="Nome" value={nome} onChange={handleNome} />
+      <TextField
+        id="nomeCurso"
+        label="Nome"
+        value={dataCurso.nomeCurso}
+        onChange={handleInput}
+      />
+      <TextField
+        id="padrao"
+        label="Padrão de nome de turma"
+        value={dataCurso.padrao}
+        onChange={handleInput}
+      />
     </EditPage>
   );
 };

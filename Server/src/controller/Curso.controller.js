@@ -23,11 +23,11 @@ exports.getCursoById = async (req, res) => {
 };
  
 exports.addCurso = async (req, res) => {
-  const { nome} = req.body;
+  const { nome, padrao } = req.body;
   try {
     const id_curso = uuidv4();
     const response = await db.query(
-      "INSERT INTO curso (id_curso, nome) values ($1, $2)", [id_curso, nome]
+      "INSERT INTO curso (id_curso, nome, padrao) values ($1, $2, $3)", [id_curso, nome, padrao]
     );
     res.status(201).send(response)
   } catch (err
@@ -38,14 +38,15 @@ exports.addCurso = async (req, res) => {
 };
 
 exports.editCurso = async (req, res) => {
-  const id_curso = req.params.id;
-  const { nome } = req.body;
+  const id_curso = req.params.id; // Corrigido para capturar diretamente req.params.id
+  const { nome, padrao } = req.body;
+
   try {
     const result = await db.query(
-      "UPDATE curso SET nome = $1 WHERE id_curso = $2 ",
-      [nome, id_curso ]
+      "UPDATE curso SET nome = $1, padrao = $2 WHERE id_curso = $3",
+      [nome, padrao, id_curso]
     );
-    res.send(result);
+    res.send(result.rows); // Para retornar apenas o curso atualizado
   } catch (err) {
     res.status(500).json(err);
   }

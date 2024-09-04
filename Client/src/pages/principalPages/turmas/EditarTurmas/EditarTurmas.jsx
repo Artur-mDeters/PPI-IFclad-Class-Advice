@@ -6,78 +6,42 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import EditPage from "../../../../components/createAndEditPages/EditPage";
+import { Alert } from "@mui/material";
 
 const getDataCursos = async () => {
-  const response = await axios.get("http://localhost:3030/cursos");
-
   try {
+    const response = await axios.get("http://localhost:3030/cursos");
     return response.data;
   } catch (err) {
     console.error(err);
+    return []; // Retorna um array vazio em caso de erro
   }
 };
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-
 const EditarTurmas = () => {
   const [dataCurso, setDataCurso] = useState([]);
+  const [pattern, setPattern] = useState();
+  const [dataTurma, setDataTurma] = useState({
+    nome: "",
+    ano: "",
+    curso: "",
+  });
+
   const { id } = useParams();
-
-  const [nome, setNome] = useState("");
-  const [ano, setAno] = useState("");
-  const [curso, setCurso] = useState("");
-
   const navigate = useNavigate();
 
-  const handleDelete = () => {
-    axios
-      .delete("http://localhost:3030/turmas/" + id)
-      .then((response) => {
-        console.log(response);
-        navigate("/turmas");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const saveAndRedirect = async () => {
-    await axios
-      .put("http://localhost:3030/turmas/editar/" + id, {
-        nome: nome,
-        ano_inicio: ano,
-        curso: curso,
-      })
-      .then((response) => {
-        console.log(response);
-        navigate("/turmas");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  const handleNome = (e) => {
-    const value = e.target.value;
-
-    setNome(value);
-  };
-  const handleAno = (e) => {
-    const value = e.target.value;
-    console.log(value);
-    setAno(value);
-  };
-  const handleCurso = (e) => {
-    const value = e.target.value;
-    console.log(value);
-    setCurso(value);
+  const setTypeCurso = () => {
+    dataCurso.map((data) => {
+      if (data.id_curso == dataTurma.curso) {
+        setPattern(data.padrao);
+      }
+    });
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await getDataCursos();
-        console.log(result);
         setDataCurso(result);
       } catch (err) {
         console.error(err);
@@ -85,7 +49,39 @@ const EditarTurmas = () => {
     };
 
     fetchData();
-  }, []);
+    setTypeCurso();
+  }, [id, dataTurma.curso]);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3030/turmas/${id}`);
+      navigate("/turmas");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const saveAndRedirect = async () => {
+    try {
+      await axios.put(`http://localhost:3030/turmas/editar/${id}`, {
+        nome: dataTurma?.nome,
+        ano_inicio: dataTurma?.ano,
+        curso: dataTurma?.curso,
+      });
+      navigate("/turmas");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleInput = (e, alterThis) => {
+    const { value } = e.target;
+    setDataTurma((prevState) => ({
+      ...prevState,
+      [alterThis]: value,
+    }));
+    console.log(dataTurma, pattern);
+  };
 
   return (
     <EditPage
@@ -93,43 +89,52 @@ const EditarTurmas = () => {
       buttonSaveFunction={saveAndRedirect}
       buttonExcludeFunction={handleDelete}
       buttonExcludeName="Excluir Turma"
-      returnTo='/turmas'
+      returnTo="/turmas"
     >
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Nome</InputLabel>
+        <InputLabel id="curso">Curso</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="nome"
-          label="Nome"
-          onChange={handleNome}
-          value={nome}
+          labelId="curso"
+          id="curso"
+          label="Curso"
+          onChange={(e) => handleInput(e, "curso")}
+          value={dataTurma.curso || ""}
         >
-          <MenuItem value={"T11"}>T11</MenuItem>
-          <MenuItem value={"T12"}>T12</MenuItem>
-          <MenuItem value={"T13"}>T13</MenuItem>
-          <MenuItem value={"T14"}>T14</MenuItem>
-          <MenuItem value={"T15"}>T15</MenuItem>
-          <MenuItem value={"T21"}>T21</MenuItem>
-          <MenuItem value={"T22"}>T22</MenuItem>
-          <MenuItem value={"T23"}>T23</MenuItem>
-          <MenuItem value={"T24"}>T24</MenuItem>
-          <MenuItem value={"T25"}>T25</MenuItem>
-          <MenuItem value={"T31"}>T31</MenuItem>
-          <MenuItem value={"T32"}>T32</MenuItem>
-          <MenuItem value={"T33"}>T33</MenuItem>
-          <MenuItem value={"T34"}>T34</MenuItem>
-          <MenuItem value={"T35"}>T35</MenuItem>
-          
+          {dataCurso.map((curso) => (
+            <MenuItem key={curso.id_curso} value={curso.id_curso}>
+              {curso.nome}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      <FormControl>
+      <FormControl fullWidth>
+        <InputLabel id="nome">Nome</InputLabel>
+        <Select
+          labelId="nome"
+          id="nome"
+          label="Nome"
+          onChange={(e) => handleInput(e, "nome")}
+          value={dataTurma.nome || ""}
+        >
+          {pattern != undefined
+            ? [1, 2, 3].map((nomeTurma) => (
+                <MenuItem key={nomeTurma} value={"T" + nomeTurma + pattern}>{"T" + nomeTurma + pattern}</MenuItem>
+              ))
+            : [0].map((a) => (
+                <Alert severity="error" key={a}>
+                  Escolha um curso!
+                </Alert>
+              ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth>
         <InputLabel id="ano">Ano de Início</InputLabel>
         <Select
           labelId="ano"
+          id="ano"
           label="Ano de Início"
-          id="ano_inicio"
-          onChange={handleAno}
-          value={ano}
+          onChange={(e) => handleInput(e, "ano")}
+          value={dataTurma.ano || ""}
         >
           <MenuItem value={2024}>2024</MenuItem>
           <MenuItem value={2023}>2023</MenuItem>
@@ -140,26 +145,8 @@ const EditarTurmas = () => {
           <MenuItem value={2018}>2018</MenuItem>
         </Select>
       </FormControl>
-      <FormControl>
-        <InputLabel id="curso">Curso</InputLabel>
-        <Select
-          labelId="curso"
-          label="Curso"
-          id="curso"
-          onChange={handleCurso}
-          value={curso}
-        >
-          {/* map dos cursos */}
-          {dataCurso.map((curso) => (
-            <MenuItem key={curso.id_curso} value={curso.id_curso}>
-              {curso.nome}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
     </EditPage>
   );
 };
 
-// ‎ Caractere invisível
 export default EditarTurmas;
