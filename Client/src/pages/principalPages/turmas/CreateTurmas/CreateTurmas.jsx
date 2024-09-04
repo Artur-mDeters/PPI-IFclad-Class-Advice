@@ -19,6 +19,10 @@ const getDataCursos = async () => {
 };
 
 const CreateTurmas = () => {
+  
+  // Esse código tá medonho 😱😱😱🤓
+  // TODO: refatorar a inserção de dados de turma, colocando todos os parâmetros em um só State
+
   const [dataCurso, setDataCurso] = useState([]);
   const [nome, setNome] = useState("");
   const [ano, setAno] = useState("");
@@ -54,9 +58,7 @@ const CreateTurmas = () => {
 
   const handleNome = (e) => setNome(e.target.value);
   const handleAno = (e) => setAno(e.target.value);
-  const handleCurso = async (e) => {
-    await setCurso(e.target.value);
-  };
+  const handleCurso = (e) => setCurso(e.target.value);
 
   useEffect(() => {
     console.log(pattern);
