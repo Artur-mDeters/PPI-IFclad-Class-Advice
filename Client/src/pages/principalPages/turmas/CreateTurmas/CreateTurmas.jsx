@@ -7,6 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CreatePage from "../../../../components/createAndEditPages/CreatePage";
+import { Alert } from "@mui/material";
 
 const getDataCursos = async () => {
   try {
@@ -22,8 +23,17 @@ const CreateTurmas = () => {
   const [nome, setNome] = useState("");
   const [ano, setAno] = useState("");
   const [curso, setCurso] = useState("");
+  const [pattern, setPattern] = useState();
 
   const navigate = useNavigate();
+
+  const setTypeCurso = () => {
+    dataCurso.map((data) => {
+      if (data.id_curso == curso) {
+        setPattern(data.padrao);
+      }
+    });
+  };
 
   const saveAndRedirect = async () => {
     await axios
@@ -34,6 +44,7 @@ const CreateTurmas = () => {
       })
       .then((response) => {
         console.log(response);
+        setDataCurso("");
         navigate("/turmas");
       })
       .catch((err) => {
@@ -43,9 +54,12 @@ const CreateTurmas = () => {
 
   const handleNome = (e) => setNome(e.target.value);
   const handleAno = (e) => setAno(e.target.value);
-  const handleCurso = (e) => setCurso(e.target.value);
+  const handleCurso = async (e) => {
+    await setCurso(e.target.value);
+  };
 
   useEffect(() => {
+    console.log(pattern);
     const fetchData = async () => {
       try {
         const result = await getDataCursos();
@@ -57,11 +71,15 @@ const CreateTurmas = () => {
     };
 
     fetchData();
-  }, []);
+    setTypeCurso();
+  }, [curso]);
 
   return (
-    <CreatePage title="Criar Turma" buttonSaveFunction={saveAndRedirect} returnTo="/turmas">
-      
+    <CreatePage
+      title="Criar Turma"
+      buttonSaveFunction={saveAndRedirect}
+      returnTo="/turmas"
+    >
       <FormControl fullWidth>
         <InputLabel id="ano-label">Ano de Início</InputLabel>
         <Select
@@ -96,18 +114,28 @@ const CreateTurmas = () => {
       </FormControl>
       <FormControl fullWidth>
         <InputLabel id="nome-label">Nome</InputLabel>
-        <Select 
+        <Select
           labelId="nome-label"
           id="nome"
           label="Nome"
           onChange={handleNome}
           value={nome}
         >
-          {["T11", "T12", "T13", "T14", "T15", "T21", "T22", "T23", "T24", "T25", "T31", "T32", "T33", "T34", "T35"].map((nomeTurma) => (
-            <MenuItem key={nomeTurma} value={nomeTurma}>
-              {nomeTurma}
-            </MenuItem>
-          ))}
+          {pattern != undefined
+            ? [1, 2, 3].map((nomeTurma) => (
+                <MenuItem
+                  key={nomeTurma}
+                  value={"T" + nomeTurma + dataCurso[0]?.padrao}
+                >
+                  T{nomeTurma}
+                  {pattern}
+                </MenuItem>
+              ))
+            : [0].map((a) => (
+                <Alert severity="error" key={a}>
+                  Escolha um curso!
+                </Alert>
+              ))}
         </Select>
       </FormControl>
     </CreatePage>

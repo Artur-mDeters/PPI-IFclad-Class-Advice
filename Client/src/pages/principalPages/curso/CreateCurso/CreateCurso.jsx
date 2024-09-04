@@ -26,7 +26,7 @@ const CreateCurso = () => {
 
     const saveAndRedirect = async () => {
         await axios.post('http://localhost:3030/cursos', {
-            nome: inputs[0]?.nome,
+            nome: inputs[0]?.nomeCurso,
             padrao: inputs[0]?.pad,
         }).then((response) => {
             console.log(response)
@@ -38,9 +38,9 @@ const CreateCurso = () => {
   return (
     <CreatePage title="Criar Novo Curso" buttonSaveFunction={saveAndRedirect} returnTo="/cursos">
       <TextField
-        id="nome"
+        id="nomeCurso"
         label="Nome"
-        value={inputs[0]?.nome}
+        value={inputs[0]?.nomeCurso}
         onChange={handleInput}
         
       />

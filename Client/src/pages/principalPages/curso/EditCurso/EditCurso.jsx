@@ -8,41 +8,38 @@ import { useParams } from "react-router-dom";
 const EditCurso = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [dataCurso, setDataCurso] = useState({ nomeCurso: "", padrao: null });
+  const [dataCurso, setDataCurso] = useState({ nomeCurso: "", padrao: "" });
 
   const handleInput = (e) => {
     const { id, value } = e.target;
-    setDataCurso((prevState) => {
-      const updatedCurso = { ...prevState[0], [id]: value };
-      return [updatedCurso];
-    });
+    setDataCurso((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
   };
 
   const saveAndRedirect = async () => {
-    await axios
-      .put(`http://localhost:3030/cursos/${id}`, {
-        nome: dataCurso[0]?.nomeCurso,
-        padrao: dataCurso[0]?.padrao,
+    console.log(dataCurso)
+    try {
+      const response = await axios.put("http://localhost:3030/cursos/edit/"+id , {
+        nome: dataCurso.nomeCurso,
+        padrao: dataCurso.padrao
       })
-      .then((response) => {
-        console.log(response);
-        navigate("/cursos");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      console.log(response);
+      navigate("/cursos");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleDelete = async () => {
-    await axios
-      .delete(`http://localhost:3030/cursos/${id}`)
-      .then((response) => {
-        console.log(response);
-        navigate("/cursos");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    try {
+      const response = await axios.delete(`http://localhost:3030/cursos/${id}`);
+      console.log(response);
+      navigate("/cursos");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -56,13 +53,13 @@ const EditCurso = () => {
       <TextField
         id="nomeCurso"
         label="Nome"
-        value={dataCurso[0]?.nomeCurso}
+        value={dataCurso.nomeCurso}
         onChange={handleInput}
       />
       <TextField
         id="padrao"
         label="Padrão de nome de turma"
-        value={dataCurso[0]?.padrao}
+        value={dataCurso.padrao}
         onChange={handleInput}
       />
     </EditPage>

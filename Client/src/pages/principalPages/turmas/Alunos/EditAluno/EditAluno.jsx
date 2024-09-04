@@ -41,7 +41,7 @@ const EditAluno = () => {
       const updatedAluno = { ...prevState[0], [id]: value };
       return [updatedAluno];
     });
-  };
+  };  
 
   const handleSave = async () => {
     try {

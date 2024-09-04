@@ -65,14 +65,24 @@ const Curso = () => {
                 height: "300px",
                 margin: "15px",
                 padding: "20px",
-                justifyContent: 'center',
-                flexDirection: "column"
+                justifyContent: "center",
+                flexDirection: "column",
               }}
               elevation={8}
             >
-              <Typography variant="h4">{curso.nome}</Typography>
               <Box>
-                <Button variant="contained" onClick={() => redirectToEdit(curso.id_curso)}>Editar</Button>
+                <Typography variant="h4">{curso.nome}</Typography>
+                <Typography variant="body1">
+                  Número correspondente: {curso.padrao}
+                </Typography>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  onClick={() => redirectToEdit(curso.id_curso)}
+                >
+                  Editar
+                </Button>
               </Box>
             </Paper>
           ))}

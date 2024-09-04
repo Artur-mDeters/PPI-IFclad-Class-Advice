@@ -38,14 +38,15 @@ exports.addCurso = async (req, res) => {
 };
 
 exports.editCurso = async (req, res) => {
-  const { id_curso } = req.params.id;
+  const id_curso = req.params.id; // Corrigido para capturar diretamente req.params.id
   const { nome, padrao } = req.body;
+
   try {
     const result = await db.query(
-      "UPDATE curso SET nome = $1, padrao = $2 WHERE id_curso = $3 RETURNING * ",
-      [nome, padrao, id_curso ]
+      "UPDATE curso SET nome = $1, padrao = $2 WHERE id_curso = $3",
+      [nome, padrao, id_curso]
     );
-    res.send(result);
+    res.send(result.rows); // Para retornar apenas o curso atualizado
   } catch (err) {
     res.status(500).json(err);
   }
