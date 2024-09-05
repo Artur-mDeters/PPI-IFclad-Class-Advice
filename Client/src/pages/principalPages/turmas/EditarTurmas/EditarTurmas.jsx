@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import {
+  Alert,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
 import axios from "axios";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import EditPage from "../../../../components/createAndEditPages/EditPage";
-import { Alert } from "@mui/material";
 
 const getDataCursos = async () => {
   try {
@@ -19,38 +21,43 @@ const getDataCursos = async () => {
 };
 
 const EditarTurmas = () => {
-  const [dataCurso, setDataCurso] = useState([]);
-  const [pattern, setPattern] = useState();
-  const [dataTurma, setDataTurma] = useState({
-    nome: "",
-    ano: "",
-    curso: "",
-  });
-
+  // ? -> constantes padrões
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const setTypeCurso = () => {
-    dataCurso.map((data) => {
-      if (data.id_curso == dataTurma.curso) {
+  // ? -> principais States
+  const [courseData, setCourseData] = useState([]);
+  const [pattern, setPattern] = useState();
+  const [classData, setClassData] = useState({
+    name: "",
+    age: "",
+    course: "",
+  });
+
+  // ? -> Função que seta o número correspondente ao curso selecionado
+  const setCourseNamePattern = () => {
+    courseData.map((data) => {
+      if (data.id_curso == classData?.course) {
         setPattern(data.padrao);
       }
     });
   };
 
+  //
   useEffect(() => {
-    const fetchData = async () => {
+    const setDataOnce = async () => {
       try {
         const result = await getDataCursos();
-        setDataCurso(result);
+        setCourseData(result);
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchData();
-    setTypeCurso();
-  }, [id, dataTurma.curso]);
+    setDataOnce();
+    setCourseNamePattern();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, classData.course]);
 
   const handleDelete = async () => {
     try {
@@ -64,9 +71,9 @@ const EditarTurmas = () => {
   const saveAndRedirect = async () => {
     try {
       await axios.put(`http://localhost:3030/turmas/editar/${id}`, {
-        nome: dataTurma?.nome,
-        ano_inicio: dataTurma?.ano,
-        curso: dataTurma?.curso,
+        nome: classData?.name,
+        ano_inicio: classData?.age,
+        curso: classData?.course,
       });
       navigate("/turmas");
     } catch (err) {
@@ -76,11 +83,10 @@ const EditarTurmas = () => {
 
   const handleInput = (e, alterThis) => {
     const { value } = e.target;
-    setDataTurma((prevState) => ({
+    setClassData((prevState) => ({
       ...prevState,
       [alterThis]: value,
     }));
-    console.log(dataTurma, pattern);
   };
 
   return (
@@ -97,12 +103,12 @@ const EditarTurmas = () => {
           labelId="curso"
           id="curso"
           label="Curso"
-          onChange={(e) => handleInput(e, "curso")}
-          value={dataTurma.curso || ""}
+          onChange={(e) => handleInput(e, "course")}
+          value={classData.course || ""}
         >
-          {dataCurso.map((curso) => (
-            <MenuItem key={curso.id_curso} value={curso.id_curso}>
-              {curso.nome}
+          {courseData.map((course) => (
+            <MenuItem key={course.id_curso} value={course.id_curso}>
+              {course.nome}
             </MenuItem>
           ))}
         </Select>
@@ -113,12 +119,14 @@ const EditarTurmas = () => {
           labelId="nome"
           id="nome"
           label="Nome"
-          onChange={(e) => handleInput(e, "nome")}
-          value={dataTurma.nome || ""}
+          onChange={(e) => handleInput(e, "name")}
+          value={classData.name || ""}
         >
           {pattern != undefined
-            ? [1, 2, 3].map((nomeTurma) => (
-                <MenuItem key={nomeTurma} value={"T" + nomeTurma + pattern}>{"T" + nomeTurma + pattern}</MenuItem>
+            ? [1, 2, 3].map((className) => (
+                <MenuItem key={className} value={"T" + className + pattern}>
+                  {"T" + className + pattern}
+                </MenuItem>
               ))
             : [0].map((a) => (
                 <Alert severity="error" key={a}>
@@ -133,8 +141,8 @@ const EditarTurmas = () => {
           labelId="ano"
           id="ano"
           label="Ano de Início"
-          onChange={(e) => handleInput(e, "ano")}
-          value={dataTurma.ano || ""}
+          onChange={(e) => handleInput(e, "age")}
+          value={classData.age || ""}
         >
           <MenuItem value={2024}>2024</MenuItem>
           <MenuItem value={2023}>2023</MenuItem>

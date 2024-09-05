@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import foto from "./img/fotos/padrao.png";
 
 import classes from "./style/Professores";
-const Professores = () => {
+const Teacher = () => {
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
 
@@ -76,4 +76,4 @@ const Professores = () => {
   );
 };
 
-export default Professores;
+export default Teacher;

@@ -21,37 +21,33 @@ import classes from "./style/Turma.js";
 // ? Styles #########################
 
 const Turmas = () => {
-  const [dataTurmas, setDataTurmas] = useState([]);
+  const [classData, setClassData] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const setDataOnce = async () => {
       try {
         const result = await getDataTurmas();
-        setDataTurmas(result);
+        setClassData(result);
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchData();
-
-    console.log(typeof dataTurmas, "data turmas");
-    console.log(dataTurmas, "turmas");
-
+    setDataOnce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function redirect(id) {
+  function redirectToClassEdit(id) {
     navigate(`editar/${id}`);
   }
 
-  function redirectCreateTurma() {
+  function redirectToClassCreation() {
     navigate("create");
   }
 
-  function redir(id) {
+  function redirectToStudentPage(id) {
     navigate("/turmas/"+id+"/alunos/")
   }
 
@@ -63,16 +59,16 @@ const Turmas = () => {
           <Button
             variant="contained"
             sx={classes.buttonAddTurma}
-            onClick={redirectCreateTurma}
+            onClick={redirectToClassCreation}
           >
             Adicionar Turma
           </Button>
           
         </SearchBar>
         <Box sx={classes.boxTurmas}>
-          {dataTurmas.map((turma) => (
+          {classData.map((turma) => (
             <Paper key={turma.id_turma} elevation={8} sx={classes.paperTurma}>
-              <Box sx={classes.flex1} onClick={() => redir(turma.id_turma)}>
+              <Box sx={classes.flex1} onClick={() => redirectToStudentPage(turma.id_turma)}>
                 <Typography variant="h4" mb={5}>
                   {turma.nome}
                 </Typography>
@@ -82,7 +78,7 @@ const Turmas = () => {
                 <Button
                   variant="contained"
                   onClick={() => {
-                    redirect(turma.id_turma);
+                    redirectToClassEdit(turma.id_turma);
                   }}
                 >
                   Editar

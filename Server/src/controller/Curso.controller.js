@@ -44,7 +44,7 @@ exports.editCurso = async (req, res) => {
   try {
     const result = await db.query(
       "UPDATE curso SET nome = $1, padrao = $2 WHERE id_curso = $3",
-      [nome, padrao, id_curso]
+      [nome, padrao, id_curso]  
     );
     res.send(result.rows); // Para retornar apenas o curso atualizado
   } catch (err) {

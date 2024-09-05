@@ -1,30 +1,33 @@
 import EditPage from "../../../../components/createAndEditPages/EditPage";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
-import TextField from "@mui/material/TextField";
 import { useParams } from "react-router-dom";
+import { TextField, Typography } from "@mui/material";
 
-const EditCurso = () => {
+const EditCourse = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [dataCurso, setDataCurso] = useState({ nomeCurso: "", padrao: "" });
+  const [courseData, setCourseData] = useState({ courseName: "", pattern: "" });
 
-  const handleInput = (e) => {
+  const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setDataCurso((prevState) => ({
+    setCourseData((prevState) => ({
       ...prevState,
       [id]: value,
     }));
   };
 
   const saveAndRedirect = async () => {
-    console.log(dataCurso)
+    console.log(courseData);
     try {
-      const response = await axios.put("http://localhost:3030/cursos/edit/"+id , {
-        nome: dataCurso.nomeCurso,
-        padrao: dataCurso.padrao
-      })
+      const response = await axios.put(
+        "http://localhost:3030/cursos/edit/" + id,
+        {
+          nome: courseData.courseName,
+          padrao: courseData.pattern,
+        }
+      );
       console.log(response);
       navigate("/cursos");
     } catch (err) {
@@ -51,19 +54,24 @@ const EditCurso = () => {
       returnTo="/cursos"
     >
       <TextField
-        id="nomeCurso"
+        id="courseName"
         label="Nome"
-        value={dataCurso.nomeCurso}
-        onChange={handleInput}
+        value={courseData.courseName}
+        onChange={handleInputChange}
       />
       <TextField
-        id="padrao"
+        id="pattern"
         label="Padrão de nome de turma"
-        value={dataCurso.padrao}
-        onChange={handleInput}
+        value={courseData.pattern}
+        onChange={handleInputChange}
       />
+      <Typography variant="body1" textAlign="center">
+        O padrão de nome de turma segue o formato T+(número do período)+(número
+        do curso), onde o último número identifica o curso técnico. Insira o
+        número que corresponde ao curso!
+      </Typography>
     </EditPage>
   );
 };
 
-export default EditCurso;
+export default EditCourse;

@@ -1,13 +1,14 @@
 import EditPage from "../../../../../components/createAndEditPages/EditPage";
-import { Box, TextField } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import classes from "./EditAluno.style";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import { Box, TextField } from "@mui/material";
 
 const EditAluno = () => {
   const { idAluno, id } = useParams();
-  const [dataAluno, setDataAluno] = useState([]);
+  const [studentData, setDataAluno] = useState([]);
   const navigate = useNavigate();
 
   const getDataAluno = async () => {
@@ -22,7 +23,7 @@ const EditAluno = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const setDataOnce = async () => {
       try {
         const result = await getDataAluno();
         setDataAluno(result);
@@ -31,7 +32,7 @@ const EditAluno = () => {
       }
     };
 
-    fetchData();
+    setDataOnce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idAluno]);
 
@@ -41,11 +42,11 @@ const EditAluno = () => {
       const updatedAluno = { ...prevState[0], [id]: value };
       return [updatedAluno];
     });
-  };  
+  };
 
   const handleSave = async () => {
     try {
-      await axios.put("http://localhost:3030/alunos/" + idAluno, dataAluno[0]);
+      await axios.put("http://localhost:3030/alunos/" + idAluno, studentData[0]);
       navigate("../turmas/" + id + "/alunos");
     } catch (err) {
       console.error(err);
@@ -64,7 +65,7 @@ const EditAluno = () => {
 
   return (
     <EditPage
-      title={"Editar aluno: " + dataAluno[0]?.nome || ""}
+      title={"Editar aluno: " + studentData[0]?.nome || ""}
       buttonExcludeName="excluir aluno"
       buttonSaveFunction={handleSave}
       returnTo={"../turmas/" + id + "/alunos"}
@@ -77,7 +78,7 @@ const EditAluno = () => {
             margin="dense"
             id="nome"
             label="Nome completo"
-            value={dataAluno[0]?.nome || ""}
+            value={studentData[0]?.nome || ""}
             onChange={handleInputChange}
           />
           <TextField
@@ -85,7 +86,7 @@ const EditAluno = () => {
             margin="dense"
             id="matricula"
             label="Matricula"
-            value={dataAluno[0]?.matricula || ""}
+            value={studentData[0]?.matricula || ""}
             onChange={handleInputChange}
           />
         </Box>
@@ -95,7 +96,7 @@ const EditAluno = () => {
             margin="dense"
             id="email"
             label="Email"
-            value={dataAluno[0]?.email || ""}
+            value={studentData[0]?.email || ""}
             onChange={handleInputChange}
           />
           <TextField
@@ -103,17 +104,17 @@ const EditAluno = () => {
             margin="dense"
             id="sexo"
             label="Sexo"
-            value={dataAluno[0]?.sexo || ""}
+            value={studentData[0]?.sexo || ""}
             onChange={handleInputChange}
           />
         </Box>
-        <Box sx={classes.boxInputs} >
+        <Box sx={classes.boxInputs}>
           <TextField
             fullWidth
             margin="dense"
             id="nascimento"
             label="Data de Nascimento"
-            value={dataAluno[0]?.nascimento || ""}
+            value={studentData[0]?.nascimento || ""}
             onChange={handleInputChange}
           />
           <TextField
@@ -121,17 +122,17 @@ const EditAluno = () => {
             margin="dense"
             id="cidade"
             label="Cidade"
-            value={dataAluno[0]?.cidade || ""}
+            value={studentData[0]?.cidade || ""}
             onChange={handleInputChange}
           />
         </Box>
-        <Box sx={classes.boxInputs} >
+        <Box sx={classes.boxInputs}>
           <TextField
             fullWidth
             margin="dense"
             id="uf"
             label="UF"
-            value={dataAluno[0]?.uf || ""}
+            value={studentData[0]?.uf || ""}
             onChange={handleInputChange}
           />
           <TextField
@@ -139,7 +140,7 @@ const EditAluno = () => {
             margin="dense"
             id="interno"
             label="Interno"
-            value={dataAluno[0]?.interno || ""}
+            value={studentData[0]?.interno || ""}
             onChange={handleInputChange}
           />
         </Box>

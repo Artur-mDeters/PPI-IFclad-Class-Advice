@@ -1,17 +1,15 @@
-import { Box, Typography, TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import AppBar from "../../../../components/AppBar/AppBar";
-// import Theme from "../../../../theme"
-// import SearchBar from "../../../../components/UI/SearchBar/SearchBar"
 import img from "../img/fotos/padrao.png";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const Professor = () => {
+const TeacherByID = () => {
   const { id } = useParams();
-  const [dataProfessor, setDataProfessor] = useState([]);
+  const [teacherData, setTeacherData] = useState([]);
 
-  const getDataProfessor = async () => {
+  const getTeacherData = async () => {
     try {
       const response = await axios.get(
         "http://localhost:3030/professores/" + id
@@ -23,23 +21,22 @@ const Professor = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const setDataOnce = async () => {
       try {
-        const result = await getDataProfessor();
-        setDataProfessor(result);
+        const result = await getTeacherData();
+        setTeacherData(result);
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchData();
-    console.log(dataProfessor);
+    setDataOnce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setDataProfessor((prevState) => {
+    setTeacherData((prevState) => {
       const updateProfessor = { ...prevState[0], [id]: value };
       return [updateProfessor];
     });
@@ -53,15 +50,15 @@ const Professor = () => {
         </Box>
         <Box>
           <TextField
-            id="nome"
+            id="name"
             label="Nome"
-            value={dataProfessor[0]?.nome || ""}
+            value={teacherData[0]?.name || ""}
             onChange={handleInputChange}
           />
           <TextField
             id="email"
             label="Email"
-            value={dataProfessor[0]?.email || ""}
+            value={teacherData[0]?.email || ""}
             // onChange={handleInputChange}
           />
 
@@ -72,7 +69,7 @@ const Professor = () => {
             rows={4}
             variant="outlined"
             fullWidth
-            value={dataProfessor[0]?.bio}
+            value={teacherData[0]?.bio}
             onChange={handleInputChange}
           />
         </Box>
@@ -81,4 +78,4 @@ const Professor = () => {
   );
 };
 
-export default Professor;
+export default TeacherByID;

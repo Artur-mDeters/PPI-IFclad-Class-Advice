@@ -8,25 +8,39 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Login from './pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
-import Curso from './pages/principalPages/curso/Curso.jsx'
 
-import Disciplinas from './pages/principalPages/disciplinas/Disciplinas.jsx'
-import MinhaConta from './pages/principalPages/minha-conta/MinhaConta.jsx'
-import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
-import Professores from './pages/principalPages/professores/Professores.jsx'
-import Setores from './pages/principalPages/Setores/Setores.jsx'
-import Turmas from './pages/principalPages/turmas/Turmas.jsx'
-import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
-import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
-import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.jsx'
-import EditCurso from './pages/principalPages/curso/EditCurso/EditCurso.jsx'
+//* Courses pages imports
+import Course from './pages/principalPages/Course/CoursePage.jsx'
+import CreateCourse from './pages/principalPages/Course/CreateCourse/CreateCourse.jsx'
+import EditCourse from './pages/principalPages/Course/EditCourse/EditCourse.jsx'
+
+//* Teachers pages imports
+import Teacher from './pages/principalPages/Teacher/Teacher.jsx'
+import TeacherByID from './pages/principalPages/Teacher/teacherByID/TeacherByID.jsx'
+
+//* Student pages imports
 import Alunos from './pages/principalPages/turmas/Alunos/Alunos.jsx'
-import AddAlunos from './pages/principalPages/turmas/Alunos/AddAlunos/AddAlunos.jsx'
-import Professor from './pages/principalPages/professores/professor/Professor.jsx'
+import AddStudentPage from './pages/principalPages/turmas/Alunos/AddAlunos/AddStudentPage.jsx'
 import EditAluno from './pages/principalPages/turmas/Alunos/EditAluno/EditAluno.jsx'
+
+//* Classes imports
+import Turmas from './pages/principalPages/turmas/Turmas.jsx'
+import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
+
+//* school discipline
+import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
+
+//* imports from other pages
+import MinhaConta from './pages/principalPages/MyAccount/MyAccountPage.jsx'
+import ScienceShowPage from './pages/principalPages/ScienceShow/CienceShowPage.jsx' 
+import Setores from './pages/principalPages/Setores/Setores.jsx'
+import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
+
+
 
 
 const route = createBrowserRouter([
+  //! routes from other pages
   {
     path: "/login",
     element: <Login />,
@@ -42,19 +56,41 @@ const route = createBrowserRouter([
     element: <Register />,
     errorElement: <ErrorPage />,
   },
+  //! Course page routes
   {
     path: "/cursos",
-    element: <Curso />,
+    element: <Course />,
     errorElement: <ErrorPage />,
   },
-  // {
-  //   path: "/config",
-  //   element: <Configuracoes />,
-  //   errorElement: <ErrorPage />,
-  // },
+  {
+    path: "/cursos/edit/:id",
+    element: <EditCourse />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/cursos/create",
+    element: <CreateCourse />,
+    errorElement: <ErrorPage />,
+  },
+  //! Student page routes 
+  {
+    path: "/turmas/:idTurma/alunos/",
+    element: <Alunos/>, 
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/:idTurma/alunos/AddAlunos/",
+    element: <AddStudentPage/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/:id/alunos/EditAluno/:idAluno",
+    element: <EditAluno/>,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/disciplinas",
-    element: <Disciplinas />,
+    element: <SubjectPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -64,7 +100,7 @@ const route = createBrowserRouter([
   },
   {
     path: "/mostra",
-    element: <Mostra />,
+    element: <ScienceShowPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -74,12 +110,12 @@ const route = createBrowserRouter([
   },
   {
     path: "/professores",
-    element: <Professores />,
+    element: <Teacher />,
     errorElement: <ErrorPage />,
   },
   {
     path: "/professores/:id",
-    element: <Professor />,
+    element: <TeacherByID />,
     errorElement: <ErrorPage />,
   },
   {
@@ -97,31 +133,7 @@ const route = createBrowserRouter([
     element: <CreateTurmas />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/turmas/:idTurma/alunos/",
-    element: <Alunos/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/:id/alunos/EditAluno/:idAluno",
-    element: <EditAluno/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/:idTurma/alunos/AddAlunos/",
-    element: <AddAlunos/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/cursos/create",
-    element: <CreateCurso />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/cursos/edit/:id",
-    element: <EditCurso />,
-    errorElement: <ErrorPage />,
-  },
+  
 
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

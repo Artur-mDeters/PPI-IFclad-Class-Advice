@@ -1,6 +1,6 @@
 import UiAppBar from "../../../../../components/AppBar/AppBar"
 import { Box, Typography, Divider, Table, TableContainer, TableHead, TableRow, TableBody, TableCell, styled, Paper, Button, TextField, Alert } from "@mui/material"
-import classes from "./style/style"
+import classes from "./AddStudentPage.Style"
 import { tableCellClasses } from '@mui/material/TableCell';
 import { useState } from "react";
 import axios from "axios";
@@ -28,7 +28,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const AddAlunos = () => {
+const AddStudentPage = () => {
   const { idTurma } = useParams()
   const [alert, setAlert] = useState(false)
   const [rows, setRows] = useState([]);
@@ -155,7 +155,9 @@ const AddAlunos = () => {
                   <TextField variant="standard" value={name} onChange={(e) => setName(e.target.value)} />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <TextField variant="standard" value={matricula} onChange={(e) => setMatricula(e.target.value)} />
+                  {/* // TODO: colocar o ano como padrão na matricula
+                  // Isso pra facilitar a inserção da matricula pelo usuário  */}
+                  <TextField variant="standard" value={matricula} onChange={(e) => setMatricula(e.target.value)} /> 
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   <TextField variant="standard" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -195,4 +197,4 @@ const AddAlunos = () => {
   );
 };
 
-export default AddAlunos;
+export default AddStudentPage;

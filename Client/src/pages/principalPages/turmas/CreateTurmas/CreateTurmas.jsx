@@ -1,13 +1,14 @@
+import CreatePage from "../../../../components/createAndEditPages/CreatePage";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import CreatePage from "../../../../components/createAndEditPages/CreatePage";
-import { Alert } from "@mui/material";
+import {
+  Alert,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+} from "@mui/material";
 
 const getDataCursos = async () => {
   try {
@@ -19,36 +20,41 @@ const getDataCursos = async () => {
 };
 
 const CreateTurmas = () => {
-  
   // Esse código tá medonho 😱😱😱🤓
   // TODO: refatorar a inserção de dados de turma, colocando todos os parâmetros em um só State
-
-  const [dataCurso, setDataCurso] = useState([]);
-  const [nome, setNome] = useState("");
-  const [ano, setAno] = useState("");
-  const [curso, setCurso] = useState("");
+  const [courseData, setCourseData] = useState([]);
+  const [classData, setClassData] = useState([]);
   const [pattern, setPattern] = useState();
 
   const navigate = useNavigate();
 
-  const setTypeCurso = () => {
-    dataCurso.map((data) => {
-      if (data.id_curso == curso) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setCourseNamePattern = () => {
+    courseData.map((data) => {
+      if (data.id_curso == classData[0]?.course) {
         setPattern(data.padrao);
       }
+    });
+  };
+
+  const handleInputChange = (e, alterThis) => {
+    const { value } = e.target;
+    setClassData((prevState) => {
+      const updatedClass = { ...prevState[0], [alterThis]: value };
+      return [updatedClass];
     });
   };
 
   const saveAndRedirect = async () => {
     await axios
       .post("http://localhost:3030/turmas/", {
-        nome,
-        ano_inicio: ano,
-        curso,
+        nome: classData[0]?.name,
+        ano_inicio: classData[0]?.age,
+        curso: classData[0]?.course,
       })
       .then((response) => {
         console.log(response);
-        setDataCurso("");
+        setCourseData("");
         navigate("/turmas");
       })
       .catch((err) => {
@@ -56,25 +62,20 @@ const CreateTurmas = () => {
       });
   };
 
-  const handleNome = (e) => setNome(e.target.value);
-  const handleAno = (e) => setAno(e.target.value);
-  const handleCurso = (e) => setCurso(e.target.value);
-
   useEffect(() => {
-    console.log(pattern);
-    const fetchData = async () => {
+    const setDataOnce = async () => {
       try {
         const result = await getDataCursos();
-        console.log(result);
-        setDataCurso(result);
+        setCourseData(result);
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchData();
-    setTypeCurso();
-  }, [curso]);
+    setDataOnce();
+    setCourseNamePattern();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classData[0]?.course]);
 
   return (
     <CreatePage
@@ -88,12 +89,12 @@ const CreateTurmas = () => {
           labelId="ano-label"
           id="ano_inicio"
           label="Ano de Início"
-          onChange={handleAno}
-          value={ano}
+          onChange={(e) => handleInputChange(e, "age")}
+          value={classData[0]?.age || ""}
         >
-          {[2024, 2023, 2022, 2021, 2020, 2019, 2018].map((anoInicio) => (
-            <MenuItem key={anoInicio} value={anoInicio}>
-              {anoInicio}
+          {[2024, 2023, 2022, 2021, 2020, 2019, 2018].map((startYear) => (
+            <MenuItem key={startYear} value={startYear}>
+              {startYear}
             </MenuItem>
           ))}
         </Select>
@@ -104,12 +105,12 @@ const CreateTurmas = () => {
           labelId="curso-label"
           id="curso"
           label="Curso"
-          onChange={handleCurso}
-          value={curso}
+          onChange={(e) => handleInputChange(e, "course")}
+          value={classData[0]?.course || ""}
         >
-          {dataCurso.map((curso) => (
-            <MenuItem key={curso.id_curso} value={curso.id_curso}>
-              {curso.nome}
+          {courseData.map((course) => (
+            <MenuItem key={course.id_curso} value={course.id_curso}>
+              {course.nome}
             </MenuItem>
           ))}
         </Select>
@@ -120,16 +121,13 @@ const CreateTurmas = () => {
           labelId="nome-label"
           id="nome"
           label="Nome"
-          onChange={handleNome}
-          value={nome}
+          onChange={(e) => handleInputChange(e, "name")}
+          value={classData[0]?.name || ""}
         >
           {pattern != undefined
-            ? [1, 2, 3].map((nomeTurma) => (
-                <MenuItem
-                  key={nomeTurma}
-                  value={"T" + nomeTurma + dataCurso[0]?.padrao}
-                >
-                  T{nomeTurma}
+            ? [1, 2, 3].map((className) => (
+                <MenuItem key={className} value={"T" + className + pattern}>
+                  T{className}
                   {pattern}
                 </MenuItem>
               ))

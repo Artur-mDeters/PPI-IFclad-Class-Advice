@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
-
-
-const CreateCurso = () => {
+const CreateCourse = () => {
     const navigate = useNavigate()
+    const [courseData, setCourseData] = useState([]);
 
-    const [inputs, setInputs] = useState([]);
-
-
-    const handleInput = (e) => {
+    const handleInputChange = (e) => {
       const {id, value} = e.target;
       try {
-        setInputs((prevState) => {
+        setCourseData((prevState) => {
           const inputsChange = { ...prevState[0], [id]: value}
           return [inputsChange]
         })
@@ -26,8 +23,8 @@ const CreateCurso = () => {
 
     const saveAndRedirect = async () => {
         await axios.post('http://localhost:3030/cursos', {
-            nome: inputs[0]?.nomeCurso,
-            padrao: inputs[0]?.pad,
+            nome: courseData[0]?.courseName,
+            padrao: courseData[0]?.pattern,
         }).then((response) => {
             console.log(response)
             navigate("/cursos")
@@ -38,21 +35,21 @@ const CreateCurso = () => {
   return (
     <CreatePage title="Criar Novo Curso" buttonSaveFunction={saveAndRedirect} returnTo="/cursos">
       <TextField
-        id="nomeCurso"
+        id="courseName"
         label="Nome"
-        value={inputs[0]?.nomeCurso}
-        onChange={handleInput}
+        value={courseData[0]?.courseName}
+        onChange={handleInputChange}
         
       />
       <TextField
-        id="pad"
+        id="pattern"
         label="Padrão de nome de turma"
-        value={inputs[0]?.pad}
-        onChange={handleInput}
-        
+        value={courseData[0]?.pattern}
+        onChange={handleInputChange}  
       />
+      <Typography variant="body1" textAlign="center">O padrão de nome de turma segue o formato T+(número do período)+(número do curso), onde o último número identifica o curso técnico. Insira o número que corresponde ao curso!</Typography>
     </CreatePage> 
   )
 }
 
-export default CreateCurso
+export default CreateCourse

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const getDataCursos = async () => {
+const getCourseData = async () => {
     const response = await axios.get("http://localhost:3030/cursos");
     try {
       return response.data;
@@ -9,4 +9,4 @@ const getDataCursos = async () => {
     }
   };
 
-export default getDataCursos
+export default getCourseData
