@@ -20,12 +20,20 @@ const getCourseData = async () => {
   }
 };
 
+const getClassesData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3030/turmas");
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar turmas:", error);
+    return []; // Retorna um array vazio em caso de erro
+  }
+};
+
 const EditClassesPage = () => {
-  // ? -> constantes padrões
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ? -> principais States
   const [courseData, setCourseData] = useState([]);
   const [pattern, setPattern] = useState();
   const [classData, setClassData] = useState({
@@ -33,8 +41,9 @@ const EditClassesPage = () => {
     age: "",
     course: "",
   });
+  const [error, setError] = useState(""); // Para armazenar mensagens de erro
+  const [classesDataToCompare, setClassesDataToCompare] = useState([]); // Para armazenar turmas existentes
 
-  // ? -> Função que seta o número correspondente ao curso selecionado
   const setCourseNamePattern = () => {
     courseData.map((data) => {
       if (data.id_curso == classData?.course) {
@@ -43,7 +52,85 @@ const EditClassesPage = () => {
     });
   };
 
-  //
+  const handleInput = (e, alterThis) => {
+    const { value } = e.target;
+    setClassData((prevState) => ({
+      ...prevState,
+      [alterThis]: value,
+    }));
+  };
+
+  const validateFields = () => {
+    const currentClass = classData;
+    
+    // Verificar se todos os campos estão preenchidos
+    if (!currentClass?.age) {
+      setError("O campo 'Ano de Início' é obrigatório.");
+      return false;
+    }
+    if (!currentClass?.course) {
+      setError("O campo 'Curso' é obrigatório.");
+      return false;
+    }
+    if (!currentClass?.name) {
+      setError("O campo 'Nome' é obrigatório.");
+      return false;
+    }
+
+    // Verificar se a turma já existe com base no 'name', 'age' e 'course'
+    const isClassDuplicate = classesDataToCompare.some((existingClass) =>
+      existingClass.id !== id &&
+      existingClass.nome === currentClass.name &&
+      existingClass.ano_inicio === currentClass.age &&
+      existingClass.fk_curso_id_curso === currentClass.course
+    );
+
+    if (isClassDuplicate) {
+      setError("Já existe uma turma com essas mesmas informações.");
+      return false;
+    }
+
+    setError(""); // Sem erros
+    return true;
+  };
+
+  const saveAndRedirect = async () => {
+    if (validateFields()) {
+      try {
+        await axios.put(`http://localhost:3030/turmas/editar/${id}`, {
+          name: classData?.name,
+          start_year: classData?.age,
+          course: classData?.course,
+        });
+        navigate("/turmas");
+      } catch (err) {
+        console.error("Erro ao atualizar a turma:", err);
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3030/turmas/${id}`);
+      navigate("/turmas");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchClassesData = async () => {
+      try {
+        const existingClasses = await getClassesData();
+        setClassesDataToCompare(existingClasses);
+      } catch (error) {
+        console.error("Erro ao buscar as turmas:", error);
+      }
+    };
+
+    fetchClassesData();
+  }, []);
+
   useEffect(() => {
     const setDataOnce = async () => {
       try {
@@ -58,36 +145,6 @@ const EditClassesPage = () => {
     setCourseNamePattern();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, classData.course]);
-
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`http://localhost:3030/turmas/${id}`);
-      navigate("/turmas");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const saveAndRedirect = async () => {
-    try {
-      await axios.put(`http://localhost:3030/turmas/editar/${id}`, {
-        nome: classData?.name,
-        ano_inicio: classData?.age,
-        curso: classData?.course,
-      });
-      navigate("/turmas");
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleInput = (e, alterThis) => {
-    const { value } = e.target;
-    setClassData((prevState) => ({
-      ...prevState,
-      [alterThis]: value,
-    }));
-  };
 
   return (
     <EditPage
@@ -122,7 +179,7 @@ const EditClassesPage = () => {
           onChange={(e) => handleInput(e, "name")}
           value={classData.name || ""}
         >
-          {pattern != undefined
+          {pattern !== undefined
             ? [1, 2, 3].map((className) => (
                 <MenuItem key={className} value={"T" + className + pattern}>
                   {"T" + className + pattern}
@@ -153,6 +210,8 @@ const EditClassesPage = () => {
           <MenuItem value={2018}>2018</MenuItem>
         </Select>
       </FormControl>
+
+      {error && <Alert severity="error">{error}</Alert>} {/* Exibir erros, se houver */}
     </EditPage>
   );
 };

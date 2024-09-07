@@ -28,7 +28,7 @@ const CreateClassesPage = () => {
   const [pattern, setPattern] = useState(null);
   const [error, setError] = useState(""); // Para armazenar mensagens de erro
   const [classesDataToCompare, setClassesDataToCompare] = useState([]); // Para armazenar turmas existentes
-  console.table(classesDataToCompare)
+
 
   const navigate = useNavigate();
 
@@ -128,6 +128,7 @@ const CreateClassesPage = () => {
 
     setDataOnce();
     setCourseNamePattern();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classData[0]?.course]);
 
   return (
