@@ -8,25 +8,39 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Login from './pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import Register from './pages/register/Register.jsx'
-import Curso from './pages/principalPages/curso/Curso.jsx'
 
-import Disciplinas from './pages/principalPages/disciplinas/Disciplinas.jsx'
-import MinhaConta from './pages/principalPages/minha-conta/MinhaConta.jsx'
-import Mostra from './pages/principalPages/mostra-de-ciencias/Mostra.jsx'
-import Professores from './pages/principalPages/professores/Professores.jsx'
-import Setores from './pages/principalPages/Setores/Setores.jsx'
-import Turmas from './pages/principalPages/turmas/Turmas.jsx'
-import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
-import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
-import CreateCurso from './pages/principalPages/curso/CreateCurso/CreateCurso.jsx'
-import EditCurso from './pages/principalPages/curso/EditCurso/EditCurso.jsx'
-import Alunos from './pages/principalPages/turmas/Alunos/Alunos.jsx'
-import AddAlunos from './pages/principalPages/turmas/Alunos/AddAlunos/AddAlunos.jsx'
-import Professor from './pages/principalPages/professores/professor/Professor.jsx'
-import EditAluno from './pages/principalPages/turmas/Alunos/EditAluno/EditAluno.jsx'
+//* Courses pages imports
+import Course from './pages/principalPages/Course/CoursePage.jsx'
+import CreateCourse from './pages/principalPages/Course/CreateCourse/CreateCourse.jsx'
+import EditCourse from './pages/principalPages/Course/EditCourse/EditCourse.jsx'
+
+//* Teachers pages imports
+import TeacherPage from './pages/principalPages/Teacher/TeacherPage.jsx'
+import TeacherByIDPage from './pages/principalPages/Teacher/teacherByID/TeacherByIDPage.jsx'
+
+//* Student pages imports
+import StudentPage from "./pages/principalPages/Classes/Student/StudentPage.jsx"
+import AddStudentPage from './pages/principalPages/Classes/Student/AddStudent/AddStudentPage.jsx'
+import EditStudentPage from './pages/principalPages/Classes/Student/EditStudent/EditStudentPage.jsx'
+
+//* Classes imports
+import ClassesPage from './pages/principalPages/Classes/ClassesPage.jsx'
+import CreateClassesPage from './pages/principalPages/Classes/CreateClasses/CreateClassesPage.jsx'
+import EditClassesPage from './pages/principalPages/Classes/EditClasses/EditClassesPage.jsx'
+
+//* school discipline
+import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
+
+//* imports from other pages
+import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
+import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
+import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
+
+
 
 
 const route = createBrowserRouter([
+  //! routes from other pages
   {
     path: "/login",
     element: <Login />,
@@ -42,86 +56,94 @@ const route = createBrowserRouter([
     element: <Register />,
     errorElement: <ErrorPage />,
   },
+
+  //! Course page routes
   {
     path: "/cursos",
-    element: <Curso />,
-    errorElement: <ErrorPage />,
-  },
-  // {
-  //   path: "/config",
-  //   element: <Configuracoes />,
-  //   errorElement: <ErrorPage />,
-  // },
-  {
-    path: "/disciplinas",
-    element: <Disciplinas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/minha-conta",
-    element: <MinhaConta />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/mostra",
-    element: <Mostra />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/setores",
-    element: <Setores />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/professores",
-    element: <Professores />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/professores/:id",
-    element: <Professor />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas",
-    element: <Turmas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/editar/:id",
-    element: <EditarTurmas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/create",
-    element: <CreateTurmas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/:idTurma/alunos/",
-    element: <Alunos/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/:id/alunos/EditAluno/:idAluno",
-    element: <EditAluno/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/:idTurma/alunos/AddAlunos/",
-    element: <AddAlunos/>,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/cursos/create",
-    element: <CreateCurso />,
+    element: <Course />,
     errorElement: <ErrorPage />,
   },
   {
     path: "/cursos/edit/:id",
-    element: <EditCurso />,
+    element: <EditCourse />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: "/cursos/create",
+    element: <CreateCourse />,
+    errorElement: <ErrorPage />,
+  },
+
+  //! Student page routes 
+  {
+    path: "/turmas/:idTurma/alunos/",
+    element: <StudentPage/>, 
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/:idTurma/alunos/AddAlunos/",
+    element: <AddStudentPage/>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/:id/alunos/EditAluno/:idAluno",
+    element: <EditStudentPage/>,
+    errorElement: <ErrorPage />,
+  },
+
+  //! Classes page routes
+  {
+    path: "/turmas",
+    element: <ClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/editar/:id",
+    element: <EditClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/create",
+    element: <CreateClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+
+  //! Teachers page routes
+  {
+    path: "/professores",
+    element: <TeacherPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/professores/:id",
+    element: <TeacherByIDPage />,
+    errorElement: <ErrorPage />,
+  },
+  
+  {
+    path: "/disciplinas",
+    element: <SubjectPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/minha-conta",
+    element: <MyAccountPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/mostra",
+    element: <ScienceShowPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/setores",
+    element: <SectorsPage />,
+    errorElement: <ErrorPage />,
+  },
+  
+
+  
+  
 
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(
