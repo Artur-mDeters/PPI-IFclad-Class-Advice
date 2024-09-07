@@ -171,12 +171,12 @@ const AddStudentPage = () => {
       setAlert(true);
       return;
     }
-
+  
     const newRow = {
       ...student,
-      internal: student.internal === "sim",
+      internal: student.internal === "sim" ? "Sim" : "Não", // Ajuste aqui
     };
-
+  
     if (editingRowIndex !== null) {
       const updatedRows = rows.map((row, index) =>
         index === editingRowIndex ? newRow : row
@@ -186,7 +186,7 @@ const AddStudentPage = () => {
     } else {
       setRows([...rows, newRow]);
     }
-
+  
     setStudent({
       name: "",
       registration: "",

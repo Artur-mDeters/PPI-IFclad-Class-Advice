@@ -27,7 +27,7 @@ exports.getStudent = async (req, res) => {
 }
 exports.getStudentByID = async (req, res) => {
     // const idTurma = req.params.idTurma;
-    const idStudent = req.params.idAluno;
+    const idStudent = req.params.idStudent;
     try {
         const response = await db.query("SELECT * FROM aluno WHERE id_aluno = $1 ", idStudent)
         res.status(200).json(response)   
