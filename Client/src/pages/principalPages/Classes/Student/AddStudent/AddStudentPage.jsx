@@ -8,6 +8,8 @@ import {
   TableHead,
   TableRow,
   TableBody,
+  // GridListTile,
+  // ListSubheaderody,
   TableCell,
   styled,
   Paper,
@@ -21,7 +23,7 @@ import {
   MenuItem,
   Select,
   FormControl,
-  // InputLabel,
+  InputAdornment,
   FormHelperText,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
@@ -51,9 +53,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const validateStudent = (student) => {
   const errors = {};
-  
+
   // Converte `student.internal` para string antes de usar toLowerCase
-  
+
   if (/[^a-zA-Z\s]/.test(student.name))
     errors.name = "Nome não pode conter números";
   if (!/^\d+$/.test(student.registration))
@@ -66,10 +68,9 @@ const validateStudent = (student) => {
   if (/[\d]/.test(student.city)) errors.city = "Cidade não pode conter números";
   if (!/^[A-Z]{2}$/.test(student.federativeUnity))
     errors.federativeUnity = "UF deve conter duas letras maiúsculas";
-  
+
   return errors;
 };
-
 
 const AddStudentPage = () => {
   const { idTurma } = useParams();
@@ -85,13 +86,19 @@ const AddStudentPage = () => {
     dateOfBirth: "",
     city: "",
     federativeUnity: "",
-    internal: "",  // Inicialmente uma string vazia
-    course: ""
+    internal: "", // Inicialmente uma string vazia
+    course: "",
   });
   const [editingRowIndex, setEditingRowIndex] = useState(null);
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [courseYear, setCourseYear] = useState([]);
 
   const navigate = useNavigate();
+
+  const getCourseYear = async () => {
+    const response = await axios.get("http://localhost:3030/turmas/" + idTurma);
+    return response.data;
+  };
 
   useEffect(() => {
     let timer;
@@ -105,6 +112,21 @@ const AddStudentPage = () => {
     }
     return () => clearInterval(timer);
   }, [alert, alertCountdown]);
+
+  useEffect(() => {
+    const setDataOnce = async () => {
+      try {
+        const result = await getCourseYear();
+        setCourseYear(result);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    setDataOnce();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseYear]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -182,23 +204,23 @@ const AddStudentPage = () => {
     const rowToEdit = rows[index];
     setStudent({
       name: rowToEdit.name,
-      registration: rowToEdit.registration,
+      registration: courseYear[0]?.ano_inicio + rowToEdit.registration,
       email: rowToEdit.email,
       gender: rowToEdit.gender,
       dateOfBirth: rowToEdit.dateOfBirth,
       city: rowToEdit.city,
       federativeUnity: rowToEdit.federativeUnity,
       internal: rowToEdit.internal ? "sim" : "não",
-      course: idTurma
+      course: idTurma,
     });
     setEditingRowIndex(index);
   };
-  console.table(rows)
-  console.table(idTurma)
+  console.table(rows);
+  console.table(idTurma);
   const saveAndRedirect = async () => {
     try {
       let hasError = false;
-  
+
       // Verifica se há erros em cada aluno
       for (const aluno of rows) {
         const errors = validateStudent(aluno);
@@ -209,14 +231,14 @@ const AddStudentPage = () => {
           break;
         }
       }
-      
+
       // Se não houver erros, envia os dados para o servidor
       if (!hasError) {
         const responses = await Promise.all(
-          rows.map(aluno =>
+          rows.map((aluno) =>
             axios.post("http://localhost:3030/alunos", {
               name: aluno.name,
-              registration: aluno.registration,
+              registration: courseYear[0]?.ano_inicio + aluno.registration,
               email: aluno.email,
               gender: aluno.gender,
               dateOfBirth: aluno.dateOfBirth,
@@ -227,7 +249,7 @@ const AddStudentPage = () => {
             })
           )
         );
-        
+
         console.log(responses);
         navigate("../turmas/" + idTurma + "/alunos/");
       } else {
@@ -242,7 +264,6 @@ const AddStudentPage = () => {
       setAlert(true);
     }
   };
-  
 
   const handleCancel = () => {
     setOpenCancelDialog(true);
@@ -291,7 +312,7 @@ const AddStudentPage = () => {
                 <StyledTableRow key={index}>
                   <StyledTableCell align="center">{row.name}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.registration}
+                    {courseYear[0]?.ano_inicio + row.registration}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.email}</StyledTableCell>
                   <StyledTableCell align="center">{row.gender}</StyledTableCell>
@@ -335,6 +356,11 @@ const AddStudentPage = () => {
                     onChange={handleChange}
                     error={!!student.errors?.registration}
                     helperText={student.errors?.registration}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">{courseYear[0]?.ano_inicio + " - "}</InputAdornment>
+                      ),
+                    }}
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
@@ -438,8 +464,16 @@ const AddStudentPage = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelClose} variant="contained">Voltar</Button>
-          <Button onClick={handleCancelConfirm} variant="contained" color="error">Confirmar</Button>
+          <Button onClick={handleCancelClose} variant="contained">
+            Voltar
+          </Button>
+          <Button
+            onClick={handleCancelConfirm}
+            variant="contained"
+            color="error"
+          >
+            Confirmar
+          </Button>
         </DialogActions>
       </Dialog>
       {alert && (
