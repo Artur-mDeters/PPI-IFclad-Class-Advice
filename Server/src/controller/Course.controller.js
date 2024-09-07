@@ -1,7 +1,7 @@
 const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 
-exports.getCursos = async (req, res) => {
+exports.getCourses = async (req, res) => {
   try {
     const response = await db.query("SELECT * FROM curso");
     res.status(200).json(response);
@@ -10,11 +10,11 @@ exports.getCursos = async (req, res) => {
   }
 };
 
-exports.getCursoById = async (req, res) => {
-  const { id_curso } = req.params.id;
+exports.getCourseByID = async (req, res) => {
+  const { id_course } = req.params.id;
   try {
     const response = await db.query("SELECT * FROM curso WHERE id_curso = $1", [
-      id_curso,
+      id_course,
     ]);
     res.status(200).json(response);
   } catch (err) {
@@ -22,12 +22,12 @@ exports.getCursoById = async (req, res) => {
   }
 };
  
-exports.addCurso = async (req, res) => {
-  const { nome, padrao } = req.body;
+exports.addCourse = async (req, res) => {
+  const { name, pattern } = req.body;
   try {
-    const id_curso = uuidv4();
+    const id_course = uuidv4();
     const response = await db.query(
-      "INSERT INTO curso (id_curso, nome, padrao) values ($1, $2, $3)", [id_curso, nome, padrao]
+      "INSERT INTO curso (id_curso, nome, padrao) values ($1, $2, $3)", [id_course, name, pattern]
     );
     res.status(201).send(response)
   } catch (err
@@ -37,25 +37,25 @@ exports.addCurso = async (req, res) => {
   
 };
 
-exports.editCurso = async (req, res) => {
-  const id_curso = req.params.id; // Corrigido para capturar diretamente req.params.id
-  const { nome, padrao } = req.body;
+exports.editCourse = async (req, res) => {
+  const id_course = req.params.id; 
+  const { name, pattern } = req.body;
 
   try {
     const result = await db.query(
       "UPDATE curso SET nome = $1, padrao = $2 WHERE id_curso = $3",
-      [nome, padrao, id_curso]  
+      [name, pattern, id_course]  
     );
-    res.send(result.rows); // Para retornar apenas o curso atualizado
+    res.send(result.rows); 
   } catch (err) {
     res.status(500).json(err);
   }
 };
 
-exports.deleteCurso = async (req, res) => {
-  const id_curso = req.params.id;
+exports.deleteCourse = async (req, res) => {
+  const id_course = req.params.id;
   try {
-    await db.query("DELETE FROM curso WHERE id_curso = $1 ", [id_curso]);
+    await db.query("DELETE FROM curso WHERE id_curso = $1 ", [id_course]);
     res.status(204).send();
   } catch (err) {
     res.status(500).json(err);

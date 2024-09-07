@@ -8,7 +8,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import padrao from "./img/fotos/padrao.png"
 
-import classes from "./style/Aluno"
+import classes from "./StudentPage.Style"
 
 
 const Alunos = () => {

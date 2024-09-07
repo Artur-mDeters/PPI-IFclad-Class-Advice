@@ -15,26 +15,26 @@ import CreateCourse from './pages/principalPages/Course/CreateCourse/CreateCours
 import EditCourse from './pages/principalPages/Course/EditCourse/EditCourse.jsx'
 
 //* Teachers pages imports
-import Teacher from './pages/principalPages/Teacher/Teacher.jsx'
-import TeacherByID from './pages/principalPages/Teacher/teacherByID/TeacherByID.jsx'
+import TeacherPage from './pages/principalPages/Teacher/TeacherPage.jsx'
+import TeacherByIDPage from './pages/principalPages/Teacher/teacherByID/TeacherByIDPage.jsx'
 
 //* Student pages imports
-import Alunos from './pages/principalPages/turmas/Alunos/Alunos.jsx'
-import AddStudentPage from './pages/principalPages/turmas/Alunos/AddAlunos/AddStudentPage.jsx'
-import EditAluno from './pages/principalPages/turmas/Alunos/EditAluno/EditAluno.jsx'
+import StudentPage from "./pages/principalPages/Classes/Student/StudentPage.jsx"
+import AddStudentPage from './pages/principalPages/Classes/Student/AddStudent/AddStudentPage.jsx'
+import EditStudentPage from './pages/principalPages/Classes/Student/EditStudent/EditStudentPage.jsx'
 
 //* Classes imports
-import Turmas from './pages/principalPages/turmas/Turmas.jsx'
-import CreateTurmas from './pages/principalPages/turmas/CreateTurmas/CreateTurmas.jsx'
+import ClassesPage from './pages/principalPages/Classes/ClassesPage.jsx'
+import CreateClassesPage from './pages/principalPages/Classes/CreateClasses/CreateClassesPage.jsx'
+import EditClassesPage from './pages/principalPages/Classes/EditClasses/EditClassesPage.jsx'
 
 //* school discipline
 import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
 
 //* imports from other pages
-import MinhaConta from './pages/principalPages/MyAccount/MyAccountPage.jsx'
-import ScienceShowPage from './pages/principalPages/ScienceShow/CienceShowPage.jsx' 
-import Setores from './pages/principalPages/Setores/Setores.jsx'
-import EditarTurmas from './pages/principalPages/turmas/EditarTurmas/EditarTurmas.jsx'
+import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
+import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
+import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
 
 
 
@@ -56,6 +56,7 @@ const route = createBrowserRouter([
     element: <Register />,
     errorElement: <ErrorPage />,
   },
+
   //! Course page routes
   {
     path: "/cursos",
@@ -72,10 +73,11 @@ const route = createBrowserRouter([
     element: <CreateCourse />,
     errorElement: <ErrorPage />,
   },
+
   //! Student page routes 
   {
     path: "/turmas/:idTurma/alunos/",
-    element: <Alunos/>, 
+    element: <StudentPage/>, 
     errorElement: <ErrorPage />,
   },
   {
@@ -85,9 +87,39 @@ const route = createBrowserRouter([
   },
   {
     path: "/turmas/:id/alunos/EditAluno/:idAluno",
-    element: <EditAluno/>,
+    element: <EditStudentPage/>,
     errorElement: <ErrorPage />,
   },
+
+  //! Classes page routes
+  {
+    path: "/turmas",
+    element: <ClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/editar/:id",
+    element: <EditClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/turmas/create",
+    element: <CreateClassesPage />,
+    errorElement: <ErrorPage />,
+  },
+
+  //! Teachers page routes
+  {
+    path: "/professores",
+    element: <TeacherPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/professores/:id",
+    element: <TeacherByIDPage />,
+    errorElement: <ErrorPage />,
+  },
+  
   {
     path: "/disciplinas",
     element: <SubjectPage />,
@@ -95,7 +127,7 @@ const route = createBrowserRouter([
   },
   {
     path: "/minha-conta",
-    element: <MinhaConta />,
+    element: <MyAccountPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -105,34 +137,12 @@ const route = createBrowserRouter([
   },
   {
     path: "/setores",
-    element: <Setores />,
+    element: <SectorsPage />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/professores",
-    element: <Teacher />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/professores/:id",
-    element: <TeacherByID />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas",
-    element: <Turmas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/editar/:id",
-    element: <EditarTurmas />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/turmas/create",
-    element: <CreateTurmas />,
-    errorElement: <ErrorPage />,
-  },
+  
+
+  
   
 
 ]);

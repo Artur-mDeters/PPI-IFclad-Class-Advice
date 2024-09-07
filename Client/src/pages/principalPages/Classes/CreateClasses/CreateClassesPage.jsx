@@ -10,7 +10,7 @@ import {
   Select,
 } from "@mui/material";
 
-const getDataCursos = async () => {
+const getCourseData = async () => {
   try {
     const response = await axios.get("http://localhost:3030/cursos");
     return response.data;
@@ -19,12 +19,11 @@ const getDataCursos = async () => {
   }
 };
 
-const CreateTurmas = () => {
-  // Esse código tá medonho 😱😱😱🤓
-  // TODO: refatorar a inserção de dados de turma, colocando todos os parâmetros em um só State
+const CreateClassesPage = () => {
+
   const [courseData, setCourseData] = useState([]);
   const [classData, setClassData] = useState([]);
-  const [pattern, setPattern] = useState();
+  const [pattern, setPattern] = useState(null);
 
   const navigate = useNavigate();
 
@@ -48,9 +47,9 @@ const CreateTurmas = () => {
   const saveAndRedirect = async () => {
     await axios
       .post("http://localhost:3030/turmas/", {
-        nome: classData[0]?.name,
-        ano_inicio: classData[0]?.age,
-        curso: classData[0]?.course,
+        name: classData[0]?.name,
+        start_year: classData[0]?.year,
+        course: classData[0]?.course,
       })
       .then((response) => {
         console.log(response);
@@ -65,7 +64,7 @@ const CreateTurmas = () => {
   useEffect(() => {
     const setDataOnce = async () => {
       try {
-        const result = await getDataCursos();
+        const result = await getCourseData();
         setCourseData(result);
       } catch (err) {
         console.error(err);
@@ -89,8 +88,8 @@ const CreateTurmas = () => {
           labelId="ano-label"
           id="ano_inicio"
           label="Ano de Início"
-          onChange={(e) => handleInputChange(e, "age")}
-          value={classData[0]?.age || ""}
+          onChange={(e) => handleInputChange(e, "year")}
+          value={classData[0]?.year || ""}
         >
           {[2024, 2023, 2022, 2021, 2020, 2019, 2018].map((startYear) => (
             <MenuItem key={startYear} value={startYear}>
@@ -142,4 +141,4 @@ const CreateTurmas = () => {
   );
 };
 
-export default CreateTurmas;
+export default CreateClassesPage;

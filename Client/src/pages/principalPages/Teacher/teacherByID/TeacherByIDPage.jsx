@@ -5,7 +5,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const TeacherByID = () => {
+const TeacherByIDPage = () => {
   const { id } = useParams();
   const [teacherData, setTeacherData] = useState([]);
 
@@ -78,4 +78,4 @@ const TeacherByID = () => {
   );
 };
 
-export default TeacherByID;
+export default TeacherByIDPage;

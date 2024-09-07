@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { Box, TextField } from "@mui/material";
 
-const EditAluno = () => {
+const EditStudentPage = () => {
   const { idAluno, id } = useParams();
   const [studentData, setDataAluno] = useState([]);
   const navigate = useNavigate();
@@ -149,4 +149,4 @@ const EditAluno = () => {
   );
 };
 
-export default EditAluno;
+export default EditStudentPage;

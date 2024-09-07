@@ -4,7 +4,7 @@ import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 import { defaultDark } from "../../../themes/themes";
 
 
-const Setores = () => {
+const SectorsPage = () => {
   return (
     <ThemeProvider theme={defaultDark}>
       <CssBaseline />
@@ -21,4 +21,4 @@ const Setores = () => {
   )
 }
 
-export default Setores
+export default SectorsPage

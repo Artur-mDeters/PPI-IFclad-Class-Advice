@@ -2,7 +2,7 @@ import UiAppBar from "../../../components/AppBar/AppBar";
 import { Box, Button } from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
 
-const MinhaConta = () => {
+const MyAccountPage = () => {
   return (
     <UiAppBar>
       <SearchBar>
@@ -10,9 +10,9 @@ const MinhaConta = () => {
           Ola
         </Button>
       </SearchBar>
-      <Box>{/* DataContainer  */}</Box>
+      <Box>{/* DataContainer */}</Box>
     </UiAppBar>
   );
 };
 
-export default MinhaConta;
+export default MyAccountPage;

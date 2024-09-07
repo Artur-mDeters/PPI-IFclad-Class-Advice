@@ -10,7 +10,7 @@ import {
 import axios from "axios";
 import EditPage from "../../../../components/createAndEditPages/EditPage";
 
-const getDataCursos = async () => {
+const getCourseData = async () => {
   try {
     const response = await axios.get("http://localhost:3030/cursos");
     return response.data;
@@ -20,7 +20,7 @@ const getDataCursos = async () => {
   }
 };
 
-const EditarTurmas = () => {
+const EditClassesPage = () => {
   // ? -> constantes padrões
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const EditarTurmas = () => {
   useEffect(() => {
     const setDataOnce = async () => {
       try {
-        const result = await getDataCursos();
+        const result = await getCourseData();
         setCourseData(result);
       } catch (err) {
         console.error(err);
@@ -157,4 +157,4 @@ const EditarTurmas = () => {
   );
 };
 
-export default EditarTurmas;
+export default EditClassesPage;

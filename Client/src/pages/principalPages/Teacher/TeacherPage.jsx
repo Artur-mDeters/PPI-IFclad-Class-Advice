@@ -14,7 +14,7 @@ import getTeacher from "./core/getTeacher";
 import { useNavigate } from "react-router-dom";
 import foto from "./img/fotos/padrao.png";
 
-import classes from "./style/Professores";
+import classes from "./TeacherPage.Style";
 const Teacher = () => {
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();

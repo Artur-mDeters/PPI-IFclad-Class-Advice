@@ -3,16 +3,16 @@ const routes = express.Router();
 
 const routeUsers = require('./user.routes')
 const routeLogin = require('./login.routes')
-const routeTurmas = require('./turma.routes')
-const routeProfessores = require('./professor.routes')
-const routeCursos = require('./curso.routes')
-const routeAlunos = require('./aluno.routes')
+const routeClass = require('./class.routes')
+const routeTeachers = require('./teacher.routes')
+const routeCourses = require('./course.routes')
+const routeStudents = require('./student.routes')
 
 routes.use(routeUsers)
 routes.use(routeLogin)
-routes.use(routeTurmas)
-routes.use(routeProfessores)
-routes.use(routeCursos)
-routes.use(routeAlunos)
+routes.use(routeClass)
+routes.use(routeTeachers)
+routes.use(routeCourses)
+routes.use(routeStudents)
 
 module.exports = routes

@@ -1,14 +1,14 @@
 const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 
-exports.addAluno = async (req, res) => {
-  const { nome, matricula, email, sexo, nascimento, cidade, uf, interno , fk_turma_id_turma} =
+exports.addStudent = async (req, res) => {
+  const { name, registration, email, gender, dateOfBirth, city, federativeUnity, internal , fk_class_id_class} =
     req.body;
   try {
     const id_aluno = uuidv4();
     const response = await db.query(
       "INSERT INTO aluno (id_aluno, nome, matricula, email, sexo, nascimento, cidade, uf, interno, id_turma) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
-      [id_aluno, nome, matricula, email, sexo, nascimento, cidade, uf, interno, fk_turma_id_turma]
+      [name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, fk_class_id_class]
     );
     res.status(201).send(response);
   } catch (err) {
@@ -16,7 +16,7 @@ exports.addAluno = async (req, res) => {
   }
 };
 
-exports.getAlunos = async (req, res) => {
+exports.getStudent = async (req, res) => {
     const id = req.params.idTurma;  
     try {
         const response = await db.query("SELECT * FROM aluno WHERE id_turma = $1", id)
@@ -25,20 +25,20 @@ exports.getAlunos = async (req, res) => {
         res.status(500).send(err);
     }
 }
-exports.getAlunosById = async (req, res) => {
+exports.getStudentByID = async (req, res) => {
     // const idTurma = req.params.idTurma;
-    const idAluno = req.params.idAluno;
+    const idStudent = req.params.idAluno;
     try {
-        const response = await db.query("SELECT * FROM aluno WHERE id_aluno = $1 ", idAluno)
+        const response = await db.query("SELECT * FROM aluno WHERE id_aluno = $1 ", idStudent)
         res.status(200).json(response)   
     } catch(err) {
         res.status(500).send(err);
     }
 }
 
-exports.updateAluno = async (req, res) => {
-  const idAluno = req.params.idAluno;
-  const { nome, matricula, email, sexo, nascimento, cidade, uf, interno } = req.body;
+exports.updateStudent = async (req, res) => {
+  const id_student = req.params.idStudent;
+  const { name, registration, email, gender, dateOfBirth, city, federativeUnity, internal } = req.body;
 
   try {
       const response = await db.query(
@@ -46,20 +46,20 @@ exports.updateAluno = async (req, res) => {
           SET nome = $1, matricula = $2, email = $3, sexo = $4, nascimento = $5, cidade = $6, uf = $7, interno = $8
           WHERE id_aluno = $9
           RETURNING *`,
-          [nome, matricula, email, sexo, nascimento, cidade, uf, interno, idAluno]
+          [name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, id_student]
       );
 
-      res.status(200).json(response);  // Retorna o aluno atualizado
+      res.status(200).json(response);  
   } catch (err) {
-      console.error("Erro ao atualizar aluno:", err);  // Log do erro para depuração
+      console.error("Erro ao atualizar aluno:", err); 
       res.status(500).send("Erro interno do servidor");
   }
 };
 
-exports.excludeAluno = async (req, res) => {
-  const idAluno = req.params.idAluno;
+exports.excludeStudent = async (req, res) => {
+  const idStudent = req.params.idAluno;
   try {
-    await db.query(`DELETE FROM aluno WHERE id_aluno = $1`, [ idAluno ] )
+    await db.query(`DELETE FROM aluno WHERE id_aluno = $1`, [ idStudent ] )
     res.status(205).send("ok")
   } catch (err) {
     res.status(500).send("Erro interno do servidor ao tentar excluir aluno: ",err)

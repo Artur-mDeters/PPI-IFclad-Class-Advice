@@ -11,16 +11,16 @@ import {
 import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
-import UiAppBar from "../../../components/AppBar/AppBar";
-import { defaultLight } from "../../../themes/themes";
+import UiAppBar from "../../../components/AppBar/AppBar.jsx";
+import { defaultLight } from "../../../themes/themes.js";
 
 import { useNavigate } from "react-router-dom";
 import getDataTurmas from "./core/GetDataTurmas.jsx";
-import classes from "./style/Turma.js";
+import classes from "./ClassesPage.Style.js";
 
 // ? Styles #########################
 
-const Turmas = () => {
+const ClassesPage = () => {
   const [classData, setClassData] = useState([]);
 
   const navigate = useNavigate();
@@ -93,4 +93,4 @@ const Turmas = () => {
   );
 };
 
-export default Turmas;
+export default ClassesPage;
