@@ -3,8 +3,7 @@ import {
   Button,
   Typography,
   Paper,
-  CssBaseline,
-  ThemeProvider,
+
 } from "@mui/material";
 
 // import SearchIcon from "@mui/icons-material/Search";
@@ -12,11 +11,10 @@ import SearchBar from "../../../components/UI/SearchBar/SearchBar.jsx";
 import { useEffect, useState } from "react";
 
 import UiAppBar from "../../../components/AppBar/AppBar.jsx";
-import { defaultLight } from "../../../themes/themes.js";
-
 import { useNavigate } from "react-router-dom";
 import getDataTurmas from "./core/GetDataTurmas.jsx";
 import classes from "./ClassesPage.Style.js";
+import Theme from "../../../theme.jsx";
 
 // ? Styles #########################
 
@@ -52,9 +50,8 @@ const ClassesPage = () => {
   }
 
   return (
-    <ThemeProvider theme={defaultLight}>
-      <CssBaseline />
-      <UiAppBar>
+    <Theme>
+      <UiAppBar title={"Turmas"}>
         <SearchBar sx={classes.searchbar}>
           <Button
             variant="contained"
@@ -89,7 +86,7 @@ const ClassesPage = () => {
           ))}
         </Box>
       </UiAppBar>
-    </ThemeProvider>
+    </Theme>
   );
 };
 

@@ -3,10 +3,11 @@ import {
   Box,
   Typography,
   Button,
+
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import classes from "./classes.js";
-import Theme from "../../theme.jsx";
+import UiAppBar from "../AppBar/AppBar.jsx";
 
 export default function EditPage({
   title,
@@ -18,11 +19,8 @@ export default function EditPage({
 }) {
   const navigate = useNavigate();
   return (
-    <Theme>
+    <UiAppBar title={"Editar "+title}>
       <Box sx={classes.principalBox}>
-        <Box sx={classes.topCard}>
-          <Typography variant="h3">{title}</Typography>
-        </Box>
         <Box sx={classes.boxComponents}>
           <Box sx={classes.typographyBox}>
             <Typography marginBottom="20px" variant="h4">
@@ -62,6 +60,6 @@ export default function EditPage({
           </Box>
         </Box>
       </Box>
-    </Theme>
+    </UiAppBar>
   );
 }

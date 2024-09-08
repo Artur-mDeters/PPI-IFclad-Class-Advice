@@ -3,49 +3,57 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { TextField, Typography } from "@mui/material";
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
+  TextField,
+  Typography,
   Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
-import Theme from "../../../../theme";
-// import { defaultDark } from "../../../../themes/themes";
+import ConfirmDeleteDialog from "../../../../components/UI/confirmDeleteDialog/ConfirmDeteteDialog";
+
+const getTeachersData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3030/professores");
+    return response.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const EditCourse = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [courseData, setCourseData] = useState({ nome: "", padrao: "" });
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [password, setPassword] = useState("");
-
-  const getCourseData = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3030/cursos/" + id
-      );
-      return response.data;
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const [courseData, setCourseData] = useState({ nome: "", padrao: "", coordenador: "" });
+  const [errors, setErrors] = useState({ nome: "", padrao: "", coordenador: "" });
+  const [dialogOpen, setDialogOpen] = useState(false); // Estado para controlar o diálogo de exclusão
+  const [teacherData, setTeacherData] = useState([]);
 
   useEffect(() => {
     const setDataOnce = async () => {
       try {
-        const result = await getCourseData();
+        const result = await axios.get("http://localhost:3030/cursos/" + id);
         setCourseData(result);
       } catch (err) {
         console.error(err);
       }
     };
 
+    const fetchTeachers = async () => {
+      try {
+        const teachers = await getTeachersData();
+        setTeacherData(teachers);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     setDataOnce();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchTeachers();
   }, [id]);
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,31 +70,58 @@ const EditCourse = () => {
       formattedValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
     }
 
+    setCourseData((prevState) => ({
+      ...prevState,
+      [name]: formattedValue,
+    }));
+  };
 
-    try {
-      setCourseData((prevState) => {
-        const inputsChange = { ...prevState[0], [name]: formattedValue };
-        return [inputsChange];
-      });
-    } catch (err) {
-      console.error(err);
+  const handleCoordinatorChange = (e) => {
+    setCourseData((prevState) => ({
+      ...prevState,
+      coordenador: e.target.value,
+    }));
+  };
+
+  const validateFields = () => {
+    let valid = true;
+    const newErrors = { nome: "", padrao: "", coordenador: "" };
+
+    if (!courseData.nome) {
+      newErrors.nome = "O nome do curso é obrigatório.";
+      valid = false;
     }
+
+    if (!courseData.padrao || courseData.padrao.length !== 1) {
+      newErrors.padrao = "O padrão deve ser um número de 1 dígito.";
+      valid = false;
+    }
+
+    if (!courseData.coordenador) {
+      newErrors.coordenador = "O coordenador é obrigatório.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const saveAndRedirect = async () => {
-    console.log(courseData);
-    try {
-      const response = await axios.put(
-        "http://localhost:3030/cursos/edit/" + id,
-        {
-          name: courseData[0]?.nome,
-          pattern: courseData[0]?.padrao,
-        }
-      );
-      console.log(response);
-      navigate("/cursos");
-    } catch (err) {
-      console.error(err);
+    if (validateFields()) {
+      try {
+        const response = await axios.put(
+          "http://localhost:3030/cursos/edit/" + id,
+          {
+            name: courseData.nome,
+            pattern: courseData.padrao,
+            coordinator: courseData.coordenador, // Adiciona o coordenador
+          }
+        );
+        console.log(response);
+        navigate("/cursos");
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -94,38 +129,21 @@ const EditCourse = () => {
     setDialogOpen(true);
   };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
 
-  const handleDeleteConfirm = async () => {
-    if (password === "123") {
-      try {
-        const response = await axios.delete(
-          `http://localhost:3030/cursos/${id}`
-        );
-        console.log(response);
-        navigate("/cursos");
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      alert("Senha incorreta!");
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3030/cursos/${id}`);
+      navigate("/cursos");
+    } catch (err) {
+      console.error(err);
     }
-    setDialogOpen(false);
-    setPassword("");
   };
 
-  const handleDeleteCancel = () => {
-    setDialogOpen(false);
-    setPassword("");
-  };
 
-  
   return (
     <>
       <EditPage
-        title="Editar Curso"
+        title="Curso"
         buttonSaveFunction={saveAndRedirect}
         buttonExcludeFunction={handleDeleteClick}
         buttonExcludeName="Excluir Curso"
@@ -134,53 +152,55 @@ const EditCourse = () => {
         <Box width={"100%"} textAlign={"center"}>
           <TextField
             fullWidth
-            id="courseName"
+            id="nameCourse"
             name="nome"
             label="Nome"
-            value={courseData[0]?.nome || ""}
+            value={courseData.nome || ""}
             onChange={handleInputChange}
             margin="dense"
+            error={!!errors.nome}
+            helperText={errors.nome}
           />
+          <FormControl fullWidth margin="dense" error={!!errors.coordenador}>
+            <InputLabel id="labelCoordenador">Coordenador</InputLabel>
+            <Select
+              labelId="labelCoordenador"
+              value={courseData.coordenador || ""}
+              onChange={handleCoordinatorChange}
+              label="Coordenador"
+            >
+              {teacherData.map((teacher) => (
+                <MenuItem key={teacher.id_usuario} value={teacher.id_usuario}>
+                  {teacher.nome}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>{errors.coordenador}</FormHelperText>
+          </FormControl>
           <Box>
             <TextField
-              id="pattern"
               name="padrao"
               label="Padrão de nome de turma"
               margin="dense"
-              value={courseData[0]?.padrao || ""}
+              value={courseData.padrao || ""}
               onChange={handleInputChange}
+              error={!!errors.padrao}
+              helperText={errors.padrao}
             />
           </Box>
+          
         </Box>
         <Typography variant="body1" textAlign="center">
-          O padrão de nome de turma segue o formato T+(número do
-          período)+(número do curso), onde o último número identifica o curso
-          técnico. Insira o número que corresponde ao curso!
+          O padrão de nome de turma segue o formato T+(número do período)+(número do curso), onde o último número identifica o curso técnico. Insira o número que corresponde ao curso!
         </Typography>
       </EditPage>
 
-      <Theme>
-        <Dialog open={dialogOpen} onClose={handleDeleteCancel}>
-          <DialogTitle>Confirmação de Exclusão</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="password"
-              label="Senha"
-              type="password"
-              fullWidth
-              variant="standard"
-              value={password}
-              onChange={handlePasswordChange}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDeleteCancel} variant="contained">Cancelar</Button>
-            <Button onClick={handleDeleteConfirm} variant="contained" color="error">Excluir</Button>
-          </DialogActions>
-        </Dialog>
-      </Theme>
+      <ConfirmDeleteDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleDelete}
+        textAlert="este curso ( incluindo os alunos )"
+      />
     </>
   );
 };

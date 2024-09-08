@@ -1,7 +1,7 @@
 const classes = {
   principalBox: {
-    width: "100vw",
-    height: "100vh",
+    width: "100%",
+    height: "100%",
   },
   topCard: {
     width: "100%",

@@ -71,7 +71,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 // eslint-disable-next-line react/prop-types
-export default function UiAppBar({ children }) {
+export default function UiAppBar({ children, title }) {
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(true);
@@ -99,11 +99,10 @@ export default function UiAppBar({ children }) {
   return (
     <Theme>
       <Box sx={{ display: "flex" }}>
-        {/* <CssBaseline /> */}
         <Drawer
           variant="permanent"
           open={open || mouseOver}
-          // onMouseEnter={handleMouseEnter}
+          // onMouseEnter={handleMouseEnter} // ! para a funcionalidade de abrir e fechar com o hover do mouse -> temporariamente removida
           // onMouseLeave={handleMouseLeave}
         >
           <List
@@ -111,11 +110,7 @@ export default function UiAppBar({ children }) {
             sx={{ display: "flex", flexDirection: "column", height: "100%" }}
           >
             <Box className="AppBoxLogo" onClick={() => navigate("/")}>
-              <img
-                src={logo}
-                alt="IF"
-                className="imglogo"
-              />
+              <img src={logo} alt="IF" className="imglogo" />
               <Typography
                 variant="h6"
                 color="white"
@@ -188,16 +183,27 @@ export default function UiAppBar({ children }) {
           </List>
         </Drawer>
         <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: "24px",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
-              <Avatar />
-            </Stack>
-          </Toolbar>
+          <Box sx={{ display: "flex", alignItems: 'center' }}>
+            <Box sx={{ flex: 1, marginLeft: '20px' }}>
+              <Typography variant="h3">{title}</Typography>
+            </Box>
+            <Box>
+              <Toolbar
+                sx={{
+                  pr: "24px",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Stack
+                  spacing={2}
+                  direction="row"
+                  sx={{ alignItems: "center" }}
+                >
+                  <Avatar />
+                </Stack>
+              </Toolbar>
+            </Box>
+          </Box>
         </AppBar>
         <Box
           component="main"

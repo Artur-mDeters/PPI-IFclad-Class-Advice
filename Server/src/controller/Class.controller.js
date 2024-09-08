@@ -43,11 +43,11 @@ exports.addClass = async (req, res) => {
 
 exports.editClass = async (req, res) => {
   const id_class = req.params.id;
-  const { start_year, name, course } = req.body;
+  const { start_year, name, id_course } = req.body;
   try {
     const result = await db.query(
       "UPDATE turma SET nome = $1, ano_inicio = $2, fk_curso_id_curso = $3 WHERE id_turma = $4 ",
-      [name, start_year, course ,id_class ]
+      [name, start_year, id_course ,id_class ]
     );
     res.send(result);
   } catch (err) {
