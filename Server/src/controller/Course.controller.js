@@ -11,7 +11,7 @@ exports.getCourses = async (req, res) => {
 };
 
 exports.getCourseByID = async (req, res) => {
-  const { id_course } = req.params.id;
+  const id_course = req.params.id;
   try {
     const response = await db.query("SELECT * FROM curso WHERE id_curso = $1", [
       id_course,

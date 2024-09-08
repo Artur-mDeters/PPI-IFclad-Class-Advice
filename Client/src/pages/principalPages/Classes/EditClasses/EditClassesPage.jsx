@@ -6,6 +6,7 @@ import {
   FormControl,
   MenuItem,
   InputLabel,
+  FormHelperText
 } from "@mui/material";
 import axios from "axios";
 import EditPage from "../../../../components/createAndEditPages/EditPage";
@@ -30,6 +31,16 @@ const getClassesData = async () => {
   }
 };
 
+const getDataClassByID = async (id) => {
+  try {
+    const response = await axios.get("http://localhost:3030/turmas/"+id)
+    return response.data[0]
+  } catch(err) { 
+    throw new Error(err)
+  }
+}
+
+
 const EditClassesPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,6 +54,9 @@ const EditClassesPage = () => {
   });
   const [error, setError] = useState(""); // Para armazenar mensagens de erro
   const [classesDataToCompare, setClassesDataToCompare] = useState([]); // Para armazenar turmas existentes
+  const [name, setName] = useState("")
+
+  const age = classData.ano_inicio
 
   const setCourseNamePattern = () => {
     courseData.map((data) => {
@@ -51,6 +65,8 @@ const EditClassesPage = () => {
       }
     });
   };
+
+  console.table(classData)
 
   const handleInput = (e, alterThis) => {
     const { value } = e.target;
@@ -119,17 +135,38 @@ const EditClassesPage = () => {
   };
 
   useEffect(() => {
-    const fetchClassesData = async () => {
+
+    
+
+    const setData = async () => {
       try {
         const existingClasses = await getClassesData();
+        const classToEdit = await getDataClassByID(id)
+
         setClassesDataToCompare(existingClasses);
+        setClassData(classToEdit)
+
       } catch (error) {
-        console.error("Erro ao buscar as turmas:", error);
+        throw new Error(error)
       }
     };
-
-    fetchClassesData();
+    
+    
+    setData();
   }, []);
+
+  useEffect(() => {
+
+    const setCourseName = () => {
+      courseData.map((data) => {
+        if (data.id_curso == classData?.fk_curso_id_curso) {
+          setName(data.nome);
+        }
+      });
+    };
+  
+    setCourseName()
+  }, [courseData]);
 
   useEffect(() => {
     const setDataOnce = async () => {
@@ -145,6 +182,7 @@ const EditClassesPage = () => {
     setCourseNamePattern();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, classData.course]);
+  
 
   return (
     <EditPage
@@ -169,7 +207,9 @@ const EditClassesPage = () => {
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>curso atual: {name}</FormHelperText>
       </FormControl>
+
       <FormControl fullWidth>
         <InputLabel id="nome">Nome</InputLabel>
         <Select
@@ -191,7 +231,9 @@ const EditClassesPage = () => {
                 </Alert>
               ))}
         </Select>
+        <FormHelperText>nome atual: {classData.nome}</FormHelperText>
       </FormControl>
+
       <FormControl fullWidth>
         <InputLabel id="ano">Ano de Início</InputLabel>
         <Select
@@ -209,8 +251,9 @@ const EditClassesPage = () => {
           <MenuItem value={2019}>2019</MenuItem>
           <MenuItem value={2018}>2018</MenuItem>
         </Select>
+        <FormHelperText>ano de inicio atual: {age}</FormHelperText>
       </FormControl>
-
+              
       {error && <Alert severity="error">{error}</Alert>} {/* Exibir erros, se houver */}
     </EditPage>
   );
