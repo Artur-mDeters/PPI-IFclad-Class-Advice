@@ -1,7 +1,9 @@
 const classes = {
-    boxAlunos: {
+    boxSubject: {
       display: "flex",
       gap: "10px",
+      width: '100%',
+      justifyContent: 'center',
       flexWrap: "wrap",
     },
     paperSubject: {
@@ -12,23 +14,16 @@ const classes = {
       margin: "15px",
       padding: "20px",
     },
-    flex1: {
-      flex: 1,
-      cursor: "pointer"
+    boxFlex: {
+      display: 'flex',
+      height: '100%',
+      alignItems: 'center',
+      cursor: "pointer",
+      width: '100%'
     },
-    buttonBoxPaper: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      height: "100%",
+    boxTypography: {
+      flex: 1
     },
-    searchbar: {
-      position: 'fixed'
-    },
-    foto: {
-        width: "100%",
-        textAlign: 'center'
-    }
   };
   
   export default classes;

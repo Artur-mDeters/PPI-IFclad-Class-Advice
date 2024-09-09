@@ -31,6 +31,7 @@ import EditClassesPage from './pages/principalPages/Classes/EditClasses/EditClas
 //* Subjects Imports
 import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
 import CreateSubjectPage from './pages/principalPages/Subject/CreateSubject/CreateSubjectPage.jsx'
+import EditSubjectPage from './pages/principalPages/Subject/EditSubject/EditSubjectPage.jsx'
 
 
 //* imports from other pages
@@ -132,6 +133,11 @@ const route = createBrowserRouter([
   {
     path: "/disciplinas/create",
     element: <CreateSubjectPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/disciplinas/edit/:id",
+    element: <EditSubjectPage />,
     errorElement: <ErrorPage />,
   },
   {

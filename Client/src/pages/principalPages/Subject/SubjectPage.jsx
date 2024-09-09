@@ -39,18 +39,26 @@ const SubjectPage = () => {
           Adicionar Disciplina
         </Button>
       </SearchBar>
-      <Box sx={classes.boxAlunos}>
+      <Box sx={classes.boxSubject}>
         {subjectData.map((subject) => (
           <Paper
-            key={subject.id_aluno}
+            key={subject.id_disciplina}
             elevation={8}
             sx={classes.paperSubject}
             // onClick={() => redirectToEditAluno(aluno.id_aluno)}
           >
-            <Box>
-              <Typography variant="h5">{subject.nome}</Typography>
-              <Typography variant="body1">{subject.matricula}</Typography>
-              <Button variant="contained">editar disciplina</Button>
+            <Box sx={classes.boxFlex}>
+              <Box sx={classes.boxTypography}>
+                <Typography variant="h5">{subject.nome}</Typography>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("./edit/" + subject.id_disciplina)}
+                >
+                  editar disciplina
+                </Button>
+              </Box>
             </Box>
           </Paper>
         ))}

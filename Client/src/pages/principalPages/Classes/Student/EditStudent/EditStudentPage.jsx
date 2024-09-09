@@ -3,6 +3,7 @@ import axios from "axios";
 import classes from "./EditAluno.style";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ConfirmDeleteDialog from "../../../../../components/UI/confirmDeleteDialog/ConfirmDeteteDialog";
 
 import {
   Box,
@@ -16,6 +17,7 @@ import {
 const EditStudentPage = () => {
   const { idAluno: idStudent, id } = useParams();
   const [studentData, setStudentData] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false); // Estado para controlar o diálogo de exclusão
   const navigate = useNavigate();
 
   const getStudentData = async () => {
@@ -27,6 +29,11 @@ const EditStudentPage = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+
+  const handleDeleteClick = () => {
+    setDialogOpen(true);
   };
 
   useEffect(() => {
@@ -106,7 +113,7 @@ const EditStudentPage = () => {
     }
   };
 
-  const handleExclude = async () => {
+  const handleDelete = async () => {
     try {
       await axios.delete("http://localhost:3030/alunos/" + idStudent);
       navigate("../turmas/" + id + "/alunos");
@@ -114,16 +121,18 @@ const EditStudentPage = () => {
       console.error(err);
     }
   };
+  
 
   console.log(studentData[0]);
 
   return (
+    <>
     <EditPage
       title={"Editar aluno: " + studentData[0]?.nome || ""}
       buttonExcludeName="excluir aluno"
       buttonSaveFunction={handleSave}
       returnTo={"../turmas/" + id + "/alunos"}
-      buttonExcludeFunction={handleExclude}
+      buttonExcludeFunction={handleDeleteClick}
     >
       <Box sx={classes.principalBox}>
         <Box sx={classes.boxInputs}>
@@ -212,6 +221,13 @@ const EditStudentPage = () => {
         </Box>
       </Box>
     </EditPage>
+    <ConfirmDeleteDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleDelete}
+        textAlert="este curso ( incluindo os alunos )"
+      />
+    </>
   );
 };
 

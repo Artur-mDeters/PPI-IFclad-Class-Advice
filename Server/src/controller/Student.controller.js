@@ -57,7 +57,7 @@ exports.updateStudent = async (req, res) => {
 };
 
 exports.excludeStudent = async (req, res) => {
-  const idStudent = req.params.idAluno;
+  const idStudent = req.params.idStudent;
   try {
     await db.query(`DELETE FROM aluno WHERE id_aluno = $1`, [ idStudent ] )
     res.status(205).send("ok")
