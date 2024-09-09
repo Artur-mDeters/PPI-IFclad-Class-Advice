@@ -4,17 +4,24 @@ import classes from "./EditAluno.style";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { Box, TextField } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Select,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
 
 const EditStudentPage = () => {
-  const { idAluno, id } = useParams();
-  const [studentData, setDataAluno] = useState([]);
+  const { idAluno: idStudent, id } = useParams();
+  const [studentData, setStudentData] = useState([]);
   const navigate = useNavigate();
 
-  const getDataAluno = async () => {
+  const getStudentData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3030/alunos/" + idAluno
+        "http://localhost:3030/alunos/" + idStudent
       );
       return response.data;
     } catch (err) {
@@ -25,8 +32,8 @@ const EditStudentPage = () => {
   useEffect(() => {
     const setDataOnce = async () => {
       try {
-        const result = await getDataAluno();
-        setDataAluno(result);
+        const result = await getStudentData();
+        setStudentData(result);
       } catch (err) {
         console.error(err);
       }
@@ -34,19 +41,64 @@ const EditStudentPage = () => {
 
     setDataOnce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idAluno]);
+  }, [idStudent]);
 
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setDataAluno((prevState) => {
-      const updatedAluno = { ...prevState[0], [id]: value };
+    const { id, name, value } = e.target;
+
+    const field = id || name; // Usar 'id' para TextField e 'name' para Select
+
+    let formattedValue = value;
+
+    if (field === "nascimento") {
+      // Remove caracteres não numéricos e limita a 8 dígitos
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
+
+      // Formata a data
+      formattedValue = digitsOnly;
+      if (formattedValue.length > 2) {
+        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(
+          2
+        )}`;
+      }
+      if (formattedValue.length > 5) {
+        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(
+          5
+        )}`;
+      }
+    } else if (field === "matricula") {
+      formattedValue = value.replace(/[^\d]/g, "");
+      
+      if (formattedValue.length <= 4) {
+        formattedValue = 2024;
+      }
+    } else if (field === "uf") {
+      if (formattedValue.length > 2) {
+        return;
+      } else {
+        formattedValue = value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+      }
+    }
+
+    setStudentData((prevState) => {
+      const updatedAluno = { ...prevState[0], [field]: formattedValue };
       return [updatedAluno];
     });
   };
 
   const handleSave = async () => {
     try {
-      await axios.put("http://localhost:3030/alunos/" + idAluno, studentData[0]);
+      await axios.put("http://localhost:3030/alunos/" + idStudent, {
+        name: studentData[0]?.nome,
+        registration: studentData[0]?.matricula,
+        email: studentData[0]?.email,
+        gender: studentData[0]?.sexo,
+        dateOfBirth: studentData[0]?.nascimento,
+        city: studentData[0]?.cidade,
+        federativeUnity: studentData[0]?.uf,
+        internal: studentData[0]?.interno,
+      });
+
       navigate("../turmas/" + id + "/alunos");
     } catch (err) {
       console.error(err);
@@ -56,12 +108,14 @@ const EditStudentPage = () => {
 
   const handleExclude = async () => {
     try {
-      await axios.delete("http://localhost:3030/alunos/" + idAluno);
+      await axios.delete("http://localhost:3030/alunos/" + idStudent);
       navigate("../turmas/" + id + "/alunos");
     } catch (err) {
       console.error(err);
     }
   };
+
+  console.log(studentData[0]);
 
   return (
     <EditPage
@@ -99,14 +153,20 @@ const EditStudentPage = () => {
             value={studentData[0]?.email || ""}
             onChange={handleInputChange}
           />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="sexo"
-            label="Sexo"
-            value={studentData[0]?.sexo || ""}
-            onChange={handleInputChange}
-          />
+          <FormControl margin="dense" fullWidth>
+            <InputLabel id="gender_label">Sexo</InputLabel>
+            <Select
+              labelId="gender_label"
+              label="Sexo"
+              name="sexo"
+              variant="outlined"
+              value={studentData[0]?.sexo || ""} // Exibe o valor atual ou uma string vazia
+              onChange={handleInputChange}
+            >
+              <MenuItem value="masculino">Masculino</MenuItem>
+              <MenuItem value="feminino">Feminino</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         <Box sx={classes.boxInputs}>
           <TextField
@@ -135,14 +195,20 @@ const EditStudentPage = () => {
             value={studentData[0]?.uf || ""}
             onChange={handleInputChange}
           />
-          <TextField
-            fullWidth
-            margin="dense"
-            id="interno"
-            label="Interno"
-            value={studentData[0]?.interno || ""}
-            onChange={handleInputChange}
-          />
+          <FormControl margin="dense" fullWidth>
+            <InputLabel id="internal_label">Interno</InputLabel>
+            <Select
+              labelId="internal_label"
+              label="Interno"
+              name="interno"
+              variant="outlined"
+              value={studentData[0]?.interno || ""} // Use o valor atual ou uma string vazia
+              onChange={handleInputChange}
+            >
+              <MenuItem value="Sim">Sim</MenuItem>
+              <MenuItem value="Não">Não</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
       </Box>
     </EditPage>

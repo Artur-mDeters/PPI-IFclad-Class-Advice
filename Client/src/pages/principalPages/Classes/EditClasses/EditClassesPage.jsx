@@ -6,9 +6,11 @@ import {
   FormControl,
   MenuItem,
   InputLabel,
+  FormHelperText
 } from "@mui/material";
 import axios from "axios";
 import EditPage from "../../../../components/createAndEditPages/EditPage";
+import ConfirmDeleteDialog from "../../../../components/UI/confirmDeleteDialog/ConfirmDeteteDialog";
 
 const getCourseData = async () => {
   try {
@@ -30,6 +32,15 @@ const getClassesData = async () => {
   }
 };
 
+const getDataClassByID = async (id) => {
+  try {
+    const response = await axios.get("http://localhost:3030/turmas/"+id);
+    return response.data[0];
+  } catch (err) { 
+    throw new Error(err);
+  }
+};
+
 const EditClassesPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -41,15 +52,15 @@ const EditClassesPage = () => {
     age: "",
     course: "",
   });
-  const [error, setError] = useState(""); // Para armazenar mensagens de erro
+  const [errors, setErrors] = useState({ name: "", age: "", course: "" }); // Para erros específicos
   const [classesDataToCompare, setClassesDataToCompare] = useState([]); // Para armazenar turmas existentes
+  const [dialogOpen, setDialogOpen] = useState(false); // Estado para controlar o diálogo de exclusão
 
   const setCourseNamePattern = () => {
-    courseData.map((data) => {
-      if (data.id_curso == classData?.course) {
-        setPattern(data.padrao);
-      }
-    });
+    const selectedCourse = courseData.find(data => data.id_curso === classData?.course);
+    if (selectedCourse) {
+      setPattern(selectedCourse.padrao);
+    }
   };
 
   const handleInput = (e, alterThis) => {
@@ -62,19 +73,23 @@ const EditClassesPage = () => {
 
   const validateFields = () => {
     const currentClass = classData;
-    
-    // Verificar se todos os campos estão preenchidos
+    const newErrors = { name: "", age: "", course: "" };
+    let valid = true;
+
     if (!currentClass?.age) {
-      setError("O campo 'Ano de Início' é obrigatório.");
-      return false;
+      newErrors.age = "O campo 'Ano de Início' é obrigatório.";
+      valid = false;
     }
     if (!currentClass?.course) {
-      setError("O campo 'Curso' é obrigatório.");
-      return false;
+      newErrors.course = "O campo 'Curso' é obrigatório.";
+      valid = false;
     }
     if (!currentClass?.name) {
-      setError("O campo 'Nome' é obrigatório.");
-      return false;
+      newErrors.name = "O campo 'Nome' é obrigatório.";
+      valid = false;
+    } else if (!currentClass?.course) {
+      newErrors.name = "Escolha um curso primeiro.";
+      valid = false;
     }
 
     // Verificar se a turma já existe com base no 'name', 'age' e 'course'
@@ -86,12 +101,12 @@ const EditClassesPage = () => {
     );
 
     if (isClassDuplicate) {
-      setError("Já existe uma turma com essas mesmas informações.");
-      return false;
+      newErrors.name = "Já existe uma turma com essas mesmas informações.";
+      valid = false;
     }
 
-    setError(""); // Sem erros
-    return true;
+    setErrors(newErrors);
+    return valid;
   };
 
   const saveAndRedirect = async () => {
@@ -100,7 +115,7 @@ const EditClassesPage = () => {
         await axios.put(`http://localhost:3030/turmas/editar/${id}`, {
           name: classData?.name,
           start_year: classData?.age,
-          course: classData?.course,
+          id_course: classData?.course,
         });
         navigate("/turmas");
       } catch (err) {
@@ -119,100 +134,120 @@ const EditClassesPage = () => {
   };
 
   useEffect(() => {
-    const fetchClassesData = async () => {
+    const setData = async () => {
       try {
         const existingClasses = await getClassesData();
+        const classToEdit = await getDataClassByID(id);
+
         setClassesDataToCompare(existingClasses);
+        setClassData(classToEdit);
+
       } catch (error) {
-        console.error("Erro ao buscar as turmas:", error);
+        console.error(error);
       }
     };
-
-    fetchClassesData();
-  }, []);
+    
+    setData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   useEffect(() => {
     const setDataOnce = async () => {
       try {
         const result = await getCourseData();
         setCourseData(result);
+        setCourseNamePattern();
       } catch (err) {
         console.error(err);
       }
     };
 
     setDataOnce();
-    setCourseNamePattern();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, classData.course]);
 
   return (
-    <EditPage
-      title="Editar Turma"
-      buttonSaveFunction={saveAndRedirect}
-      buttonExcludeFunction={handleDelete}
-      buttonExcludeName="Excluir Turma"
-      returnTo="/turmas"
-    >
-      <FormControl fullWidth>
-        <InputLabel id="curso">Curso</InputLabel>
-        <Select
-          labelId="curso"
-          id="curso"
-          label="Curso"
-          onChange={(e) => handleInput(e, "course")}
-          value={classData.course || ""}
-        >
-          {courseData.map((course) => (
-            <MenuItem key={course.id_curso} value={course.id_curso}>
-              {course.nome}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="nome">Nome</InputLabel>
-        <Select
-          labelId="nome"
-          id="nome"
-          label="Nome"
-          onChange={(e) => handleInput(e, "name")}
-          value={classData.name || ""}
-        >
-          {pattern !== undefined
-            ? [1, 2, 3].map((className) => (
-                <MenuItem key={className} value={"T" + className + pattern}>
-                  {"T" + className + pattern}
-                </MenuItem>
-              ))
-            : [0].map((a) => (
-                <Alert severity="error" key={a}>
-                  Escolha um curso!
-                </Alert>
-              ))}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="ano">Ano de Início</InputLabel>
-        <Select
-          labelId="ano"
-          id="ano"
-          label="Ano de Início"
-          onChange={(e) => handleInput(e, "age")}
-          value={classData.age || ""}
-        >
-          <MenuItem value={2024}>2024</MenuItem>
-          <MenuItem value={2023}>2023</MenuItem>
-          <MenuItem value={2022}>2022</MenuItem>
-          <MenuItem value={2021}>2021</MenuItem>
-          <MenuItem value={2020}>2020</MenuItem>
-          <MenuItem value={2019}>2019</MenuItem>
-          <MenuItem value={2018}>2018</MenuItem>
-        </Select>
-      </FormControl>
+    <>
+      <EditPage
+        title="Turma"
+        buttonSaveFunction={saveAndRedirect}
+        buttonExcludeFunction={() => setDialogOpen(true)} // Abre o diálogo de exclusão
+        buttonExcludeName="Excluir Turma"
+        returnTo="/turmas"
+      >
+        <FormControl fullWidth margin="dense" error={!!errors.course}>
+          <InputLabel id="curso">Curso</InputLabel>
+          <Select
+            labelId="curso"
+            id="curso"
+            label="Curso"
+            onChange={(e) => handleInput(e, "course")}
+            value={classData.course || ""}
+          >
+            {courseData.map((course) => (
+              <MenuItem key={course.id_curso} value={course.id_curso}>
+                {course.nome}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>{errors.course}</FormHelperText>
+        </FormControl>
 
-      {error && <Alert severity="error">{error}</Alert>} {/* Exibir erros, se houver */}
-    </EditPage>
+        <FormControl fullWidth margin="dense" error={!!errors.name}>
+          <InputLabel id="nome">Nome</InputLabel>
+          <Select
+            labelId="nome"
+            id="nome"
+            label="Nome"
+            onChange={(e) => handleInput(e, "name")}
+            value={classData.name || ""}
+            disabled={!classData.course} // Desabilita o campo se o curso não for selecionado
+          >
+            {pattern !== undefined
+              ? [1, 2, 3].map((className) => (
+                  <MenuItem key={className} value={"T" + className + pattern}>
+                    {"T" + className + pattern}
+                  </MenuItem>
+                ))
+              : [0].map((a) => (
+                  <Alert severity="error" key={a}>
+                    Escolha um curso!
+                  </Alert>
+                ))}
+          </Select>
+          <FormHelperText>
+            {!classData.course ? "Escolha um curso primeiro." : errors.name}
+          </FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth margin="dense" error={!!errors.age}>
+          <InputLabel id="ano">Ano de Início</InputLabel>
+          <Select
+            labelId="ano"
+            id="ano"
+            label="Ano de Início"
+            onChange={(e) => handleInput(e, "age")}
+            value={classData.age || ""}
+          >
+            <MenuItem value={2024}>2024</MenuItem>
+            <MenuItem value={2023}>2023</MenuItem>
+            <MenuItem value={2022}>2022</MenuItem>
+            <MenuItem value={2021}>2021</MenuItem>
+            <MenuItem value={2020}>2020</MenuItem>
+            <MenuItem value={2019}>2019</MenuItem>
+            <MenuItem value={2018}>2018</MenuItem>
+          </Select>
+          <FormHelperText>{errors.age}</FormHelperText>
+        </FormControl>
+      </EditPage>
+
+      <ConfirmDeleteDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleDelete}
+        textAlert="este curso ( incluindo os alunos )"
+      />
+    </>
   );
 };
 

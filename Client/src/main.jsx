@@ -28,13 +28,16 @@ import ClassesPage from './pages/principalPages/Classes/ClassesPage.jsx'
 import CreateClassesPage from './pages/principalPages/Classes/CreateClasses/CreateClassesPage.jsx'
 import EditClassesPage from './pages/principalPages/Classes/EditClasses/EditClassesPage.jsx'
 
-//* school discipline
+//* Subjects Imports
 import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
+import CreateSubjectPage from './pages/principalPages/Subject/CreateSubject/CreateSubjectPage.jsx'
+
 
 //* imports from other pages
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
 import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
+
 
 
 
@@ -120,9 +123,15 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   
+  // ! Subjects page routes
   {
     path: "/disciplinas",
     element: <SubjectPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/disciplinas/create",
+    element: <CreateSubjectPage />,
     errorElement: <ErrorPage />,
   },
   {

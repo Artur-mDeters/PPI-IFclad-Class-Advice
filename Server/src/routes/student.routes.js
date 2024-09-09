@@ -10,12 +10,12 @@ routes.post('/alunos', studentController.addStudent);
 routes.get('/:idTurma/alunos', studentController.getStudent);
 
 // Obtém um aluno específico pelo ID
-routes.get('/alunos/:idAluno', studentController.getStudentByID);
+routes.get('/alunos/:idStudent', studentController.getStudentByID);
 
 // Atualiza um aluno específico pelo ID
-routes.put('/alunos/:idAluno', studentController.updateStudent);
+routes.put('/alunos/:idStudent', studentController.updateStudent);
 
 // Exclui um aluno específico pelo ID
-routes.delete('/alunos/:idAluno', studentController.excludeStudent);
+routes.delete('/alunos/:idStudent', studentController.excludeStudent);
 
 module.exports = routes;

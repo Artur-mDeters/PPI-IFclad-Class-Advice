@@ -1,6 +1,6 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
-import { defaultDark } from "../../../themes/themes";
+
 import { useEffect, useState } from "react";
 import getCourseData from "./core/GetCourseData";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +8,6 @@ import classes from "./Course.Style"
 import {
   Box,
   Button,
-  CssBaseline,
-  ThemeProvider,
   Paper,
   Typography,
   Divider,
@@ -44,9 +42,7 @@ const CoursePage = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
-      <UiAppBar>
+      <UiAppBar title={"Cursos"}>
         <SearchBar>
           <Button variant="contained" onClick={redirectToCourseCreatePage}>
             Adicionar Curso
@@ -91,7 +87,6 @@ const CoursePage = () => {
           ))}
         </Box>
       </UiAppBar>
-    </ThemeProvider>
   );
 };
 

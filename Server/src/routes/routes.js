@@ -7,6 +7,7 @@ const routeClass = require('./class.routes')
 const routeTeachers = require('./teacher.routes')
 const routeCourses = require('./course.routes')
 const routeStudents = require('./student.routes')
+const routeSubjects = require('./subject.routes')
 
 routes.use(routeUsers)
 routes.use(routeLogin)
@@ -14,5 +15,6 @@ routes.use(routeClass)
 routes.use(routeTeachers)
 routes.use(routeCourses)
 routes.use(routeStudents)
+routes.use(routeSubjects)
 
 module.exports = routes
