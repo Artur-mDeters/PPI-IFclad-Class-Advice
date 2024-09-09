@@ -38,7 +38,7 @@ const Teacher = () => {
   }, []);
 
   const redirectToRegister = () => {
-    navigate("/register");
+    navigate("./create");
   };
 
   const redirectToProfessor = (id) => {

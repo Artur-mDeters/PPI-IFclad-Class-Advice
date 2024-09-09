@@ -17,6 +17,7 @@ import EditCourse from './pages/principalPages/Course/EditCourse/EditCourse.jsx'
 //* Teachers pages imports
 import TeacherPage from './pages/principalPages/Teacher/TeacherPage.jsx'
 import TeacherByIDPage from './pages/principalPages/Teacher/teacherByID/TeacherByIDPage.jsx'
+import AddTeacher from './pages/principalPages/Teacher/AddTeacher/AddTeacher.jsx'
 
 //* Student pages imports
 import StudentPage from "./pages/principalPages/Classes/Student/StudentPage.jsx"
@@ -123,7 +124,11 @@ const route = createBrowserRouter([
     element: <TeacherByIDPage />,
     errorElement: <ErrorPage />,
   },
-  
+  {
+    path: "/professores/create",
+    element: <AddTeacher />,
+    errorElement: <ErrorPage />,
+  },
   // ! Subjects page routes
   {
     path: "/disciplinas",
@@ -140,6 +145,7 @@ const route = createBrowserRouter([
     element: <EditSubjectPage />,
     errorElement: <ErrorPage />,
   },
+
   {
     path: "/minha-conta",
     element: <MyAccountPage />,
