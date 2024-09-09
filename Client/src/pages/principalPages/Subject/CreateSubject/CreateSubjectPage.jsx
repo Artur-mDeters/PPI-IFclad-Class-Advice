@@ -8,41 +8,79 @@ import { Box, TextField } from "@mui/material";
 // !inicio da página >>>>>>
 const CreateSubjectPage = () => {
   const navigate = useNavigate();
+  const [subjectData, setSubjectData] = useState([{ nome: "" }]); // Alinhado para refletir o campo correto
+  const [errors, setErrors] = useState({ nome: "" }); // Estados de erro ajustados
 
-  const [subjectData, setSubjectData] = useState([{ nome: "" }]); // Ajustei para refletir o campo correto
+  const validatedFields = () => {
+    let valid = true;
+    const newErrors = { nome: "" }; // Alinhado com o campo correto
+
+    if (!subjectData[0]?.nome) {
+      newErrors.nome = "O nome da disciplina é obrigatório!";
+      valid = false;
+    }
+
+    if (!subjectData[0]?.nome) {
+      newErrors.nome = "O nome da disciplina é obrigatório!";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleInputsChange = (e) => {
     const { name, value } = e.target;
-    setSubjectData((prevState) => {
-      const inputsChange = { ...prevState[0], [name]: value };
-      return [inputsChange];
-    });
+
+    let formattedValue = value
+
+    if (name === "nome") {
+      formattedValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
+    }
+
+    try {
+      setSubjectData((prevState) => {
+        const inputsChange = { ...prevState[0], [name]: formattedValue };
+        return [inputsChange];
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   const saveAndRedirect = async () => {
-    await axios
-      .post("http://localhost:3030/disciplina", {
-        nome: subjectData[0]?.nome, // Alinhei com o campo usado no backend
-      })
-      .then((response) => {
-        console.log(response);
-        navigate("/disciplinas");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    if (validatedFields()) {
+      await axios
+        .post("http://localhost:3030/disciplina", {
+          nome: subjectData[0]?.nome, // Alinhado com o campo usado no backend
+        })
+        .then((response) => {
+          console.log(response);
+          navigate("/disciplinas");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   };
 
   return (
-    <CreatePage Title={"Disciplina"} buttonSaveFunction={saveAndRedirect} returnTo={"/disciplinas"}>
+    <CreatePage
+      Title={"Disciplina"}
+      buttonSaveFunction={saveAndRedirect}
+      returnTo={"/disciplinas"}
+    >
       <Box>
         <TextField
           fullWidth
-          id="nameSubject"
+          id="subjectName"
+          name="nome"
           label="Nome"
-          name="nome" // Alinhei o nome do campo com o back-end
-          value={subjectData[0]?.nome}
+          value={subjectData[0]?.nome || ""}
           onChange={handleInputsChange}
+          margin="dense"
+          error={!!errors.nome} // Corrigido para usar o campo correto
+          helperText={errors.nome} // Mensagem de erro
         />
       </Box>
     </CreatePage>
