@@ -1,8 +1,13 @@
 const db = require('../db/db');
 const { v4: uuidv4 } = require("uuid");
 
-exports.getSubjects = async (req, res) => {
-    // Aqui você pode implementar a lógica para retornar as disciplinas
+exports.getSubjects = async (_req, res) => {
+    try {
+        const response = await db.query("SELECT * FROM disciplina")
+        res.status(200).json(response) 
+    } catch (error) {
+        res.status(500).send("Erro ao encontrar disciplinas: " + error)
+    }
 };
 
 exports.addSubject = async (req, res) => {
