@@ -83,7 +83,7 @@ const CreateCourse = () => {
     }
 
     setErrors(newErrors);
-    return valid;
+    return valid; 
   };
 
   const saveAndRedirect = async () => {
@@ -110,7 +110,7 @@ const CreateCourse = () => {
       buttonSaveFunction={saveAndRedirect}
       returnTo="/cursos"
     >
-      <Box width={"100%"} textAlign={"pcenter"}>
+      <Box width={"100%"} textAlign={"center"}>
         <TextField
           fullWidth
           id="courseName"

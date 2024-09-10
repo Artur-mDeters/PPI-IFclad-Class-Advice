@@ -17,6 +17,7 @@ import EditCourse from './pages/principalPages/Course/EditCourse/EditCourse.jsx'
 //* Teachers pages imports
 import TeacherPage from './pages/principalPages/Teacher/TeacherPage.jsx'
 import TeacherByIDPage from './pages/principalPages/Teacher/teacherByID/TeacherByIDPage.jsx'
+import AddTeacher from './pages/principalPages/Teacher/AddTeacher/AddTeacher.jsx'
 
 //* Student pages imports
 import StudentPage from "./pages/principalPages/Classes/Student/StudentPage.jsx"
@@ -31,12 +32,15 @@ import EditClassesPage from './pages/principalPages/Classes/EditClasses/EditClas
 //* Subjects Imports
 import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
 import CreateSubjectPage from './pages/principalPages/Subject/CreateSubject/CreateSubjectPage.jsx'
+import EditSubjectPage from './pages/principalPages/Subject/EditSubject/EditSubjectPage.jsx'
 
+//* Sectors imports
+import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
+import AddSectors from './pages/principalPages/Sectors/AddSectors/AddSectors.jsx'
 
 //* imports from other pages
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
-import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
 
 
 
@@ -122,7 +126,11 @@ const route = createBrowserRouter([
     element: <TeacherByIDPage />,
     errorElement: <ErrorPage />,
   },
-  
+  {
+    path: "/professores/create",
+    element: <AddTeacher />,
+    errorElement: <ErrorPage />,
+  },
   // ! Subjects page routes
   {
     path: "/disciplinas",
@@ -135,6 +143,23 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/disciplinas/edit/:id",
+    element: <EditSubjectPage />,
+    errorElement: <ErrorPage />,
+  },
+
+  //! Sectors page routes
+  {
+    path: "/setores",
+    element: <SectorsPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/setores/create",
+    element: <AddSectors />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/minha-conta",
     element: <MyAccountPage />,
     errorElement: <ErrorPage />,
@@ -144,11 +169,7 @@ const route = createBrowserRouter([
     element: <ScienceShowPage />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/setores",
-    element: <SectorsPage />,
-    errorElement: <ErrorPage />,
-  },
+  
   
 
   

@@ -1,23 +1,27 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
-import { Box, Button, CssBaseline, ThemeProvider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Button,  } from "@mui/material";
 import SearchBar from "../../../components/UI/SearchBar/SearchBar";
-import { defaultDark } from "../../../themes/themes";
+
 
 
 const SectorsPage = () => {
+  const navigate = useNavigate()
+
+  const redirectToAddSectorPage = () => {
+    navigate("./create")
+  }
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
-      <UiAppBar>
+      <UiAppBar title={"Setores"}>
         <SearchBar>
-          <Button variant="contained">Adicionar Setor</Button>
+          <Button variant="contained" onClick={redirectToAddSectorPage}>Adicionar Setor</Button>
         </SearchBar>
         <Box>
           {/* DataContainer  */}
           
         </Box>
       </UiAppBar>
-    </ThemeProvider>
+
   )
 }
 

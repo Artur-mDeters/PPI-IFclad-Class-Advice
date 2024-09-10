@@ -8,7 +8,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 
 const getSubjectData = async () => {
   try {
-    const response = await axios.get("http://localhost:3030/disciplina");
+    const response = await axios.get("http://localhost:3030/disciplina/");
     return response.data;
   } catch (err) {
     throw new Error(err);
@@ -33,24 +33,32 @@ const SubjectPage = () => {
   };
 
   return (
-    <UiAppBar>
+    <UiAppBar title={"Disciplinas"}>
       <SearchBar>
         <Button variant="contained" onClick={redirectToCreateSubjectPage}>
           Adicionar Disciplina
         </Button>
       </SearchBar>
-      <Box sx={classes.boxAlunos}>
+      <Box sx={classes.boxSubject}>
         {subjectData.map((subject) => (
           <Paper
-            key={subject.id_aluno}
+            key={subject.id_disciplina}
             elevation={8}
             sx={classes.paperSubject}
             // onClick={() => redirectToEditAluno(aluno.id_aluno)}
           >
-            <Box>
-              <Typography variant="h5">{subject.nome}</Typography>
-              <Typography variant="body1">{subject.matricula}</Typography>
-              <Button variant="contained">editar disciplina</Button>
+            <Box sx={classes.boxFlex}>
+              <Box sx={classes.boxTypography}>
+                <Typography variant="h5">{subject.nome}</Typography>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("./edit/" + subject.id_disciplina)}
+                >
+                  editar disciplina
+                </Button>
+              </Box>
             </Box>
           </Paper>
         ))}
