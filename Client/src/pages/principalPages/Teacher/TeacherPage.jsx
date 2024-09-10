@@ -6,12 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import classes from "./TeacherPage.Style";
-import {
-  Box,
-  Button,
-  Typography,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Typography, Paper } from "@mui/material";
 
 const Teacher = () => {
   const [userData, setUserData] = useState([]);
@@ -40,35 +35,49 @@ const Teacher = () => {
   };
 
   const redirectToProfessor = (id) => {
-    navigate("/professores/"+id)
-  }
-
+    navigate("/professores/" + id);
+  };
 
   return (
-      <UiAppBar title="Docentes">
-        <SearchBar>
-          <Button variant="contained" onClick={redirectToRegister}>
-            Adicionar Professor
-          </Button>
-        </SearchBar>
+    <UiAppBar title="Docentes">
+      <SearchBar>
+        <Button variant="contained" onClick={redirectToRegister}>
+          Adicionar Professor
+        </Button>
+      </SearchBar>
 
-        <Box sx={classes.boxProfessores}>
-          {userData.map((user) => (
-            <Paper item key={user.id_usuario} elevation={8} sx={classes.paperProfessor}>
-              <Box sx={classes.foto}>
-                <img
-                  src={foto}
-                  style={{ height: "130px", borderRadius: "5px" }}
-                  alt="deu pau"
-                />
-              </Box>
-              <Typography variant="body">{user.nome} | Siape: </Typography>
-              <Typography variant="body">{user.siape} |</Typography>
-              <Button onClick={() => redirectToProfessor(user.id_usuario)} variant="contained">Editar</Button>
-            </Paper>
-          ))}
-        </Box>
-      </UiAppBar>
+      <Box sx={classes.boxProfessores}>
+        {userData.map((user) => (
+          <Paper
+            item
+            key={user.id_usuario}
+            elevation={8}
+            sx={classes.paperProfessor}
+          >
+            <Box sx={classes.foto}>
+              <img
+                src={foto}
+                style={{ height: "130px", borderRadius: "5px" }}
+                alt="deu pau"
+              />
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <Typography variant="body">{user.nome}</Typography>
+              <Typography variant="body">{user.siape}</Typography>
+            </Box>
+            <Button
+              onClick={() => redirectToProfessor(user.id_usuario)}
+              variant="contained"
+            >
+              Editar
+            </Button>
+          </Paper>
+        ))}
+      </Box>
+    </UiAppBar>
   );
 };
 

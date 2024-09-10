@@ -66,9 +66,10 @@ const Drawer = styled(MuiDrawer, {
         width: theme.spacing(9),
       },
     }),
-    background: `linear-gradient(45deg, #5c1c8a ,#5d1c8b ,#20155f)`, // Gradiente linear roxo
+    background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`, // Cor conforme o tema
   },
 }));
+
 
 // eslint-disable-next-line react/prop-types
 export default function UiAppBar({ children, title }) {
