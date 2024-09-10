@@ -34,11 +34,13 @@ import SubjectPage from './pages/principalPages/Subject/SubjectPage.jsx'
 import CreateSubjectPage from './pages/principalPages/Subject/CreateSubject/CreateSubjectPage.jsx'
 import EditSubjectPage from './pages/principalPages/Subject/EditSubject/EditSubjectPage.jsx'
 
+//* Sectors imports
+import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
+import AddSectors from './pages/principalPages/Sectors/AddSectors/AddSectors.jsx'
 
 //* imports from other pages
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
-import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
 
 
 
@@ -146,6 +148,17 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
+  //! Sectors page routes
+  {
+    path: "/setores",
+    element: <SectorsPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/setores/create",
+    element: <AddSectors />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/minha-conta",
     element: <MyAccountPage />,
@@ -156,11 +169,7 @@ const route = createBrowserRouter([
     element: <ScienceShowPage />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/setores",
-    element: <SectorsPage />,
-    errorElement: <ErrorPage />,
-  },
+  
   
 
   
