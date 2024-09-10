@@ -121,7 +121,7 @@ const EditStudentPage = () => {
       console.error(err);
     }
   };
-  
+
 
   console.log(studentData[0]);
 

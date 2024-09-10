@@ -72,3 +72,12 @@ exports.excludeSubject = async (req, res) => {
         res.status(500).send('Erro ao excluir disciplina!')
     }
 }
+
+// exports.getNameAndIDFromAllSubjects = async (req, res) => {
+//     try {
+//         const response = await db.query("SELECT nome, id_disciplina FROM disciplina")
+//         res.status(200).json(response)
+//     } catch (error) {
+//         res.status(500).send("Erro ao ler os valores 'nome' e 'id_disciplina' da tabela disciplina")
+//     }    
+// }

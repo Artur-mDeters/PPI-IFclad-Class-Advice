@@ -8,8 +8,6 @@ import {
   TableHead,
   TableRow,
   TableBody,
-  // GridListTile,
-  // ListSubheaderody,
   TableCell,
   styled,
   Paper,
@@ -171,12 +169,12 @@ const AddStudentPage = () => {
       setAlert(true);
       return;
     }
-  
+
     const newRow = {
       ...student,
       internal: student.internal === "sim" ? "Sim" : "Não", // Ajuste aqui
     };
-  
+
     if (editingRowIndex !== null) {
       const updatedRows = rows.map((row, index) =>
         index === editingRowIndex ? newRow : row
@@ -186,7 +184,7 @@ const AddStudentPage = () => {
     } else {
       setRows([...rows, newRow]);
     }
-  
+
     setStudent({
       name: "",
       registration: "",
@@ -358,7 +356,9 @@ const AddStudentPage = () => {
                     helperText={student.errors?.registration}
                     InputProps={{
                       startAdornment: (
-                        <InputAdornment position="start">{courseYear[0]?.ano_inicio + " - "}</InputAdornment>
+                        <InputAdornment position="start">
+                          {courseYear[0]?.ano_inicio + " - "}
+                        </InputAdornment>
                       ),
                     }}
                   />

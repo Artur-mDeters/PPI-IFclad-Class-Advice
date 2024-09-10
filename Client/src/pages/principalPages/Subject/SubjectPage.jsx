@@ -8,7 +8,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 
 const getSubjectData = async () => {
   try {
-    const response = await axios.get("http://localhost:3030/disciplina");
+    const response = await axios.get("http://localhost:3030/disciplina/");
     return response.data;
   } catch (err) {
     throw new Error(err);
@@ -33,7 +33,7 @@ const SubjectPage = () => {
   };
 
   return (
-    <UiAppBar>
+    <UiAppBar title={"Disciplinas"}>
       <SearchBar>
         <Button variant="contained" onClick={redirectToCreateSubjectPage}>
           Adicionar Disciplina

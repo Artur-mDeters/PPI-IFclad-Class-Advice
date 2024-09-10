@@ -1,20 +1,18 @@
 import UiAppBar from "../../../components/AppBar/AppBar";
+import SearchBar from "../../../components/UI/SearchBar/SearchBar";
+import foto from "./img/fotos/padrao.png";
+import getTeacher from "./core/getTeacher";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import classes from "./TeacherPage.Style";
 import {
   Box,
   Button,
-  CssBaseline,
-  ThemeProvider,
   Typography,
   Paper,
 } from "@mui/material";
-import SearchBar from "../../../components/UI/SearchBar/SearchBar";
-import { defaultDark } from "../../../themes/themes";
-import { useState, useEffect } from "react";
-import getTeacher from "./core/getTeacher";
-import { useNavigate } from "react-router-dom";
-import foto from "./img/fotos/padrao.png";
 
-import classes from "./TeacherPage.Style";
 const Teacher = () => {
   const [userData, setUserData] = useState([]);
   const navigate = useNavigate();
@@ -45,10 +43,9 @@ const Teacher = () => {
     navigate("/professores/"+id)
   }
 
+
   return (
-    <ThemeProvider theme={defaultDark}>
-      <CssBaseline />
-      <UiAppBar>
+      <UiAppBar title="Docentes">
         <SearchBar>
           <Button variant="contained" onClick={redirectToRegister}>
             Adicionar Professor
@@ -72,7 +69,6 @@ const Teacher = () => {
           ))}
         </Box>
       </UiAppBar>
-    </ThemeProvider>
   );
 };
 
