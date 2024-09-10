@@ -277,7 +277,7 @@ const AddStudentPage = () => {
   };
 
   return (
-    <UiAppBar>
+    <UiAppBar title={"Adicionar Alunos"}>
       <Box sx={classes.boxTitle}>
         <Typography variant="h3" align="center">
           Insira as informações sobre os alunos

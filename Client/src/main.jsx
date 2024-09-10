@@ -42,6 +42,7 @@ import EditSector from './pages/principalPages/Sectors/EditSectors/EditSector.js
 //* imports from other pages
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
+import Settings from './pages/principalPages/config/Configuracoes.jsx'
 
 
 
@@ -173,6 +174,11 @@ const route = createBrowserRouter([
   {
     path: "/mostra",
     element: <ScienceShowPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/config",
+    element: <Settings />,
     errorElement: <ErrorPage />,
   },
   
