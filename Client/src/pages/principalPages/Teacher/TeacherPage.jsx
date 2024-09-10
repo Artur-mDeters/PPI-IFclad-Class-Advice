@@ -54,7 +54,7 @@ const Teacher = () => {
 
         <Box sx={classes.boxProfessores}>
           {userData.map((user) => (
-            <Paper item key={user.id_usuario} sx={classes.paperProfessor}>
+            <Paper item key={user.id_usuario} elevation={8} sx={classes.paperProfessor}>
               <Box sx={classes.foto}>
                 <img
                   src={foto}

@@ -37,6 +37,7 @@ import EditSubjectPage from './pages/principalPages/Subject/EditSubject/EditSubj
 //* Sectors imports
 import SectorsPage from './pages/principalPages/Sectors/SectorsPage.jsx'
 import AddSectors from './pages/principalPages/Sectors/AddSectors/AddSectors.jsx'
+import EditSector from './pages/principalPages/Sectors/EditSectors/EditSector.jsx'
 
 //* imports from other pages
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
@@ -157,6 +158,11 @@ const route = createBrowserRouter([
   {
     path: "/setores/create",
     element: <AddSectors />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/setores/edit/:id",
+    element: <EditSector />,
     errorElement: <ErrorPage />,
   },
   {
