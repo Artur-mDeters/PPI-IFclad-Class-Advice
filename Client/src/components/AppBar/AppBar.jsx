@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import * as React from "react";
 import "./AppBar.css";
-
 
 import { defaultDark } from "../../themes/themes";
 import logo from "../../assets/logoIF.png";
@@ -17,11 +17,10 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { Avatar } from "@mui/material";
 import Stack from "@mui/material/Stack";
-
-import { useNavigate } from 'react-router-dom'
-// icons
+import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Theme from "../../theme.jsx";
 
 const drawerWidth = 265;
 
@@ -67,20 +66,21 @@ const Drawer = styled(MuiDrawer, {
         width: theme.spacing(9),
       },
     }),
-    background: `linear-gradient(45deg, #5c1c8a ,#5d1c8b ,#20155f)`, // Gradiente linear roxo
+    background: `linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`, // Cor conforme o tema
   },
 }));
 
-// eslint-disable-next-line react/prop-types
-export default function UiAppBar({children }) {
-  const navigate = useNavigate()
 
-  const [open, setOpen] = React.useState(false);
+// eslint-disable-next-line react/prop-types
+export default function UiAppBar({ children, title }) {
+  const navigate = useNavigate();
+
+  const [open, setOpen] = React.useState(true);
   const [mouseOver, setMouseOver] = React.useState(true);
-    
+
   const handleOpen = (page) => {
-    navigate("/")
-    navigate(page)
+    navigate("/");
+    navigate(page);
   };
 
   const typographyButtonStyle = {
@@ -98,49 +98,49 @@ export default function UiAppBar({children }) {
   };
 
   return (
-    <ThemeProvider theme={defaultDark}>
+    <Theme>
       <Box sx={{ display: "flex" }}>
-        <CssBaseline />
         <Drawer
           variant="permanent"
           open={open || mouseOver}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          // onMouseEnter={handleMouseEnter} // ! para a funcionalidade de abrir e fechar com o hover do mouse -> temporariamente removida
+          // onMouseLeave={handleMouseLeave}
         >
           <List
             component="nav"
             sx={{ display: "flex", flexDirection: "column", height: "100%" }}
           >
-            <Box className="AppBoxLogo">
+            <Box className="AppBoxLogo" onClick={() => navigate("/")}>
               <img src={logo} alt="IF" className="imglogo" />
               <Typography
                 variant="h6"
+                color="white"
                 sx={{ typographyButtonStyle, marginLeft: "52px" }}
               >
                 Clad - Class Advice
               </Typography>
             </Box>
 
-            
-
-
             <Box className="AppBox">
               {/* // ! Lista de Abas */}
               {dataButtons.map((button) => {
-
                 return (
                   <Box
-                  className={'ButtonBox '}
-                  onClick={() => handleOpen(button.page)}
-                  key={button.id}
-                  
-                >
-                  {button.icon}
-                  <Typography variant="h6" sx={typographyButtonStyle}>
-                    {button.title}
-                  </Typography>
-                </Box>
-                )
+                    className={"ButtonBox "}
+                    onClick={() => handleOpen(button.page)}
+                    key={button.id}
+                    color="white"
+                  >
+                    {button.icon}
+                    <Typography
+                      variant="h6"
+                      color="white"
+                      sx={typographyButtonStyle}
+                    >
+                      {button.title}
+                    </Typography>
+                  </Box>
+                );
               })}
             </Box>
 
@@ -152,9 +152,14 @@ export default function UiAppBar({children }) {
                 onClick={() => {
                   handleOpen("conta");
                 }}
+                color="white"
               >
                 <PersonIcon fontSize="large" />
-                <Typography variant="h6" sx={typographyButtonStyle}>
+                <Typography
+                  variant="h6"
+                  color="white"
+                  sx={typographyButtonStyle}
+                >
                   Minha Conta
                 </Typography>
               </Box>
@@ -164,9 +169,14 @@ export default function UiAppBar({children }) {
                 onClick={() => {
                   handleOpen("config");
                 }}
+                color="white"
               >
                 <SettingsIcon fontSize="large" />
-                <Typography variant="h6" sx={typographyButtonStyle}>
+                <Typography
+                  variant="h6"
+                  color="white"
+                  sx={typographyButtonStyle}
+                >
                   Configurações
                 </Typography>
               </Box>
@@ -174,17 +184,27 @@ export default function UiAppBar({children }) {
           </List>
         </Drawer>
         <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: "24px",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Stack spacing={2} direction="row" sx={{ alignItems: "center" }}>
-              <Avatar />
-              
-            </Stack>
-          </Toolbar>
+          <Box sx={{ display: "flex", alignItems: 'center' }}>
+            <Box sx={{ flex: 1, marginLeft: '20px' }}>
+              <Typography variant="h3">{title}</Typography>
+            </Box>
+            <Box>
+              <Toolbar
+                sx={{
+                  pr: "24px",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Stack
+                  spacing={2}
+                  direction="row"
+                  sx={{ alignItems: "center" }}
+                >
+                  <Avatar />
+                </Stack>
+              </Toolbar>
+            </Box>
+          </Box>
         </AppBar>
         <Box
           component="main"
@@ -204,6 +224,6 @@ export default function UiAppBar({children }) {
         </Box>
       </Box>
       {/* {pageSet} */}
-    </ThemeProvider>
+    </Theme>
   );
 }

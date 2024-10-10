@@ -26,6 +26,7 @@ exports.getUsers = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   const { email, password, name, type, siape } = req.body;
+  console.log(req.files)
   try {
     const id_usuario = uuidv4();
     const hashedPassword = await hashPassword(password)

@@ -20,7 +20,7 @@ const dataButtons = [
     },
     {
         id: 3,
-        title: "Professores",
+        title: "Docentes",
         page: '/professores',
         icon: <GroupIcon fontSize="large" />,
     },

@@ -1,16 +1,24 @@
-const express = require('express')
+const express = require("express");
 const routes = express.Router();
 
-const routeUsers = require('./user.routes')
-const routeLogin = require('./login.routes')
-const routeTurmas = require('./turma.routes')
-const routeProfessores = require('./professor.routes')
-const routeCursos = require('./curso.routes')
+const routeUsers = require("./user.routes");
+const routeLogin = require("./login.routes");
+const routeClass = require("./class.routes");
+const routeTeachers = require("./teacher.routes");
+const routeCourses = require("./course.routes");
+const routeStudents = require("./student.routes");
+const routeSubjects = require("./subject.routes");
+const routeSectors = require('./sector.routes')
 
-routes.use(routeUsers)
-routes.use(routeLogin)
-routes.use(routeTurmas)
-routes.use(routeProfessores)
-routes.use(routeCursos)
+routes.use(
+  routeUsers,
+  routeClass,
+  routeLogin,
+  routeTeachers,
+  routeCourses,
+  routeStudents,
+  routeSubjects,
+  routeSectors
+);
 
-module.exports = routes
+module.exports = routes;
