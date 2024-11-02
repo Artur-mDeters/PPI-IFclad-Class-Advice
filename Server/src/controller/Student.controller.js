@@ -66,3 +66,13 @@ exports.excludeStudent = async (req, res) => {
   }
 }
 
+exports.getStudentsByClass = async (req, res) => {
+  const turma = req.params.idTurma;
+  try {
+    const response = await db.query("SELECT * FROM aluno WHERE id_turma = $1", turma)
+    res.status(200).json(response)   
+  } catch(err) {
+    res.status(500).send(err);
+  }
+}
+

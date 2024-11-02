@@ -18,7 +18,8 @@ routes.use(
   routeCourses,
   routeStudents,
   routeSubjects,
-  routeSectors
+  routeSectors,
+
 );
 
 module.exports = routes;

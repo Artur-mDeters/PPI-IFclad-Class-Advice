@@ -2,12 +2,12 @@
 const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 
-exports.getClass = async (req, res) => {
+exports.getClass = async (___, res) => {
   try {
     const response = await db.query("SELECT * FROM turma");
     res.status(200).json(response);
   } catch (err) {
-    console.error("GET TURMAS", err);
+    throw new Error(err);
     res.status(500).send(err);
   }
 };
@@ -49,18 +49,37 @@ exports.editClass = async (req, res) => {
       "UPDATE turma SET nome = $1, ano_inicio = $2, fk_curso_id_curso = $3 WHERE id_turma = $4 ",
       [name, start_year, id_course ,id_class ]
     );
-    res.send(result);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    res.status(200).json(result);
+
   } catch (err) {
+    
+    throw new Error(err);
     res.status(500).json(err);
   }
 };
 
+
+// ! Exemplo de requisição para excluir uma turma (usar ela como padrão para todas as outras)
+
 exports.deleteClass = async (req, res) => {
   const id_class = req.params.id;
+
   try {
-    await db.query("DELETE FROM turma WHERE id_turma = $1 ", [id_class]);
+    const result = await db.query("DELETE FROM turma WHERE id_turma = $1", [id_class]);
+    
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
     res.status(204).send();
   } catch (err) {
-    res.status(500).json(err);
+
+    throw new Error(err);
+    res.status(500).json({ error: err.message });
   }
 };

@@ -9,4 +9,5 @@ routes.post('/cursos', courseController.addCourse)
 routes.put('/cursos/edit/:id', courseController.editCourse)
 routes.delete('/cursos/:id', courseController.deleteCourse)
 
+
 module.exports = routes

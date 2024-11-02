@@ -91,7 +91,7 @@ export default function UiAppBar({ children, title }) {
     setMouseOver(true);
     setOpen(true);
   };
-
+  
   const handleMouseLeave = () => {
     setMouseOver(false);
     setOpen(false);

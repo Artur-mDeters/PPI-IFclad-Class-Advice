@@ -18,4 +18,5 @@ routes.put('/alunos/:idStudent', studentController.updateStudent);
 // Exclui um aluno específico pelo ID
 routes.delete('/alunos/:idStudent', studentController.excludeStudent);
 
+routes.get('/todosOsAlunos/:idTurma', studentController.getStudentsByClass);
 module.exports = routes;

@@ -9,7 +9,7 @@ routes.get('/disciplina/:id', subjectController.getSubjectById)
 routes.post('/disciplina', subjectController.addSubject)
 routes.put('/disciplina/:id', subjectController.editSubject)
 routes.delete('/disciplina/:id', subjectController.excludeSubject)
+routes.get('/todasAsDisciplinas', subjectController.getNameAndIDFromAllSubjects)
 
 module.exports = routes
 
-// routes.get('/disciplina/', subjectController.getNameAndIDFromAllSubjects)
