@@ -8,8 +8,9 @@ const Configuracoes = () => {
   // const [theme, setTheme] = useState(defaultDark)
 
   return (
-    <UiAppBar>
+    <UiAppBar title={"Configurações"}>
       <SearchBar></SearchBar>
+      {/* children  */}
     </UiAppBar>
   );
 };

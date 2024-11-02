@@ -23,6 +23,7 @@ import AddTeacher from './pages/principalPages/Teacher/AddTeacher/AddTeacher.jsx
 import StudentPage from "./pages/principalPages/Classes/Student/StudentPage.jsx"
 import AddStudentPage from './pages/principalPages/Classes/Student/AddStudent/AddStudentPage.jsx'
 import EditStudentPage from './pages/principalPages/Classes/Student/EditStudent/EditStudentPage.jsx'
+import AllStudentGradesPage from './pages/principalPages/Classes/AllStudentGrades/AllStudentGradesPage.jsx'
 
 //* Classes imports
 import ClassesPage from './pages/principalPages/Classes/ClassesPage.jsx'
@@ -43,6 +44,7 @@ import EditSector from './pages/principalPages/Sectors/EditSectors/EditSector.js
 import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
 import Settings from './pages/principalPages/config/Configuracoes.jsx'
+import StudentGradesPage from './pages/principalPages/Classes/Student/StudentGrades/StudentGradesPage.jsx'
 
 
 
@@ -100,6 +102,17 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
+  // ! Student grades pages
+  {
+    path: "/:id/notas", 
+    element: <StudentGradesPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/:id/notasTurma/",
+    element: <AllStudentGradesPage />,
+    errorElement: <ErrorPage />,
+  },
   //! Classes page routes
   {
     path: "/turmas",
@@ -181,11 +194,6 @@ const route = createBrowserRouter([
     element: <Settings />,
     errorElement: <ErrorPage />,
   },
-  
-  
-
-  
-  
 
 ]);
 ReactDOM.createRoot(document.getElementById("root")).render(

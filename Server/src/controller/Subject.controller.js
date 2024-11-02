@@ -73,11 +73,16 @@ exports.excludeSubject = async (req, res) => {
     }
 }
 
-// exports.getNameAndIDFromAllSubjects = async (req, res) => {
-//     try {
-//         const response = await db.query("SELECT nome, id_disciplina FROM disciplina")
-//         res.status(200).json(response)
-//     } catch (error) {
-//         res.status(500).send("Erro ao ler os valores 'nome' e 'id_disciplina' da tabela disciplina")
-//     }    
-// }
+exports.getNameAndIDFromAllSubjects = async (req, res) => {
+    try {
+        const response = await db.query("SELECT  id_disciplina, nome FROM disciplina") 
+        
+        if (response.rowCount === 0) {
+            return res.status(404).send("Disciplina não encontrada");
+        }
+        
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).send("Erro ao ler os valores 'nome' e 'id_disciplina' da tabela disciplina")
+    }    
+}

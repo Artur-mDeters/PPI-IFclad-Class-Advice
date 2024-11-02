@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline} from "@mui/material";
 // eslint-disable-next-line no-unused-vars
 import {
   defaultDark,
@@ -20,12 +20,14 @@ import {
 
 // eslint-disable-next-line react/prop-types
 const Theme = ({ children }) => {
-  const theme = defaultDark;
+  const theme = defaultDark
+
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       {children}
+
     </ThemeProvider>
   );
 };
