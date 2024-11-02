@@ -11,6 +11,8 @@ export const defaultDark = createTheme({
     }
 })
 
+// teste do vscode divertido
+
 export const defaultLight = createTheme({
     palette:{
         mode: 'light',

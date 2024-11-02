@@ -7,7 +7,7 @@ Este projeto é parte de uma tarefa de Prática Profissional Integrada (PPI), de
 - [Artur da Motta Deters](https://github.com/Artur-mDeters)
 - [Matheus Gabriel Farias](https://github.com/MatheusFarias2)
 - [Vitória Camponogara Aires da Silva](https://github.com/vitoria-aires)
-
+- [Adriano Cauduro](http://github.com/hadrin0)
 
 ## Objetivo
 
@@ -25,6 +25,10 @@ Ele será implementado diariamente pelos servidores em seu trabalho, nas entrega
 Para executar o projeto é preciso ter o Node Js na versão v20.14.0(LTS) instalado localmente.
 
 [Instalar o Node js](https://nodejs.org/en/download/package-manager)
+
+Também é nescessário a instalação do PostgreSQL.
+
+[Instalar PostgreSQL](https://www.postgresql.org/)
 
 Clonar o repositório:
 
