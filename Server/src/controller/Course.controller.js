@@ -22,7 +22,7 @@ exports.getCourseByID = async (req, res) => {
   }
 };
  
-exports.addCourse = async (req, res) => {
+exports.addCourse = async (req, res) => {y
   const { name, pattern, coordenador } = req.body;
   try {
     const id_course = uuidv4();

@@ -24,10 +24,11 @@ const getAllSubjects = async () => {
 };
 
 const getAllGradesByStudents = async (idSubject, idTurma) => {
-  // const { data } = await axios.get(
-  //     `http://localhost:3030/todasAsNotasDaTurma/${idSubject}`
-  // )
-  // return data;
+  const { data } = await axios.get(
+      `http://localhost:3030/notas/${idSubject}/${idTurma}`
+  )
+  console.log(data, "data")
+  return data;
 };
 
 // ! export default AllStudentGradesPage;
@@ -39,7 +40,7 @@ const AllStudentGradesPage = () => {
   const [subjects, setSubjects] = useState([]); // Inicializando como array
   const [selectedSubject, setSelectedSubject] = useState("");
   const [studentGradesInSubject, setStudentGradesInSubject] = useState([]);
-  const [students, setStudents] = useState([]);
+
 
   const handleChangeSubject = (event) => {
     setSelectedSubject(event.target.value);
@@ -62,16 +63,20 @@ const AllStudentGradesPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllGradesByStudents(subjects.id_disciplina);
-        console.log(result, "result");
-        return result;
+        console.log(selectedSubject, idTurma);
+        
+        if (idTurma !== "" && selectedSubject !== "") {
+          const result = await getAllGradesByStudents(selectedSubject, idTurma);
+          setStudentGradesInSubject(result);
+        }        
+
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchData();
-  }, [selectedSubject]);
+  }, [selectedSubject ]);
 
   return (
     <UiAppBar title={"Notas da turma: "}>
@@ -116,10 +121,10 @@ const AllStudentGradesPage = () => {
                 ? studentGradesInSubject.map((student) => (
                     <TableRow key={student.id_aluno}>
                       <TableCell>{student.nome}</TableCell>
-                      <TableCell>{student.nota1}</TableCell>
-                      <TableCell>{student.nota2}</TableCell>
-                      <TableCell>{student.nota3}</TableCell>
-                      <TableCell>{student.nota4}</TableCell>
+                      <TableCell>{student.nota_parcial_np}</TableCell>
+                      <TableCell>{student.nota_primeiro_sem}</TableCell>
+                      <TableCell>{student.nota_segundo_sem}</TableCell>
+                      <TableCell>{student.nota_final_nf}</TableCell>
                     </TableRow>
                   ))
                 : null}
