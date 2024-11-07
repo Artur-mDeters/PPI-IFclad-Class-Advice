@@ -4,12 +4,29 @@ const { v4: uuidv4 } = require("uuid");
 exports.addStudent = async (req, res) => {
   const { name, registration, email, gender, dateOfBirth, city, federativeUnity, internal , course} =
     req.body;
+
+  if (!name || !registration || !email || !gender || !dateOfBirth || !city || !federativeUnity || !internal || !course) {
+    return res.status(400).send("Todos os campos devem ser preenchidos.");
+  }
+
+  
   try {
     const id_student = uuidv4();
     const response = await db.query(
       "INSERT INTO aluno (id_aluno, nome, matricula, email, sexo, nascimento, cidade, uf, interno, id_turma) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [id_student, name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, course]
     );
+
+    const subjects = await db.query(
+      "SELECT id_disciplina FROM disciplina",
+    )
+
+    for(const subject of subjects) {
+      await db.query(
+        "INSERT INTO aluno_disciplina (fk_aluno_id_aluno, fk_disciplina_id_disciplina) VALUES ($1, $2)",
+        [id_student, subject.id_disciplina]
+      )
+    }
     res.status(201).send(response);
   } catch (err) {
     res.status(500).send(err);
@@ -75,4 +92,3 @@ exports.getStudentsByClass = async (req, res) => {
     res.status(500).send(err);
   }
 }
-
