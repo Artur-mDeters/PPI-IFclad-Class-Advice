@@ -19,11 +19,19 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
+/**
+ * ? Função para buscar todas as disciplinas disponíveis.
+ * ! Endpoint: /todasAsDisciplinas
+ */
 const getAllSubjects = async () => {
   const { data } = await axios.get("http://localhost:3030/todasAsDisciplinas");
   return data;
 };
 
+/**
+ * ? Função para buscar as notas dos alunos em uma disciplina específica.
+ * ! Endpoint: /notas/{idSubject}/{idTurma}
+ */
 const getAllGradesByStudents = async (idSubject, idTurma) => {
   const { data } = await axios.get(
     `http://localhost:3030/notas/${idSubject}/${idTurma}`
@@ -37,22 +45,34 @@ const AllStudentGradesPage = () => {
   const [subjects, setSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [studentGradesInSubject, setStudentGradesInSubject] = useState([]);
-  const [editedGrades, setEditedGrades] = useState({}); // Novo estado para as notas editadas
+  const [editedGrades, setEditedGrades] = useState({}); // Estado para armazenar as notas editadas.
 
+  /**
+   * ? Atualiza o estado da disciplina selecionada.
+   */
   const handleChangeSubject = (event) => {
     setSelectedSubject(event.target.value);
   };
 
+  /**
+   * ? Atualiza a nota de um aluno específico em um campo específico.
+   * @param {number} idAluno - ID do aluno.
+   * @param {string} campo - Campo de nota a ser atualizado.
+   * @param {string} valor - Novo valor da nota.
+   */
   const handleChangeGrade = (idAluno, campo, valor) => {
     setEditedGrades((prevGrades) => ({
       ...prevGrades,
       [idAluno]: {
-        ...prevGrades[idAluno], // preserva as outras notas desse aluno
-        [campo]: valor, // atualiza apenas o campo específico
+        ...prevGrades[idAluno], // Preserva as outras notas desse aluno.
+        [campo]: valor, // Atualiza apenas o campo específico.
       },
     }));
   };
 
+  /**
+   * ? Busca todas as disciplinas na montagem do componente.
+   */
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -66,6 +86,10 @@ const AllStudentGradesPage = () => {
     fetchSubjects();
   }, []);
 
+  /**
+   * ? Busca as notas dos alunos ao alterar a disciplina ou a turma.
+   * Também inicializa o estado das notas editadas com os valores atuais.
+   */
   useEffect(() => {
     const fetchGrades = async () => {
       if (idTurma && selectedSubject) {
@@ -73,13 +97,12 @@ const AllStudentGradesPage = () => {
           const result = await getAllGradesByStudents(selectedSubject, idTurma);
           setStudentGradesInSubject(result);
 
-          // Inicializa o estado das notas editadas com as notas atuais dos alunos
           const initialEditedGrades = result.reduce((acc, student) => {
-            acc[student.id_aluno] = {
-              nota_parcial1: student.nota_parcial1 || "",
-              nota_primeiro_semestre: student.nota_primeiro_semestre || "",
-              nota_parcial2: student.nota_parcial2 || "",
-              nota_segundo_semestre: student.nota_segundo_semestre || "",
+            acc[student.fk_aluno_id_aluno] = {
+              nota_parcial_np: student.nota_parcial_np || "",
+              nota_primeiro_sem: student.nota_primeiro_sem || "",
+              nota_segundo_sem: student.nota_segundo_sem || "",
+              nota_final_nf: student.nota_final_nf || "",
             };
             return acc;
           }, {});
@@ -131,20 +154,20 @@ const AllStudentGradesPage = () => {
             </TableHead>
             <TableBody>
               {studentGradesInSubject.map((student) => (
-                <TableRow key={student.id_aluno}>
+                <TableRow key={student.fk_aluno_id_aluno}>
                   <TableCell>{student.nome}</TableCell>
                   <TableCell>
                     <TextField
-                      label=""
                       value={
-                        editedGrades[student.id_aluno]?.nota_parcial1 || ""
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_parcial_np || ""
                       }
                       size="small"
                       style={{ width: "80px" }}
                       onChange={(e) =>
                         handleChangeGrade(
-                          student.id_aluno,
-                          "nota_parcial1",
+                          student.fk_aluno_id_aluno,
+                          "nota_parcial_np",
                           e.target.value
                         )
                       }
@@ -152,17 +175,16 @@ const AllStudentGradesPage = () => {
                   </TableCell>
                   <TableCell>
                     <TextField
-                      label=""
                       value={
-                        editedGrades[student.id_aluno]
-                          ?.nota_primeiro_semestre || ""
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_primeiro_sem || ""
                       }
                       size="small"
                       style={{ width: "80px" }}
                       onChange={(e) =>
                         handleChangeGrade(
-                          student.id_aluno,
-                          "nota_primeiro_semestre",
+                          student.fk_aluno_id_aluno,
+                          "nota_primeiro_sem",
                           e.target.value
                         )
                       }
@@ -170,15 +192,15 @@ const AllStudentGradesPage = () => {
                   </TableCell>
                   <TableCell>
                     <TextField
-                      label=""
                       value={
-                        editedGrades[student.id_aluno]?.nota_parcial2 || ""
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_parcial2 || ""
                       }
                       size="small"
                       style={{ width: "80px" }}
                       onChange={(e) =>
                         handleChangeGrade(
-                          student.id_aluno,
+                          student.fk_aluno_id_aluno,
                           "nota_parcial2",
                           e.target.value
                         )
@@ -187,17 +209,16 @@ const AllStudentGradesPage = () => {
                   </TableCell>
                   <TableCell>
                     <TextField
-                      label=""
                       value={
-                        editedGrades[student.id_aluno]?.nota_segundo_semestre ||
-                        ""
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_segundo_sem || ""
                       }
                       size="small"
                       style={{ width: "80px" }}
                       onChange={(e) =>
                         handleChangeGrade(
-                          student.id_aluno,
-                          "nota_segundo_semestre",
+                          student.fk_aluno_id_aluno,
+                          "nota_segundo_sem",
                           e.target.value
                         )
                       }
