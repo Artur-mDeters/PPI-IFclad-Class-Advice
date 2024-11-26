@@ -22,12 +22,12 @@ exports.getCourseByID = async (req, res) => {
   }
 };
  
-exports.addCourse = async (req, res) => {y
-  const { name, pattern, coordenador } = req.body;
+exports.addCourse = async (req, res) => {
+  const { name, pattern, coordinator } = req.body;
   try {
     const id_course = uuidv4();
     const response = await db.query(
-      "INSERT INTO curso (id_curso, nome, padrao, id_professor) values ($1, $2, $3, $4)", [id_course, name, pattern, coordenador]
+      "INSERT INTO curso (id_curso, nome, padrao, id_professor) values ($1, $2, $3, $4)", [id_course, name, pattern, coordinator]
     );
     res.status(201).send(response)
   } catch (err
@@ -54,10 +54,37 @@ exports.editCourse = async (req, res) => {
 
 exports.deleteCourse = async (req, res) => {
   const id_course = req.params.id;
+
   try {
-    await db.query("DELETE FROM curso WHERE id_curso = $1 ", [id_course]);
-    res.status(204).send();
+    // Exclui as associações de alunos com disciplinas nas turmas associadas ao curso
+    await db.query(
+      `DELETE FROM aluno_disciplina WHERE fk_aluno_id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma IN (SELECT id_turma FROM turma WHERE fk_curso_id_curso = $1))`,
+      [id_course]
+    );
+
+    // Exclui os alunos das turmas associadas ao curso
+    await db.query(
+      `DELETE FROM aluno WHERE id_turma IN (SELECT id_turma FROM turma WHERE fk_curso_id_curso = $1)`,
+      [id_course]
+    );
+
+    // Exclui as turmas associadas ao curso
+    await db.query(
+      `DELETE FROM turma WHERE fk_curso_id_curso = $1`,
+      [id_course]
+    );
+
+    // Exclui o curso
+    const result = await db.query("DELETE FROM curso WHERE id_curso = $1", [
+      id_course,
+    ]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(204).send(); // Sucesso
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err.message }); // Erro interno
   }
-}
+};

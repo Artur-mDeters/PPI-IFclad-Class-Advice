@@ -64,14 +64,21 @@ exports.editSubject = async (req, res) => {
 exports.excludeSubject = async (req, res) => {
     const id = req.params.id;
     try {
+        // Primeiro, excluímos os registros na tabela aluno_disciplina relacionados à disciplina
+        await db.query(
+            "DELETE FROM aluno_disciplina WHERE fk_disciplina_id_disciplina = $1", [id]
+        );
+
+        // Depois, excluímos a disciplina na tabela disciplina
         await db.query(
             "DELETE FROM disciplina WHERE id_disciplina = $1", [id]
-        )
-        res.status(200).send("disciplina excluída com sucesso!")
+        );
+
+        res.status(200).send("Disciplina excluída com sucesso e registros associados removidos!");
     } catch (error) {
-        res.status(500).send('Erro ao excluir disciplina!')
+        res.status(500).send('Erro ao excluir disciplina e registros associados: ' + error);
     }
-}
+};
 
 exports.getNameAndIDFromAllSubjects = async (req, res) => {
     try {

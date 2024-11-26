@@ -1,3 +1,4 @@
+// * Importação de dependências e componentes necessários
 import UiAppBar from "../../../../../components/AppBar/AppBar";
 import {
   Box,
@@ -30,6 +31,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./AddStudentPage.Style";
 
+// * Função para estilizar células da tabela
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -40,6 +42,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+// * Função para estilizar linhas da tabela
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
@@ -49,34 +52,29 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+// * Função de validação dos dados do aluno
 const validateStudent = (student) => {
-  const errors = {};
+  const errors = {};  // Armazena os erros de validação
 
-  // Converte `student.internal` para string antes de usar toLowerCase
-
-  if (/[^a-zA-Z\s]/.test(student.name))
-    errors.name = "Nome não pode conter números";
-  if (!/^\d+$/.test(student.registration))
-    errors.registration = "Matrícula deve conter apenas números";
+  if (/[^a-zA-Z\s]/.test(student.name)) errors.name = "Nome não pode conter números";
+  if (!/^\d+$/.test(student.registration)) errors.registration = "Matrícula deve conter apenas números";
   if (!student.email.includes("@")) errors.email = "Email deve conter um '@'";
-  if (!["masculino", "feminino"].includes(student.gender.toLowerCase()))
-    errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth))
-    errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
+  if (!["masculino", "feminino"].includes(student.gender.toLowerCase())) errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth)) errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
   if (/[\d]/.test(student.city)) errors.city = "Cidade não pode conter números";
-  if (!/^[A-Z]{2}$/.test(student.federativeUnity))
-    errors.federativeUnity = "UF deve conter duas letras maiúsculas";
+  if (!/^[A-Z]{2}$/.test(student.federativeUnity)) errors.federativeUnity = "UF deve conter duas letras maiúsculas";
 
   return errors;
 };
 
+// * Componente de adição e edição de alunos
 const AddStudentPage = () => {
-  const { idTurma } = useParams();
-  const [alert, setAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertCountdown, setAlertCountdown] = useState(5);
-  const [rows, setRows] = useState([]);
-  const [student, setStudent] = useState({
+  const { idTurma } = useParams();  // Pega o parâmetro da URL (id da turma)
+  const [alert, setAlert] = useState(false);  // Estado de alerta
+  const [alertMessage, setAlertMessage] = useState("");  // Mensagem do alerta
+  const [alertCountdown, setAlertCountdown] = useState(5);  // Contagem regressiva do alerta
+  const [rows, setRows] = useState([]);  // Linhas da tabela
+  const [student, setStudent] = useState({  // Dados do aluno sendo adicionado ou editado
     name: "",
     registration: "",
     email: "",
@@ -84,20 +82,22 @@ const AddStudentPage = () => {
     dateOfBirth: "",
     city: "",
     federativeUnity: "",
-    internal: "", // Inicialmente uma string vazia
+    internal: "",
     course: "",
   });
-  const [editingRowIndex, setEditingRowIndex] = useState(null);
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
-  const [courseYear, setCourseYear] = useState([]);
+  const [editingRowIndex, setEditingRowIndex] = useState(null);  // Índice da linha sendo editada
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);  // Estado para o diálogo de cancelamento
+  const [courseYear, setCourseYear] = useState([]);  // Ano do curso
 
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Função para navegação entre páginas
 
+  // * Função para pegar o ano do curso via API
   const getCourseYear = async () => {
     const response = await axios.get("http://localhost:3030/turmas/" + idTurma);
     return response.data;
   };
 
+  // * Hook para configurar dados iniciais
   useEffect(() => {
     let timer;
     if (alertCountdown > 0 && alert) {
@@ -108,9 +108,10 @@ const AddStudentPage = () => {
       setAlert(false);
       setAlertCountdown(5);
     }
-    return () => clearInterval(timer);
+    return () => clearInterval(timer);  // Limpeza do intervalo ao desmontar o componente
   }, [alert, alertCountdown]);
 
+  // * Hook para buscar dados do curso uma única vez
   useEffect(() => {
     const setDataOnce = async () => {
       try {
@@ -126,32 +127,24 @@ const AddStudentPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseYear]);
 
+  // * Função de manipulação de alteração nos campos de input
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     let formattedValue = value;
 
     if (name === "dateOfBirth") {
-      // Remove caracteres não numéricos e limita a 8 dígitos
       const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
-
-      // Formata a data
       formattedValue = digitsOnly;
       if (formattedValue.length > 2) {
-        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(
-          2
-        )}`;
+        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`;
       }
       if (formattedValue.length > 5) {
-        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(
-          5
-        )}`;
+        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
       }
     } else if (name === "registration") {
-      // Remove qualquer letra e mantém apenas números
       formattedValue = value.replace(/[^\d]/g, "");
     } else if (name === "federativeUnity") {
-      // Converte para maiúsculas
       formattedValue = value.toUpperCase();
     }
 
@@ -162,6 +155,7 @@ const AddStudentPage = () => {
     }));
   };
 
+  // * Função para adicionar ou editar um aluno na tabela
   const addItem = () => {
     const errors = validateStudent(student);
     if (Object.keys(errors).length > 0) {
@@ -172,7 +166,7 @@ const AddStudentPage = () => {
 
     const newRow = {
       ...student,
-      internal: student.internal === "sim" ? "Sim" : "Não", // Ajuste aqui
+      internal: student.internal === "sim" ? "Sim" : "Não", 
     };
 
     if (editingRowIndex !== null) {
@@ -198,6 +192,7 @@ const AddStudentPage = () => {
     });
   };
 
+  // * Função para preparar edição de um aluno na tabela
   const handleEdit = (index) => {
     const rowToEdit = rows[index];
     setStudent({
@@ -213,8 +208,8 @@ const AddStudentPage = () => {
     });
     setEditingRowIndex(index);
   };
-  console.table(rows);
-  console.table(idTurma);
+
+  // * Função para salvar os dados e redirecionar
   const saveAndRedirect = async () => {
     try {
       let hasError = false;
@@ -230,7 +225,7 @@ const AddStudentPage = () => {
         }
       }
 
-      // Se não houver erros, envia os dados para o servidor
+      // Envia dados para o servidor se não houver erros
       if (!hasError) {
         const responses = await Promise.all(
           rows.map((aluno) =>
@@ -253,12 +248,12 @@ const AddStudentPage = () => {
       } else {
         setTimeout(() => {
           setAlert(false);
-          setAlertCountdown(5); // Consistência com o temporizador de alerta
-        }, 5000); // Consistência com o temporizador de alerta
+          setAlertCountdown(5);
+        }, 5000);
       }
     } catch (err) {
       console.error(err);
-      setAlertMessage("Ocorreu um erro ao salvar os dados.");
+      setAlertMessage("Ocorreu um erro ao salvar os dados");
       setAlert(true);
     }
   };

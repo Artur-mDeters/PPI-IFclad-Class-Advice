@@ -65,21 +65,31 @@ exports.editClass = async (req, res) => {
 
 
 // ! Exemplo de requisição para excluir uma turma (usar ela como padrão para todas as outras)
-
 exports.deleteClass = async (req, res) => {
   const id_class = req.params.id;
 
   try {
+    // Exclui as associações de alunos com disciplinas na tabela aluno_disciplina
+    await db.query(
+      `DELETE FROM aluno_disciplina WHERE fk_aluno_id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1)`,
+      [id_class]
+    );
+
+    // Exclui os alunos associados à turma
+    await db.query(
+      `DELETE FROM aluno WHERE id_turma = $1`,
+      [id_class]
+    );
+
+    // Exclui a turma
     const result = await db.query("DELETE FROM turma WHERE id_turma = $1", [id_class]);
-    
+
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Class not found" });
     }
 
-    res.status(204).send();
+    res.status(204).send(); // Sucesso
   } catch (err) {
-
-    throw new Error(err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message }); // Erro interno
   }
 };

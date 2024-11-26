@@ -13,7 +13,7 @@ exports.addStudent = async (req, res) => {
   try {
     const id_student = uuidv4();
     const response = await db.query(
-      "INSERT INTO aluno (id_aluno, nome, matricula, email, sexo, nascimento, cidade, uf, interno, id_turma) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+      "INSERT INTO aluno (id_aluno, nome, matricula, email, genero, nascimento, cidade, uf, interno, id_turma) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [id_student, name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, course]
     );
 
@@ -60,7 +60,7 @@ exports.updateStudent = async (req, res) => {
   try {
       const response = await db.query(
           `UPDATE aluno
-          SET nome = $1, matricula = $2, email = $3, sexo = $4, nascimento = $5, cidade = $6, uf = $7, interno = $8
+          SET nome = $1, matricula = $2, email = $3, genero = $4, nascimento = $5, cidade = $6, uf = $7, interno = $8
           WHERE id_aluno = $9
           RETURNING *`,
           [name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, id_student]
@@ -76,12 +76,22 @@ exports.updateStudent = async (req, res) => {
 exports.excludeStudent = async (req, res) => {
   const idStudent = req.params.idStudent;
   try {
-    await db.query(`DELETE FROM aluno WHERE id_aluno = $1`, [ idStudent ] )
-    res.status(205).send("ok")
+    // Primeiro, excluímos as associações na tabela aluno_disciplina
+    await db.query(
+      `DELETE FROM aluno_disciplina WHERE fk_aluno_id_aluno = $1`,
+      [idStudent]
+    );
+
+    // Em seguida, excluímos o aluno da tabela aluno
+    await db.query(`DELETE FROM aluno WHERE id_aluno = $1`, [idStudent]);
+
+    res.status(205).send("Aluno e registros relacionados excluídos com sucesso.");
   } catch (err) {
-    res.status(500).send("Erro interno do servidor ao tentar excluir aluno: ",err)
+    console.error("Erro ao excluir aluno:", err);
+    res.status(500).send("Erro interno do servidor ao tentar excluir aluno.");
   }
-}
+};
+
 
 exports.getStudentsByClass = async (req, res) => {
   const turma = req.params.idTurma;
