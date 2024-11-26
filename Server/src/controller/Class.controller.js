@@ -93,3 +93,23 @@ exports.deleteClass = async (req, res) => {
     res.status(500).json({ error: err.message }); // Erro interno
   }
 };
+
+exports.AddClassCouncil = async (req, res) => {
+  const id_class = req.params.id; // ID da turma vindo dos parâmetros
+  const { conselho } = req.body; // Data do conselho vindo no corpo da requisição
+
+  try {
+    const result = await db.query(
+      "UPDATE turma SET conselho = $1 WHERE id_turma = $2",
+      [conselho, id_class]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    res.status(200).json({ message: "Class council scheduled successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
