@@ -20,7 +20,6 @@ import Theme from "../../../theme.jsx";
 
 const ClassesPage = () => {
   const [classData, setClassData] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {

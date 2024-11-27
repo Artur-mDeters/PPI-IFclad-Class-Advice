@@ -9,6 +9,7 @@ const routeCourses = require("./course.routes");
 const routeStudents = require("./student.routes");
 const routeSubjects = require("./subject.routes");
 const routeSectors = require('./sector.routes')
+const routeGrades = require('./grades.routes')
 
 routes.use(
   routeUsers,
@@ -19,7 +20,7 @@ routes.use(
   routeStudents,
   routeSubjects,
   routeSectors,
-
+  routeGrades
 );
 
 module.exports = routes;

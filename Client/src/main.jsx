@@ -109,7 +109,7 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/:id/notasTurma/",
+    path: "/:idTurma/notasTurma/",
     element: <AllStudentGradesPage />,
     errorElement: <ErrorPage />,
   },

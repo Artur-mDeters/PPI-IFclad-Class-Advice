@@ -20,7 +20,7 @@ import {
 
 // eslint-disable-next-line react/prop-types
 const Theme = ({ children }) => {
-  const theme = defaultDark
+  const theme = defaultDark ;
 
 
   return (
