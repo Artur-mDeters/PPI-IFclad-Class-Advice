@@ -18,18 +18,18 @@ import {
   Button,
   Alert,
   Snackbar,
-} from "@mui/material";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-
-import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
 } from "@mui/material";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
 // import { use } from "../../../../../../Server/src/routes/grades.routes";
 
+import GradeTextField from './GradeTextfield'; // Ajuste o caminho conforme necessário
 /**
  * ? Função para buscar todas as disciplinas disponíveis.
  * ! Endpoint: /todasAsDisciplinas
@@ -187,19 +187,22 @@ const AllStudentGradesPage = () => {
 
           const initialEditedGrades = result.reduce((acc, student) => {
             acc[student.fk_aluno_id_aluno] = {
-              pars_primeiro_sem: student.pars_primeiro_sem || "",
-              nota_primeiro_sem: student.nota_primeiro_sem || "",
-              pars_segundo_sem: student.pars_segundo_sem || "",
-              nota_segundo_sem: student.nota_segundo_sem || "",
-              faltas: student.faltas || "",
-              nota_parcial_np: student.nota_parcial_np || "",
-              exame: student.exame || "",
-              nota_final_nf: student.nota_final_nf || "",
-              observation: student.observation || "",
+              pars_primeiro_sem: student.pars_primeiro_sem || null,
+              nota_primeiro_sem: student.nota_primeiro_sem || null,
+              pars_segundo_sem: student.pars_segundo_sem || null,
+              nota_segundo_sem: student.nota_segundo_sem || null,
+              nota_ais: student.nota_ais || null,
+              nota_ppi: student.nota_ppi || null,
+              nota_mostra_de_ciencias: student.nota_mostra_de_ciencias || null,
+              faltas: student.faltas || null,
+              nota_aia: student.nota_aia || null,
+              observation: student.observation || null,
+              nota_final_nf: student.nota_final_nf || null,
             };
             return acc;
           }, {});
           setEditedGrades(initialEditedGrades);
+          console.error("Notas iniciais:", initialEditedGrades);
         } catch (err) {
           console.error("Erro ao buscar notas:", err);
         }
@@ -224,11 +227,13 @@ const AllStudentGradesPage = () => {
           nota_primeiro_sem: grades.nota_primeiro_sem || null,
           pars_segundo_sem: grades.pars_segundo_sem || null,
           nota_segundo_sem: grades.nota_segundo_sem || null,
-          nota_parcial_np: grades.nota_parcial_np || null,
+          nota_ais: grades.nota_ais || null,
+          nota_ppi: grades.nota_ppi || null,
           faltas: grades.faltas || null,
-          exame: grades.exame || null,
           nota_final_nf: grades.nota_final_nf || null,
           observation: grades.observation || null,
+          nota_mostra_de_ciencias: grades.nota_mostra_de_ciencias || null,
+          nota_aia: grades.nota_aia || null,
         });
       } catch (error) {
         console.error("Erro ao salvar notas:", error);
@@ -253,17 +258,53 @@ const AllStudentGradesPage = () => {
   ? Calcula as notas finais dos alunos em uma disciplina especificada.
   \*/
   const calculateFinalGrades = () => {
+    const FIRST_SEMESTER_WEIGHT = 0.4;
+    const SECOND_SEMESTER_WEIGHT = 0.6;
+    const AIA_WEIGHT = 0.4;
+    const FINAL_GRADE_THRESHOLD = 7;
+
     return studentGradesInSubject.map((student) => {
-      const { nota_primeiro_sem, nota_segundo_sem, exame } =
-        editedGrades[student.fk_aluno_id_aluno] || {};
-      const finalGrade =
-        Number(nota_primeiro_sem || 0) * 0.4 +
-        Number(nota_segundo_sem || 0) * 0.6 +
-        Number(exame || 0) * 0.1;
+      const {
+        pars_primeiro_sem,
+        nota_ais,
+        nota_primeiro_sem,
+        pars_segundo_sem,
+        nota_ppi,
+        nota_mostra_de_ciencias,
+        nota_segundo_sem,
+        nota_aia,
+      } = editedGrades[student.fk_aluno_id_aluno] || {};
+
+      // Calculate first semester grade
+      const notaPrimeiroSem =
+        ((Number(pars_primeiro_sem) || 0) * 0.2 +
+          (Number(nota_ais) || 0) * 0.3 +
+          (Number(nota_primeiro_sem) || 0) * 0.5) *
+        FIRST_SEMESTER_WEIGHT;
+
+      // Calculate second semester grade
+      const notaSegundoSem =
+        ((Number(pars_segundo_sem) || 0) * 0.2 +
+          (Number(nota_ppi) || 0) * 0.2 +
+          (Number(nota_mostra_de_ciencias) || 0) * 0.2 +
+          (Number(nota_segundo_sem) || 0) * 0.5) *
+        SECOND_SEMESTER_WEIGHT;
+
+      // Calculate final grade
+      const finalGrade = notaPrimeiroSem + notaSegundoSem;
+
+      // Include nota_aia if final grade is below the threshold
+      const finalNotaAIA =
+        finalGrade < FINAL_GRADE_THRESHOLD && nota_aia != null
+          ? (
+              finalGrade * (1 - AIA_WEIGHT) +
+              Number(nota_aia) * AIA_WEIGHT
+            ).toFixed(2)
+          : finalGrade.toFixed(2);
 
       return {
         ...student,
-        nota_final_nf: finalGrade.toFixed(2), // Arredonda para 2 casas decimais
+        nota_final_nf: finalNotaAIA, // Final grade rounded to 2 decimal places
       };
     });
   };
@@ -273,11 +314,12 @@ const AllStudentGradesPage = () => {
       const finalGrades = calculateFinalGrades();
       setStudentGradesInSubject(finalGrades);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedGrades]);
 
   return (
     <UiAppBar title={"Notas da turma: ${idTurma}"}>
-      <Box>
+      <Box sx={{ marginBottom: "10px" }}>
         <FormControl fullWidth>
           <InputLabel id="Select-Subject">Disciplina</InputLabel>
           <Select
@@ -299,6 +341,15 @@ const AllStudentGradesPage = () => {
         </FormControl>
       </Box>
       <Box>
+        <Alert
+          variant="outlined"
+          severity="warning"
+          sx={{ marginBottom: "10px" }}
+        >
+          Todas as notas devem ser inseridas em base 10
+        </Alert>
+      </Box>
+      <Box>
         <Divider />
         <TableContainer>
           <Table stickyHeader>
@@ -309,185 +360,182 @@ const AllStudentGradesPage = () => {
                 <TableCell>Primeiro Semestre</TableCell>
                 <TableCell>Parcial 2</TableCell>
                 <TableCell>Segundo Semestre</TableCell>
+                <TableCell>PPI</TableCell>
+                <TableCell>Mostra de Ciências</TableCell>
+                <TableCell>AIS</TableCell>
                 <TableCell>Faltas</TableCell>
-                <TableCell>Nota Parcial</TableCell>
-                <TableCell>Exame</TableCell>
+                <TableCell>AIA</TableCell>
                 <TableCell>Nota Final</TableCell>
                 <TableCell>Observação</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {studentGradesInSubject.map((student) => (
                 <TableRow key={student.fk_aluno_id_aluno}>
                   <TableCell>{student.nome}</TableCell>
                   <TableCell>
-                    <TextField
+                    <GradeTextField
                       value={
                         editedGrades[student.fk_aluno_id_aluno]
-                          ?.pars_primeiro_sem || ""
+                          ?.pars_primeiro_sem
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "pars_primeiro_sem",
-                          e.target.value
+                          value
                         )
                       }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
+                    <GradeTextField
                       value={
                         editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_primeiro_sem || ""
+                          ?.nota_primeiro_sem
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "nota_primeiro_sem",
-                          e.target.value
+                          value
                         )
                       }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
+                    <GradeTextField
                       value={
                         editedGrades[student.fk_aluno_id_aluno]
-                          ?.pars_segundo_sem || ""
+                          ?.pars_segundo_sem
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "pars_segundo_sem",
-                          e.target.value
+                          value
                         )
                       }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
+                    <GradeTextField
                       value={
                         editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_segundo_sem || ""
+                          ?.nota_segundo_sem
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "nota_segundo_sem",
-                          e.target.value
+                          value
                         )
                       }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]?.faltas || ""
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ppi}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_ppi",
+                          value
+                        )
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }} // Apenas números inteiros
-                      onChange={(e) =>
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_mostra_de_ciencias
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_mostra_de_ciencias",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ais}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_ais",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.faltas}
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "faltas",
-                          e.target.value
+                          value
                         )
                       }
                     />
                   </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_aia}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_aia",
+                          value
+                        )
+                      }
+                      disabled={(() => {
+                        const grades =
+                          editedGrades[student.fk_aluno_id_aluno] || {};
+                        const notaPrimeiroSem =
+                          (grades.pars_primeiro_sem * 0.2 +
+                            grades.nota_ais * 0.3 +
+                            grades.nota_primeiro_sem * 0.5) *
+                          0.4;
 
-                  <TableCell>
-                    <TextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_parcial_np || ""
-                      }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_parcial_np",
-                          e.target.value
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
+                        const notaSegundoSem =
+                          (grades.pars_segundo_sem * 0.2 +
+                            grades.nota_ppi * 0.2 +
+                            grades.nota_mostra_de_ciencias * 0.2 +
+                            grades.nota_segundo_sem * 0.5) *
+                          0.6;
+
+                        const notaFinal = notaPrimeiroSem + notaSegundoSem;
+
+                        return (
+                          grades.pars_primeiro_sem == null ||
+                          grades.nota_ais == null ||
+                          grades.nota_primeiro_sem == null ||
+                          grades.pars_segundo_sem == null ||
+                          grades.nota_ppi == null ||
+                          grades.nota_mostra_de_ciencias == null ||
+                          grades.nota_segundo_sem == null ||
+                          notaFinal >= 7
+                        );
+                      })()}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
+                    <GradeTextField
                       value={
-                        editedGrades[student.fk_aluno_id_aluno]?.exame || ""
+                        editedGrades[student.fk_aluno_id_aluno]?.nota_final_nf
                       }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "exame",
-                          e.target.value
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","]; // Bloqueia caracteres inválidos.
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <TextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_final_nf || ""
-                      }
-                      size="small"
-                      style={{ width: "80px" }}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         handleChangeGrade(
                           student.fk_aluno_id_aluno,
                           "nota_final_nf",
-                          e.target.value
+                          value
                         )
                       }
                     />
