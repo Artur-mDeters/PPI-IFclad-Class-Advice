@@ -1,4 +1,16 @@
-import { Button, Box, Paper, Typography, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Snackbar, Alert } from "@mui/material";
+import {
+  Button,
+  Box,
+  Paper,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import UiAppBar from "../../../../components/AppBar/AppBar";
 import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,7 +30,7 @@ const StudentPage = () => {
 
   const saveClassCouncil = async () => {
     if (!selectedDate) {
-      console.error('Data não selecionada');
+      console.error("Data não selecionada");
       setErrorNotification(true); // Exibe notificação de erro
       return;
     }
@@ -27,13 +39,13 @@ const StudentPage = () => {
     const currentDate = new Date();
     const councilDate = new Date(selectedDate);
     if (councilDate < currentDate) {
-      console.error('A data não pode ser no passado');
+      console.error("A data não pode ser no passado");
       setErrorNotification(true); // Exibe notificação de erro
       return;
     }
 
     try {
-      const formattedDate = councilDate.toISOString().split('T')[0];
+      const formattedDate = councilDate.toISOString().split("T")[0];
 
       const response = await axios.put(
         `http://localhost:3030/turmas/conselho/${idTurma}`,
@@ -44,7 +56,7 @@ const StudentPage = () => {
       handleCloseDialog();
       return response.data;
     } catch (err) {
-      console.error('Erro ao salvar o conselho de classe:', err);
+      console.error("Erro ao salvar o conselho de classe:", err);
       setErrorNotification(true); // Exibe notificação de erro
     }
   };
@@ -65,6 +77,9 @@ const StudentPage = () => {
     navigate("/" + idTurma + "/notasTurma");
   };
 
+  const redirectToPDFGradesPage = () => {
+    navigate("/" + idTurma + "/pareceres");
+  };
   const getDataAlunos = async () => {
     try {
       const response = await axios.get(
@@ -86,6 +101,7 @@ const StudentPage = () => {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idTurma]);
 
   const handleOpenDialog = () => {
@@ -121,8 +137,15 @@ const StudentPage = () => {
         >
           Notas da Turma
         </Button>
-        <Button variant="contained" onClick={handleOpenDialog}>
+        <Button
+          variant="contained"
+          sx={{ marginRight: "15px" }}
+          onClick={handleOpenDialog}
+        >
           Agendar Conselho de Classe
+        </Button>
+        <Button variant="contained" onClick={redirectToPDFGradesPage}>
+          Gerar pareceres
         </Button>
       </SearchBar>
       <Box sx={classes.boxAlunos}>
@@ -169,7 +192,11 @@ const StudentPage = () => {
           <Button onClick={handleCloseDialog} color="secondary">
             Cancelar
           </Button>
-          <Button onClick={saveClassCouncil} variant="contained" color="primary">
+          <Button
+            onClick={saveClassCouncil}
+            variant="contained"
+            color="primary"
+          >
             Salvar
           </Button>
         </DialogActions>
@@ -181,7 +208,11 @@ const StudentPage = () => {
         autoHideDuration={4000}
         onClose={handleCloseNotification}
       >
-        <Alert onClose={handleCloseNotification} severity="success" sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleCloseNotification}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           Conselho de classe agendado com sucesso!
         </Alert>
       </Snackbar>
@@ -192,7 +223,11 @@ const StudentPage = () => {
         autoHideDuration={4000}
         onClose={handleCloseErrorNotification}
       >
-        <Alert onClose={handleCloseErrorNotification} severity="error" sx={{ width: "100%" }}>
+        <Alert
+          onClose={handleCloseErrorNotification}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
           Ocorreu um erro! Verifique a data ou tente novamente mais tarde.
         </Alert>
       </Snackbar>

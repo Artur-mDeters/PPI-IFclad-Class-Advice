@@ -11,7 +11,9 @@ import {
   FormHelperText,
   Chip,
   Stack, 
-  Typography
+  Typography,
+  Checkbox,
+  ListItemText
 } from "@mui/material";
 
 const getCourseData = async () => {
@@ -32,37 +34,65 @@ const getClassesData = async () => {
   }
 };
 
+const getSubjectsData = async () => {
+  try {
+    const response = await axios.get("http://localhost:3030/disciplina/");
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar disciplinas:", error);
+    throw error;
+  }
+};
+
 const CreateClassesPage = () => {
   const [courseData, setCourseData] = useState([]);
-  const [classData, setClassData] = useState([]);
+  const [classData, setClassData] = useState({
+    name: "",
+    year: "",
+    course: "",
+    subjects: [],
+  });
+  
   const [pattern, setPattern] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(""); // Para armazenar mensagens de erro
   const [classesDataToCompare, setClassesDataToCompare] = useState([]); // Para armazenar turmas existentes
-  const [errors, setErrors] = useState({ name: "", year: "", course: "" }); // Para erros específicos
+  const [errors, setErrors] = useState({ name: "", year: "", course: "" });
+  const [subjectsData, setSubjectsData] = useState([]);
+   // Para erros específicos
 
   const navigate = useNavigate();
 
   const setCourseNamePattern = () => {
     const selectedCourse = courseData.find(
-      (data) => data.id_curso === classData[0]?.course
+      (data) => data.id_curso === classData?.course
     );
     if (selectedCourse) {
       setPattern(selectedCourse.padrao);
     }
   };
 
-  const handleInputChange = (e, alterThis) => {
+  const handleInputChange = (e, field) => {
     const { value } = e.target;
-    setClassData((prevState) => {
-      const updatedClass = { ...prevState[0], [alterThis]: value };
-      return [updatedClass];
-    });
+    setClassData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
+  
+
+  const handleSubjectsChange = (e) => {
+    const { value } = e.target;
+    setClassData((prevState) => ({
+      ...prevState,
+      subjects: value,
+    }));
+  };
+  
 
   // Função de validação dos campos
   const validateFields = () => {
-    const currentClass = classData[0];
+    const currentClass = classData;
     const newErrors = { name: "", year: "", course: "" };
     let valid = true;
 
@@ -103,9 +133,10 @@ const CreateClassesPage = () => {
     if (validateFields()) {
       try {
         const response = await axios.post("http://localhost:3030/turmas/", {
-          name: classData[0]?.name,
-          start_year: classData[0]?.year,
-          course: classData[0]?.course,
+          name: classData?.name,
+          start_year: classData?.year,
+          course: classData?.course,
+          subjects: classData.subjects
         });
         console.log(response.data);
 
@@ -121,33 +152,28 @@ const CreateClassesPage = () => {
   };
 
   useEffect(() => {
-    // Buscar os dados das turmas para comparação
-    const fetchClassesData = async () => {
+    const fetchAllData = async () => {
       try {
-        const existingClasses = await getClassesData();
-        setClassesDataToCompare(existingClasses);
+        const [courses, classes, subjects] = await Promise.all([
+          getCourseData(),
+          getClassesData(),
+          getSubjectsData(),
+        ]);
+        setCourseData(courses);
+        setClassesDataToCompare(classes);
+        setSubjectsData(subjects);
       } catch (error) {
-        console.error("Erro ao buscar as turmas:", error);
+        console.error("Erro ao carregar dados:", error);
       }
     };
-
-    const fetchCourseData = async () => {
-      try {
-        const result = await getCourseData();
-        setCourseData(result);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchClassesData();
-    fetchCourseData();
+    fetchAllData();
   }, []);
+  
 
   useEffect(() => {
     setCourseNamePattern();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classData[0]?.course]);
+  }, [classData?.course]);
 
   return (
     <CreatePage
@@ -162,7 +188,7 @@ const CreateClassesPage = () => {
           id="curso"
           label="Curso"
           onChange={(e) => handleInputChange(e, "course")}
-          value={classData[0]?.course || ""}
+          value={classData?.course || ""}
         >
           {courseData.map((course) => (
             <MenuItem key={course.id_curso} value={course.id_curso}>
@@ -185,8 +211,8 @@ const CreateClassesPage = () => {
           id="nome"
           label="Nome"
           onChange={(e) => handleInputChange(e, "name")}
-          value={classData[0]?.name || ""}
-          disabled={!classData[0]?.course} // Desabilita o campo se o curso não for selecionado
+          value={classData?.name || ""}
+          disabled={!classData?.course} // Desabilita o campo se o curso não for selecionado
         >
           {pattern !== undefined
             ? [1, 2, 3].map((className) => (
@@ -202,7 +228,7 @@ const CreateClassesPage = () => {
               ))}
         </Select>
         <FormHelperText>
-          {!classData[0]?.course ? "Escolha um curso primeiro." : errors.name}
+          {!classData?.course ? "Escolha um curso primeiro." : errors.name}
         </FormHelperText>
       </FormControl>
 
@@ -213,7 +239,7 @@ const CreateClassesPage = () => {
           id="ano_inicio"
           label="Ano de Início"
           onChange={(e) => handleInputChange(e, "year")}
-          value={classData[0]?.year || ""}
+          value={classData?.year || ""}
         >
           {[2024, 2023, 2022, 2021, 2020, 2019, 2018].map((startYear) => (
             <MenuItem key={startYear} value={startYear}>
@@ -222,6 +248,34 @@ const CreateClassesPage = () => {
           ))}
         </Select>
         <FormHelperText>{errors.year}</FormHelperText>
+      </FormControl>
+
+      <FormControl fullWidth>
+        <InputLabel id="subjects">Disciplinas</InputLabel>
+        <Select
+          labelId="subjects"
+          label="Disciplinas"
+          id="subjects"
+          name="subjects"
+          multiple
+          value={classData.subjects} // Array de IDs selecionados
+          onChange={handleSubjectsChange}
+          renderValue={(selected) =>
+            subjectsData
+              .filter((subject) => selected.includes(subject.id_disciplina))
+              .map((subject) => subject.nome)
+              .join(", ")
+          }
+        >
+          {subjectsData.map((option) => (
+            <MenuItem key={option.id_disciplina} value={option.id_disciplina}>
+              <Checkbox
+                checked={classData.subjects.includes(option.id_disciplina)}
+              />
+              <ListItemText primary={option.nome} />
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
 
       {/* Exibir erro apenas ao tentar salvar */}

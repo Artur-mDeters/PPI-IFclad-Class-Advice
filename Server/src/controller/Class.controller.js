@@ -26,7 +26,7 @@ exports.getClassByID = async (req, res) => {
 };
 
 exports.addClass = async (req, res) => {
-  const { name, start_year, course } = req.body; 
+  const { name, start_year, course, subjects } = req.body; 
   try {
     const id_class = uuidv4();
 
@@ -34,6 +34,18 @@ exports.addClass = async (req, res) => {
       "INSERT INTO turma (id_turma, nome, ano_inicio, fk_curso_id_curso) VALUES ($1, $2, $3, $4)",
       [id_class, name, start_year, course]
     );
+
+    if (subjects && subjects.length > 0) {
+
+      for (const subject of subjects) {
+        // Gera um UUID válido para cada disciplina se necessário
+        await db.query(
+          "INSERT INTO turma_disciplina (fk_disciplina_id_disciplina, fk_turma_id_turma) VALUES ($1, $2)",
+          [subject, id_class]
+        );
+      }
+    }
+
     res.status(200).json(response);
 
   } catch (err) {

@@ -17,6 +17,7 @@
     "@mui/material": "^5.16.7",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-date-pickers": "^7.22.3",
+    "@react-pdf/renderer": "^4.1.5",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",

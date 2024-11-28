@@ -44,10 +44,10 @@ const getAllSubjects = async () => {
  * ! Endpoint: /notas/{idSubject}/{idTurma}
  */
 const getAllGradesByStudents = async (idSubject, idTurma) => {
-  const { data } = await axios.get(
+  const data  = await axios.get(
     `http://localhost:3030/notas/${idSubject}/${idTurma}`
   );
-  return data;
+  return(data.data);
 };
 
 const AllStudentGradesPage = () => {
@@ -216,32 +216,46 @@ const AllStudentGradesPage = () => {
    * ? Função para salvar as notas editadas.
    */
   const saveGrades = async (idDisciplina, editedGrades) => {
+    const gradesToSend = {};
+  
+    // Iterar sobre as notas dos alunos e preparar o objeto para enviar
     for (let idAluno in editedGrades) {
       const grades = editedGrades[idAluno];
-
-      console.log(grades, idAluno);
-      try {
-        await axios.post(`http://localhost:3030/notas/${idDisciplina}`, {
-          idAluno,
-          pars_primeiro_sem: grades.pars_primeiro_sem || null,
-          nota_primeiro_sem: grades.nota_primeiro_sem || null,
-          pars_segundo_sem: grades.pars_segundo_sem || null,
-          nota_segundo_sem: grades.nota_segundo_sem || null,
-          nota_ais: grades.nota_ais || null,
-          nota_ppi: grades.nota_ppi || null,
-          faltas: grades.faltas || null,
-          nota_final_nf: grades.nota_final_nf || null,
-          observation: grades.observation || null,
-          nota_mostra_de_ciencias: grades.nota_mostra_de_ciencias || null,
-          nota_aia: grades.nota_aia || null,
-        });
-      } catch (error) {
-        console.error("Erro ao salvar notas:", error);
-        alert("Erro ao salvar notas!");
-      }
+  
+      gradesToSend[idAluno] = {
+        pars_primeiro_sem: grades.pars_primeiro_sem || null,
+        nota_primeiro_sem: grades.nota_primeiro_sem || null,
+        pars_segundo_sem: grades.pars_segundo_sem || null,
+        nota_segundo_sem: grades.nota_segundo_sem || null,
+        nota_ais: grades.nota_ais || null,
+        nota_ppi: grades.nota_ppi || null,
+        faltas: grades.faltas || null,
+        nota_final_nf: grades.nota_final_nf || null,
+        observation: grades.observation || null,
+        nota_mostra_de_ciencias: grades.nota_mostra_de_ciencias || null,
+        nota_aia: grades.nota_aia || null,
+        nota_primeiro_semestre_calculada: grades.nota_primeiro_semestre_calculada || null,
+        fk_aluno_id_aluno: idAluno // Adicionado
+      };
+    }
+  
+    // Logando os dados para verificar se estão sendo enviados corretamente
+    console.log("Dados que serão enviados:", gradesToSend);
+  
+    try {
+      // Enviar as notas para a API
+      const response = await axios.post(`http://localhost:3030/notas/${idDisciplina}`, {
+        grades: gradesToSend, // Enviar todas as notas em um único objeto
+      });
+      console.log("Resposta do servidor:", response.data);
+    } catch (error) {
+      console.error("Erro ao salvar notas:", error);
+      alert("Erro ao salvar notas!");
     }
   };
-  const handleSaveGrades = async () => {
+  
+  
+    const handleSaveGrades = async () => {
     if (selectedSubject) {
       try {
         await saveGrades(selectedSubject, editedGrades);
