@@ -17,12 +17,13 @@ const getAllGradesByStudents = async (idTurma) => {
   const data = await axios.get(
     `http://localhost:3030/notasCalculadas/${idTurma}`
   );
+  
   return data.data;
 };
 
 const getAllStudents = async (idTurma) => {
   const data = await axios.get(`http://localhost:3030/${idTurma}/alunos`);
-  return data;
+  return data.data;
 };
 
 const PDFgrades = () => {
@@ -105,6 +106,7 @@ const PDFgrades = () => {
                     <th>Primeiro Semestre</th>
                     <th>Parcial 2</th>
                     <th>Segundo Semestre</th>
+                    <th>faltas</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -112,9 +114,10 @@ const PDFgrades = () => {
                     <tr key={grade.fk_aluno_id_aluno}>
                       <td>{grade.disciplina}</td>
                       <td>{grade.pars_primeiro_sem}</td>
-                      <td>{grade.nota_primeiro_sem}</td>
+                      <td>{grade.nota_primeiro_semestre_calculada}</td>
                       <td>{grade.pars_segundo_sem}</td>
                       <td>{grade.nota_final_nf}</td>
+                      <td>{grade.faltas}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -107,6 +107,7 @@ exports.addGrades = async (req, res) => {
               nota_ais = $10,
               nota_mostra_de_ciencias = $11,
               nota_primeiro_semestre_calculada = $12
+              fk_aluno_id_aluno = $13
           WHERE
               fk_aluno_id_aluno = $13
           AND
@@ -153,7 +154,14 @@ exports.getGradesToPDF = async (req, res) => {
   try {
     const response = await db.query(
       `SELECT 
-        *
+        n.nota_final_nf,
+        a.nome as nome_aluno,
+        a.id_aluno,
+        n.pars_primeiro_sem,
+        n.nota_primeiro_semestre_calculada,
+        n.pars_segundo_sem,
+        n.faltas,
+        d.nome as disciplina
       FROM 
         aluno a 
       JOIN 
@@ -165,7 +173,8 @@ exports.getGradesToPDF = async (req, res) => {
       WHERE
         td.fk_turma_id_turma = $1
       ORDER BY 
-        a.nome;`,
+        a.nome;
+`,
       [idTurma]
     );
     
@@ -173,7 +182,7 @@ exports.getGradesToPDF = async (req, res) => {
     
     
     
-    res.status(200).json(response.rows);
+    res.status(200).json(response);
     
   } catch (error) {
     console.error("Erro ao buscar as notas:", error);
