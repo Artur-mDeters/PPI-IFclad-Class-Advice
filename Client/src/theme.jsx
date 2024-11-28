@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
-import { ThemeProvider, CssBaseline} from "@mui/material";
-// eslint-disable-next-line no-unused-vars
+import { useState } from "react";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+// import ThemeSelector from "./themes/ThemeSelector";
 import {
   defaultDark,
   defaultLight,
@@ -18,17 +18,21 @@ import {
   highContrast,
 } from "./themes/themes";
 
+
+// import { defaultDark } from "./themes/themes";
+
 // eslint-disable-next-line react/prop-types
 const Theme = ({ children }) => {
-  const theme = defaultDark ;
-
+  const [theme, setTheme] = useState(defaultDark);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-
-    </ThemeProvider>
+    <>
+      {/* <ThemeSelector onThemeChange={setTheme} /> */}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </>
   );
 };
 

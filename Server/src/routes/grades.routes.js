@@ -3,7 +3,8 @@ const gradesController = require('../controller/Grades.controller')
 
 const routes = express.Router()
 
-routes.get('/notas/:idDisciplina/:idTurma', gradesController.getAllGradesBySubject)
 routes.post('/notas/:idDisciplina/', gradesController.addGrades)
+routes.get('/notas/:idDisciplina/:idTurma', gradesController.getAllGradesBySubject)
+routes.get('/notasCalculadas/:idTurma', gradesController.getGradesToPDF)
 
 module.exports = routes

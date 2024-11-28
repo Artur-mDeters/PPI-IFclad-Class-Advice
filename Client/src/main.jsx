@@ -45,6 +45,7 @@ import MyAccountPage from './pages/principalPages/MyAccount/MyAccountPage.jsx'
 import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.jsx' 
 import Settings from './pages/principalPages/config/Configuracoes.jsx'
 import StudentGradesPage from './pages/principalPages/Classes/Student/StudentGrades/StudentGradesPage.jsx'
+import PDFgrades from './pages/principalPages/Classes/pareceres/PDFgrades.jsx'
 
 
 
@@ -179,6 +180,14 @@ const route = createBrowserRouter([
     element: <EditSector />,
     errorElement: <ErrorPage />,
   },
+
+  // ! PDF grades page
+  {
+    path: "/:idTurma/pareceres",
+    element: <PDFgrades />,
+    errorElement: <ErrorPage />,
+  },
+  // ! Other pages
   {
     path: "/minha-conta",
     element: <MyAccountPage />,
