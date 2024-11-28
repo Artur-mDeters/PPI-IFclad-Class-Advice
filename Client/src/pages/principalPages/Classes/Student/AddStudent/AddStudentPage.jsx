@@ -290,7 +290,7 @@ const AddStudentPage = () => {
                 <StyledTableCell>NOME COMPLETO</StyledTableCell>
                 <StyledTableCell align="center">MATRICULA</StyledTableCell>
                 <StyledTableCell align="center">EMAIL</StyledTableCell>
-                <StyledTableCell align="center">SEXO</StyledTableCell>
+                <StyledTableCell align="center">GÊNERO</StyledTableCell>
                 <StyledTableCell align="center">
                   DATA DE NASCIMENTO
                 </StyledTableCell>

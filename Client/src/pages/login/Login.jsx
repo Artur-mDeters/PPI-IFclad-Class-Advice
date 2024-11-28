@@ -28,23 +28,38 @@ const boxFormStyle = {
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Para exibir mensagens de erro
 
   const handleSetEmail = (e) => setEmail(e.target.value);
   const handleSetPassword = (e) => setPassword(e.target.value);
-  
-  const userRef = {
-    email,
-    password
-  } 
-  
+
   const handleSubmit = async () => {
-    await axios.post("http://localhost:3030/login", userRef).then((response) => {
-        console.log(response)
-        return response
-    }).catch((err) => {
-        console.error(err)
-    })
-}
+    try {
+      const response = await axios.post("http://localhost:3030/login", {
+        email,
+        senha: password,
+      });
+
+      if (response.status === 200) {
+        const { token } = response.data; // Recebe o token do backend
+
+        // Armazena o token no localStorage
+        localStorage.setItem("jwt_token", token);
+
+        // Redireciona ou realiza outra ação
+        console.log("Login bem-sucedido!");
+      }
+    } catch (err) {
+      console.error(err);
+
+      // Define a mensagem de erro
+      if (err.response && err.response.data) {
+        setError(err.response.data.message || "Erro ao fazer login.");
+      } else {
+        setError("Erro ao conectar ao servidor.");
+      }
+    }
+  };
 
   return (
     <ThemeProvider theme={defaultLight}>
@@ -61,7 +76,7 @@ const Login = () => {
           </Typography>
           <Box display="flex">
             <Box height={300} width={400} paddingRight={10}>
-              <img src={imgTest} alt="sla" />
+              <img src={imgTest} alt="imagem-login" />
             </Box>
             <Box width={300}>
               <Box width={300} mb={2} textAlign="center">
@@ -92,6 +107,11 @@ const Login = () => {
                   onChange={handleSetPassword}
                 />
               </Box>
+              {error && (
+                <Typography color="error" mt={2}>
+                  {error}
+                </Typography>
+              )}
               <Box mt="15px">
                 <Button
                   sx={{ margin: 2 }}

@@ -1,8 +1,12 @@
-const express = require('express')
-const loginController = require('../controller/Login.controller.js')
+// routes/routes.js
+const express = require("express");
+const router = express.Router();
+const { login, profile } = require("../controller/auth.controller");
 
-const routes = express.Router()
+// Rota de login
+router.post("/login", login);
 
-routes.post('/login', loginController.getUserData)
+// Rota de perfil (requere token JWT)
+router.get("/profile", profile);
 
-module.exports = routes
+module.exports = router;

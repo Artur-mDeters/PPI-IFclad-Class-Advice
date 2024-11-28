@@ -107,7 +107,6 @@ exports.addGrades = async (req, res) => {
               nota_ais = $10,
               nota_mostra_de_ciencias = $11,
               nota_primeiro_semestre_calculada = $12
-              fk_aluno_id_aluno = $13
           WHERE
               fk_aluno_id_aluno = $13
           AND
@@ -124,11 +123,12 @@ exports.addGrades = async (req, res) => {
           aluno.observation,
           aluno.nota_ais,
           aluno.nota_mostra_de_ciencias,
-          nota_primeiro_semestre_calculada,  // Atualizando o campo calculado
+          nota_primeiro_semestre_calculada, // Atualizando o campo calculado
           aluno.fk_aluno_id_aluno,
           idDisciplina,
         ]
       );
+      
 
       // Verificando se o aluno foi encontrado e atualizado
       if (result.rowCount === 0) {

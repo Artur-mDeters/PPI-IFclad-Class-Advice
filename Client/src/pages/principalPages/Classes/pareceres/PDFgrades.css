@@ -1,22 +1,2 @@
-.content {
-    width: 800px; /* Largura menor para visualização */
-    height: 1000px;
-    margin: 20px auto;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    background-color: white;
-    color: black;
-  }
-
-@media print {
-    .content {
-      width: 2000px; /* Largura para impressão */
-      height: 2800px; /* Altura proporcional */
-      margin: 0; /* Remove margens extras */
-      border: none; /* Remove borda ao imprimir */
-      transform: scale(1); /* Certifica que o conteúdo não será redimensionado */
-    }
-  }
+/* .content 
+ */
