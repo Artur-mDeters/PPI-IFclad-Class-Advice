@@ -84,9 +84,9 @@ const route = createBrowserRouter([
     path: "/cursos/create",
     element: <CreateCourse />,
     errorElement: <ErrorPage />,
-  },
+  }, 
 
-  //! Student page routes 
+  //! Student page routes
   {
     path: "/turmas/:idTurma/alunos/",
     element: <StudentPage/>, 
@@ -95,7 +95,7 @@ const route = createBrowserRouter([
   {
     path: "/turmas/:idTurma/alunos/AddAlunos/",
     element: <AddStudentPage/>,
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />, 
   },
   {
     path: "/turmas/:id/alunos/EditAluno/:idAluno",
