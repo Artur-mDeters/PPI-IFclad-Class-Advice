@@ -1,14 +1,21 @@
-const generator = require('generate-password');
-const db = require('../db/db')
+const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
+const generator = require('generate-password');
 
-const tipoUsuarioProfessor = 1
+const tipoUsuarioProfessor = "1";
 
 exports.addTeacher = async (req, res) => {
   const { email, name, siape, subjects } = req.body;
   const type = 1;
 
   try {
+    // Verificar se o e-mail já está registrado
+    // const existingEmail = await db.query("SELECT * FROM usuario WHERE email = $1", [email]);
+    
+    // if (existingEmail.rowCount > 0) {
+    //   return res.status(400).send({ error: 'O e-mail já está registrado.' });
+    // }
+
     const id_usuario = uuidv4(); // Gera um UUID válido
     console.log(`Gerando senha para o usuário: ${email}`);
     
@@ -18,30 +25,32 @@ exports.addTeacher = async (req, res) => {
     });
 
     await db.query(
-      "INSERT INTO usuario (email, senha, nome, siape, usuario_tipo, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
+      "INSERT INTO usuario (email, senha, nome, siape, usuario_tp, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
       [email, password, name, siape, type, id_usuario]
     );
 
+    await db.query(
+      "INSERT INTO professor (id_professor, id_usuario) VALUES ($1, $2)",
+      [id_usuario, id_usuario]
+    );
 
     if (subjects && subjects.length > 0) {
-
       for (const subject of subjects) {
-        // Gera um UUID válido para cada disciplina se necessário
         await db.query(
-          "INSERT INTO professor_disciplina (fk_id_disciplina, fk_id_usuario) VALUES ($1, $2)",
+          "INSERT INTO professor_disciplina (fk_id_disciplina, fk_id_professor) VALUES ($1, $2)",
           [subject, id_usuario]
         );
       }
-
     }
 
     res.status(200).send("Usuário registrado com sucesso");
   } catch (err) {
-    console.error('Erro:', err.message); // Exibe a mensagem do erro
-    console.error('Detalhes do erro:', err); // Exibe o erro completo
+    console.error('Erro:', err.message); 
+    console.error('Detalhes do erro:', err); 
     res.status(500).send({ error: 'Erro ao registrar o usuário', details: err.message });
   }
 };
+
 
 // Editar professor
 exports.editTeacher = async (req, res) => {
@@ -76,14 +85,14 @@ exports.editTeacher = async (req, res) => {
       values.push(type); // Adiciona o tipo de usuário à lista de valores
 
       await db.query(
-        `UPDATE usuario SET ${updates.join(', ')} WHERE id_usuario = $${values.length - 1} AND usuario_tipo = $${values.length}`,
+        `UPDATE usuario SET ${updates.join(', ')} WHERE id_usuario = $${values.length - 1} AND usuario_tp = $${values.length}`,
         values
       );
     }
 
     // Remove as disciplinas antigas associadas ao professor
     await db.query(
-      "DELETE FROM professor_disciplina WHERE fk_id_usuario = $1",
+      "DELETE FROM professor_disciplina WHERE fk_id_professor = $1",
       [id]
     );
 
@@ -91,7 +100,7 @@ exports.editTeacher = async (req, res) => {
     if (subjects && subjects.length > 0) {
       const insertValues = subjects.map(subject => [subject, id]);
       await db.query(
-        "INSERT INTO professor_disciplina (fk_id_disciplina, fk_id_usuario) VALUES " +
+        "INSERT INTO professor_disciplina (fk_id_disciplina, fk_id_professor) VALUES " +
         insertValues.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', '),
         insertValues.flat()
       );
@@ -106,22 +115,22 @@ exports.editTeacher = async (req, res) => {
 
 
 
-exports.getProfessores = async (req, res) => {
-    try {
-      const resposta = await db.query("SELECT * FROM usuario WHERE usuario_tipo = $1", [tipoUsuarioProfessor]);
+exports.getProfessores = async (_, res) => {
+  // const tipoUsuarioProfessor = 1;
+  try {
+      // A variável tipoUsuarioProfessor é acessada corretamente aqui
+      const resposta = await db.query("SELECT * FROM usuario WHERE usuario_tp = $1", [tipoUsuarioProfessor]);
       res.status(200).json(resposta);
-    } catch (err) {
+  } catch (err) {
       console.error(err);
-      res
-        .status(500)
-        .json({ error: "Erro ao buscar usuários", details: err.message });
-    }
-  };
+      res.status(500).json({ error: "Erro ao buscar usuários", details: err.message });
+  }
+};
 
 exports.getProfessorById = async (req, res) => {
   const id_user = req.params.id
   try {
-      const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1 AND usuario_tipo = $2", [id_user, tipoUsuarioProfessor])
+      const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1 AND usuario_tp = $2", [id_user, tipoUsuarioProfessor])
       res.status(200).send(resposta)
   } catch (err) {
       res.status(404).send(err)
@@ -135,7 +144,7 @@ exports.deleteTeacher = async (req, res) => {
   try {
     // Primeiro, remove as disciplinas associadas ao professor
     await db.query(
-      "DELETE FROM professor_disciplina WHERE fk_id_usuario = $1",
+      "DELETE FROM professor_disciplina WHERE fk_id_professor = $1",
       [id]
     );
 

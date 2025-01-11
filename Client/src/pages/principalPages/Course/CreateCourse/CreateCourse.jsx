@@ -143,7 +143,7 @@ const CreateCourse = () => {
             id="pattern"
             label="Padrão de nome de turma"
             margin="dense"
-            value={courseData[0]?.pattern || ""}
+            value={courseData[0]?.pattern || ""} 
             onChange={handleInputChange}
             error={!!errors.pattern} // Mostra o erro
             helperText={errors.pattern} // Mensagem de erro
@@ -160,3 +160,4 @@ const CreateCourse = () => {
 };
 
 export default CreateCourse;
+// teste
