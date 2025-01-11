@@ -49,32 +49,29 @@ const Teacher = () => {
       <Box sx={classes.boxProfessores}>
         {userData.map((user) => (
           <Paper
-            item
-            key={user.id_usuario}
-            elevation={8}
-            sx={classes.paperProfessor}
+          key={user.id_usuario}
+          elevation={8}
+          sx={classes.paperProfessor}
+        >
+          <Box sx={classes.foto}>
+            <img
+              src={foto}
+              style={{ height: "130px", borderRadius: "5px" }}
+              alt="foto do professor"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="body">{user.nome}</Typography>
+            <Typography variant="body">{user.siape}</Typography>
+          </Box>
+          <Button
+            onClick={() => redirectToProfessor(user.id_usuario)}
+            variant="contained"
           >
-            <Box sx={classes.foto}>
-              <img
-                src={foto}
-                style={{ height: "130px", borderRadius: "5px" }}
-                alt="deu pau"
-              />
-            </Box>
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <Typography variant="body">{user.nome}</Typography>
-              <Typography variant="body">{user.siape}</Typography>
-            </Box>
-            <Button
-              onClick={() => redirectToProfessor(user.id_usuario)}
-              variant="contained"
-            >
-              Editar
-            </Button>
-          </Paper>
+            Editar
+          </Button>
+        </Paper>
+        
         ))}
       </Box>
     </UiAppBar>
