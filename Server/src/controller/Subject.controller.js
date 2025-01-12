@@ -66,7 +66,7 @@ exports.excludeSubject = async (req, res) => {
     try {
         // Primeiro, excluímos os registros na tabela aluno_disciplina relacionados à disciplina
         await db.query(
-            "DELETE FROM aluno_disciplina WHERE fk_id_disciplina = $1", [id]
+            "DELETE FROM notas WHERE fk_id_disciplina = $1", [id]
         );
 
         // Depois, excluímos a disciplina na tabela disciplina

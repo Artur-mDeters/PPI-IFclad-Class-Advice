@@ -93,10 +93,10 @@ const EditTeacher = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3030/setores/${id}`);
+      await axios.delete(`http://localhost:3030/professores/${id}`);
       navigate("/professores");
     } catch (err) {
-      console.error("Erro ao excluir o setor:", err);
+      console.error("Erro ao excluir o professor:", err);
     }
     setDialogOpen(false);
   };

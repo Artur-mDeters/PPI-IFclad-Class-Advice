@@ -31,7 +31,7 @@ exports.addClass = async (req, res) => {
     const id_class = uuidv4();
 
     const response = await db.query(
-      "INSERT INTO turma (id_turma, nome, ano_inicio, fk_curso_id_curso) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO turma (id_turma, nome, ano_inicio, id_curso) VALUES ($1, $2, $3, $4)",
       [id_class, name, start_year, course]
     );
 
@@ -40,7 +40,7 @@ exports.addClass = async (req, res) => {
       for (const subject of subjects) {
         // Gera um UUID válido para cada disciplina se necessário
         await db.query(
-          "INSERT INTO turma_disciplina (fk_disciplina_id_disciplina, fk_turma_id_turma) VALUES ($1, $2)",
+          "INSERT INTO turma_disciplina (id_disciplina, id_turma) VALUES ($1, $2)",
           [subject, id_class]
         );
       }
@@ -58,7 +58,7 @@ exports.editClass = async (req, res) => {
   const { start_year, name, id_course } = req.body;
   try {
     const result = await db.query(
-      "UPDATE turma SET nome = $1, ano_inicio = $2, fk_curso_id_curso = $3 WHERE id_turma = $4 ",
+      "UPDATE turma SET nome = $1, ano_inicio = $2, id_curso = $3 WHERE id_turma = $4 ",
       [name, start_year, id_course ,id_class ]
     );
 
@@ -81,13 +81,7 @@ exports.deleteClass = async (req, res) => {
   const id_class = req.params.id;
 
   try {
-    // Exclui as associações de alunos com disciplinas na tabela aluno_disciplina
-    await db.query(
-      `DELETE FROM aluno_disciplina WHERE fk_aluno_id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1)`,
-      [id_class]
-    );
 
-    // Exclui os alunos associados à turma
     await db.query(
       `DELETE FROM aluno WHERE id_turma = $1`,
       [id_class]

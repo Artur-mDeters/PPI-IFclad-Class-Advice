@@ -139,7 +139,6 @@ exports.getProfessorById = async (req, res) => {
 
 exports.deleteTeacher = async (req, res) => {
   const id = req.params.id;
-  const type = tipoUsuarioProfessor;
 
   try {
     // Primeiro, remove as disciplinas associadas ao professor
@@ -150,8 +149,8 @@ exports.deleteTeacher = async (req, res) => {
 
     // Em seguida, remove o professor da tabela de usuários
     const result = await db.query(
-      "DELETE FROM usuario WHERE id_usuario = $1 AND usuario_tipo = $2",
-      [id, type]
+      "DELETE FROM usuario WHERE id_usuario = $1",
+      [id]
     );
 
     // Verifica se algum registro foi deletado

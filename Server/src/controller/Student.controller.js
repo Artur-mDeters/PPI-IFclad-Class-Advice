@@ -23,7 +23,7 @@ exports.addStudent = async (req, res) => {
 
     for(const subject of subjects) {
       await db.query(
-        "INSERT INTO aluno_disciplina (fk_aluno_id_aluno, fk_disciplina_id_disciplina) VALUES ($1, $2)",
+        "INSERT INTO notas (id_aluno, id_disciplina) VALUES ($1, $2)",
         [id_student, subject.id_disciplina]
       )
     }
