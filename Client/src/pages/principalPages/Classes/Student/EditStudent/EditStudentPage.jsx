@@ -163,7 +163,7 @@ const EditStudentPage = () => {
             onChange={handleInputChange}
           />
           <FormControl margin="dense" fullWidth>
-            <InputLabel id="gender_label">Sexo</InputLabel>
+            <InputLabel id="gender_label">Gênero</InputLabel>
             <Select
               labelId="gender_label"
               label="Sexo"
