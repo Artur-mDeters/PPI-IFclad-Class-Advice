@@ -1,0 +1,5 @@
+git add . ( adiciona todas as edições em uma "pasta")
+git commit -m  "mensagem" ( adiciona um nome pra essa "pasta")
+git push origin vitfix (envia essa pasta pro GitHub) 
+
+usar esses comandos toda vez que terminar de arrumar um arquivo
