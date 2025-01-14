@@ -57,20 +57,12 @@ exports.deleteCourse = async (req, res) => {
 
   try {
     // Exclui as associações de alunos com disciplinas nas turmas associadas ao curso
-    await db.query(
-      `DELETE FROM aluno_disciplina WHERE fk_aluno_id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma IN (SELECT id_turma FROM turma WHERE fk_curso_id_curso = $1))`,
-      [id_course]
-    );
 
-    // Exclui os alunos das turmas associadas ao curso
-    await db.query(
-      `DELETE FROM aluno WHERE id_turma IN (SELECT id_turma FROM turma WHERE fk_curso_id_curso = $1)`,
-      [id_course]
-    );
+
 
     // Exclui as turmas associadas ao curso
     await db.query(
-      `DELETE FROM turma WHERE fk_curso_id_curso = $1`,
+      `DELETE FROM turma WHERE id_curso = $1`,
       [id_course]
     );
 

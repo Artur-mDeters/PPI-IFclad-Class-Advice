@@ -303,7 +303,7 @@ const AddStudentPage = () => {
             <TableBody>
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="center">{row.name}</StyledTableCell>
+                  <StyledTableCell align="center" name="name">{row.name}</StyledTableCell>
                   <StyledTableCell align="center">
                     {courseYear[0]?.ano_inicio + row.registration}
                   </StyledTableCell>

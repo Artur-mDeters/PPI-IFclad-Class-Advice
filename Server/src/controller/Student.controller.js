@@ -2,36 +2,40 @@ const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 
 exports.addStudent = async (req, res) => {
-  const { name, registration, email, gender, dateOfBirth, city, federativeUnity, internal , course} =
-    req.body;
+  const { name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, course } = req.body;
 
-  if (!name || !registration || !email || !gender || !dateOfBirth || !city || !federativeUnity || !internal || !course) {
-    return res.status(400).send("Todos os campos devem ser preenchidos.");
-  }
+  // Verificação de preenchimento dos campos
+  // if (![name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, classe].every(Boolean)) {
+  //   return res.status(400).send("Todos os campos devem ser preenchidos.");
+  // }
 
-  
   try {
     const id_student = uuidv4();
+
+    // Inserção do aluno no banco de dados
     const response = await db.query(
-      "INSERT INTO aluno (id_aluno, nome, matricula, email, genero, nascimento, cidade, uf, interno, id_turma) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+      "INSERT INTO aluno (id_aluno, nome, matricula, email, genero, nascimento, cidade, uf, interno, id_turma) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       [id_student, name, registration, email, gender, dateOfBirth, city, federativeUnity, internal, course]
     );
 
-    const subjects = await db.query(
-      "SELECT id_disciplina FROM disciplina",
-    )
+    // Consulta das disciplinas
+    const subjects = await db.any("SELECT id_disciplina FROM disciplina");
 
-    for(const subject of subjects) {
+    // Inserção de notas para cada disciplina associada ao aluno
+    for (const { id_disciplina } of subjects) {
+      const id_notas = uuidv4();
       await db.query(
-        "INSERT INTO aluno_disciplina (fk_aluno_id_aluno, fk_disciplina_id_disciplina) VALUES ($1, $2)",
-        [id_student, subject.id_disciplina]
-      )
+        "INSERT INTO notas (id_notas, id_aluno, fk_id_disciplina) VALUES ($1, $2, $3)",
+        [id_notas, id_student, id_disciplina]
+      );
     }
-    res.status(201).send(response);
+    
+    res.status(201).send({ message: "Aluno e notas inseridos com sucesso." });
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send({ error: "Erro ao inserir aluno.", details: err });
   }
 };
+
 
 exports.getStudent = async (req, res) => {
     const id = req.params.idTurma;  
