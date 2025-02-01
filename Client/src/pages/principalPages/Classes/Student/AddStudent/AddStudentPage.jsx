@@ -54,27 +54,34 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // * Função de validação dos dados do aluno
 const validateStudent = (student) => {
-  const errors = {};  // Armazena os erros de validação
+  const errors = {}; // Armazena os erros de validação
 
-  if (/[^a-zA-Z\s]/.test(student.name)) errors.name = "Nome não pode conter números";
-  if (!/^\d+$/.test(student.registration)) errors.registration = "Matrícula deve conter apenas números";
+  if (/[^a-zA-Z\u00C0-\u017F\s]/.test(student.name)) {
+    errors.name = "Nome não pode conter números ou caracteres especiais";
+  }
+  if (!/^\d+$/.test(student.registration))
+    errors.registration = "Matrícula deve conter apenas números";
   if (!student.email.includes("@")) errors.email = "Email deve conter um '@'";
-  if (!["masculino", "feminino"].includes(student.gender.toLowerCase())) errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth)) errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
+  if (!["masculino", "feminino"].includes(student.gender.toLowerCase()))
+    errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth))
+    errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
   if (/[\d]/.test(student.city)) errors.city = "Cidade não pode conter números";
-  if (!/^[A-Z]{2}$/.test(student.federativeUnity)) errors.federativeUnity = "UF deve conter duas letras maiúsculas";
+  if (!/^[A-Z]{2}$/.test(student.federativeUnity))
+    errors.federativeUnity = "UF deve conter duas letras maiúsculas";
 
   return errors;
 };
 
 // * Componente de adição e edição de alunos
 const AddStudentPage = () => {
-  const { idTurma } = useParams();  // Pega o parâmetro da URL (id da turma)
-  const [alert, setAlert] = useState(false);  // Estado de alerta
-  const [alertMessage, setAlertMessage] = useState("");  // Mensagem do alerta
-  const [alertCountdown, setAlertCountdown] = useState(5);  // Contagem regressiva do alerta
-  const [rows, setRows] = useState([]);  // Linhas da tabela
-  const [student, setStudent] = useState({  // Dados do aluno sendo adicionado ou editado
+  const { idTurma } = useParams(); // Pega o parâmetro da URL (id da turma)
+  const [alert, setAlert] = useState(false); // Estado de alerta
+  const [alertMessage, setAlertMessage] = useState(""); // Mensagem do alerta
+  const [alertCountdown, setAlertCountdown] = useState(5); // Contagem regressiva do alerta
+  const [rows, setRows] = useState([]); // Linhas da tabela
+  const [student, setStudent] = useState({
+    // Dados do aluno sendo adicionado ou editado
     name: "",
     registration: "",
     email: "",
@@ -85,11 +92,11 @@ const AddStudentPage = () => {
     internal: "",
     course: "",
   });
-  const [editingRowIndex, setEditingRowIndex] = useState(null);  // Índice da linha sendo editada
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);  // Estado para o diálogo de cancelamento
-  const [courseYear, setCourseYear] = useState([]);  // Ano do curso
+  const [editingRowIndex, setEditingRowIndex] = useState(null); // Índice da linha sendo editada
+  const [openCancelDialog, setOpenCancelDialog] = useState(false); // Estado para o diálogo de cancelamento
+  const [courseYear, setCourseYear] = useState([]); // Ano do curso
 
-  const navigate = useNavigate();  // Função para navegação entre páginas
+  const navigate = useNavigate(); // Função para navegação entre páginas
 
   // * Função para pegar o ano do curso via API
   const getCourseYear = async () => {
@@ -108,7 +115,7 @@ const AddStudentPage = () => {
       setAlert(false);
       setAlertCountdown(5);
     }
-    return () => clearInterval(timer);  // Limpeza do intervalo ao desmontar o componente
+    return () => clearInterval(timer); // Limpeza do intervalo ao desmontar o componente
   }, [alert, alertCountdown]);
 
   // * Hook para buscar dados do curso uma única vez
@@ -137,10 +144,14 @@ const AddStudentPage = () => {
       const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
       formattedValue = digitsOnly;
       if (formattedValue.length > 2) {
-        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`;
+        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(
+          2
+        )}`;
       }
       if (formattedValue.length > 5) {
-        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
+        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(
+          5
+        )}`;
       }
     } else if (name === "registration") {
       formattedValue = value.replace(/[^\d]/g, "");
@@ -166,7 +177,7 @@ const AddStudentPage = () => {
 
     const newRow = {
       ...student,
-      internal: student.internal === "sim" ? "Sim" : "Não", 
+      internal: student.internal === "sim" ? "Sim" : "Não",
     };
 
     if (editingRowIndex !== null) {
@@ -303,7 +314,9 @@ const AddStudentPage = () => {
             <TableBody>
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="center" name="name">{row.name}</StyledTableCell>
+                  <StyledTableCell align="center" name="name">
+                    {row.name}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {courseYear[0]?.ano_inicio + row.registration}
                   </StyledTableCell>

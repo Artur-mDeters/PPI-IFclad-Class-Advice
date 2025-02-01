@@ -25,7 +25,7 @@ exports.addTeacher = async (req, res) => {
     });
 
     await db.query(
-      "INSERT INTO usuario (email, senha, nome, siape, usuario_tp, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
+      "INSERT INTO usuario (email, senha, nome, siape, usuario_tipo, id_usuario) VALUES ($1, $2, $3, $4, $5, $6)",
       [email, password, name, siape, type, id_usuario]
     );
 
@@ -85,7 +85,7 @@ exports.editTeacher = async (req, res) => {
       values.push(type); // Adiciona o tipo de usuário à lista de valores
 
       await db.query(
-        `UPDATE usuario SET ${updates.join(', ')} WHERE id_usuario = $${values.length - 1} AND usuario_tp = $${values.length}`,
+        `UPDATE usuario SET ${updates.join(', ')} WHERE id_usuario = $${values.length - 1} AND usuario_tipo = $${values.length}`,
         values
       );
     }
@@ -119,7 +119,7 @@ exports.getProfessores = async (_, res) => {
   // const tipoUsuarioProfessor = 1;
   try {
       // A variável tipoUsuarioProfessor é acessada corretamente aqui
-      const resposta = await db.query("SELECT * FROM usuario WHERE usuario_tp = $1", [tipoUsuarioProfessor]);
+      const resposta = await db.query("SELECT * FROM usuario WHERE usuario_tipo = $1", [tipoUsuarioProfessor]);
       res.status(200).json(resposta);
   } catch (err) {
       console.error(err);
@@ -130,7 +130,7 @@ exports.getProfessores = async (_, res) => {
 exports.getProfessorById = async (req, res) => {
   const id_user = req.params.id
   try {
-      const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1 AND usuario_tp = $2", [id_user, tipoUsuarioProfessor])
+      const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1 AND usuario_tipo = $2", [id_user, tipoUsuarioProfessor])
       res.status(200).send(resposta)
   } catch (err) {
       res.status(404).send(err)
