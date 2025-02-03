@@ -55,17 +55,33 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 // * Função de validação dos dados do aluno
 const validateStudent = (student) => {
   const errors = {}; // Armazena os erros de validação
+  const currentYear = new Date().getFullYear();
 
   if (/[^a-zA-Z\u00C0-\u017F\s]/.test(student.name)) {
     errors.name = "Nome não pode conter números ou caracteres especiais";
   }
-  if (!/^\d+$/.test(student.registration))
-    errors.registration = "Matrícula deve conter apenas números";
+  if (!/^\d{6}$/.test(student.registration)) {
+    errors.registration = "Matrícula deve conter exatamente 6 números";
+  }
   if (!student.email.includes("@")) errors.email = "Email deve conter um '@'";
   if (!["masculino", "feminino"].includes(student.gender.toLowerCase()))
     errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth))
+
+  // Validação de data de nascimento
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth)) {
     errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
+  } else {
+    const [day, month, year] = student.dateOfBirth.split("/").map(Number);
+
+    if (day < 1 || day > 31) {
+      errors.dateOfBirth = "O dia deve ser entre 01 e 31";
+    } else if (month < 1 || month > 12) {
+      errors.dateOfBirth = "O mês deve ser entre 01 e 12";
+    } else if (year > currentYear) {
+      errors.dateOfBirth = `O ano não pode ser maior que ${currentYear}`;
+    }
+  }
+
   if (/[\d]/.test(student.city)) errors.city = "Cidade não pode conter números";
   if (!/^[A-Z]{2}$/.test(student.federativeUnity))
     errors.federativeUnity = "UF deve conter duas letras maiúsculas";
@@ -137,34 +153,36 @@ const AddStudentPage = () => {
   // * Função de manipulação de alteração nos campos de input
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+  
     let formattedValue = value;
-
+  
     if (name === "dateOfBirth") {
       const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
       formattedValue = digitsOnly;
       if (formattedValue.length > 2) {
-        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(
-          2
-        )}`;
+        formattedValue = `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`;
       }
       if (formattedValue.length > 5) {
-        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(
-          5
-        )}`;
+        formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
       }
     } else if (name === "registration") {
-      formattedValue = value.replace(/[^\d]/g, "");
+      formattedValue = value.replace(/[^\d]/g, "").slice(0, 6); // Permite apenas 6 números
     } else if (name === "federativeUnity") {
-      formattedValue = value.toUpperCase();
+      formattedValue = value.toUpperCase().slice(0, 2); // Permite apenas 2 caracteres maiúsculos
+    } else if (name === "name") {
+      formattedValue = value.replace(/[^a-zA-Z\u00C0-\u017F\s]/g, ""); // Remove números e caracteres especiais
+    } else if (name === "city") {
+      formattedValue = value.replace(/[0-9]/g, ""); // Remove números da cidade
     }
-
+  
     setStudent((prevStudent) => ({
       ...prevStudent,
       [name]: formattedValue,
       course: idTurma,
     }));
   };
+  
+
 
   // * Função para adicionar ou editar um aluno na tabela
   const addItem = () => {
@@ -174,12 +192,12 @@ const AddStudentPage = () => {
       setAlert(true);
       return;
     }
-
+  
     const newRow = {
       ...student,
-      internal: student.internal === "sim" ? "Sim" : "Não",
+      internal: student.internal === "sim" ? (student.apartmentNumber || "Sim") : "não"
     };
-
+  
     if (editingRowIndex !== null) {
       const updatedRows = rows.map((row, index) =>
         index === editingRowIndex ? newRow : row
@@ -189,7 +207,7 @@ const AddStudentPage = () => {
     } else {
       setRows([...rows, newRow]);
     }
-
+  
     setStudent({
       name: "",
       registration: "",
@@ -199,9 +217,11 @@ const AddStudentPage = () => {
       city: "",
       federativeUnity: "",
       internal: "",
+      apartmentNumber: "",
       course: "",
     });
   };
+  
 
   // * Função para preparar edição de um aluno na tabela
   const handleEdit = (index) => {
@@ -308,6 +328,7 @@ const AddStudentPage = () => {
                 <StyledTableCell align="center">CIDADE</StyledTableCell>
                 <StyledTableCell align="center">UF</StyledTableCell>
                 <StyledTableCell align="center">INTERNO</StyledTableCell>
+                {student.internal === "sim" ? (<StyledTableCell align="center">NÚMERO DO APARTAMENTO</StyledTableCell>) : null}
                 <StyledTableCell align="center">AÇÕES</StyledTableCell>
               </TableRow>
             </TableHead>
@@ -431,27 +452,39 @@ const AddStudentPage = () => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <FormControl variant="standard" fullWidth>
+                  <FormControl fullWidth variant="standard">
                     <Select
-                      labelId="internal-label"
                       name="internal"
                       value={student.internal}
                       onChange={handleChange}
-                      error={!!student.errors?.internal}
                     >
                       <MenuItem value="sim">Sim</MenuItem>
                       <MenuItem value="não">Não</MenuItem>
                     </Select>
-                    <FormHelperText>{student.errors?.internal}</FormHelperText>
                   </FormControl>
                 </StyledTableCell>
+
+                {/* Se 'sim' for selecionado em "interno", exibe o campo para o número do apartamento */}
+                {student.internal === "sim" && (
+                  <StyledTableCell align="right">
+                    <TextField
+                      name="apartmentNumber"
+                      variant="standard"
+                      value={student.apartmentNumber}
+                      onChange={handleChange}
+                      inputProps={{ maxLength: 3 }}
+                      error={!!student.errors?.apartmentNumber}
+                      helperText={student.errors?.apartmentNumber}
+                    />
+                  </StyledTableCell>
+                )}
                 <StyledTableCell align="right">
                   <Button variant="contained" onClick={addItem}>
                     {editingRowIndex !== null ? "Atualizar" : "OK"}
                   </Button>
                 </StyledTableCell>
               </StyledTableRow>
-            </TableBody>
+            </TableBody>  
           </Table>
         </TableContainer>
       </Box>
