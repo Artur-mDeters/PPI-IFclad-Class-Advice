@@ -24,6 +24,7 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
+import classes from "./AllStudentGradesPage.style";
 // import { use } from "../../../../../../Server/src/routes/grades.routes";
 
 import GradeTextField from './GradeTextfield'; // Ajuste o caminho conforme necessário
@@ -280,7 +281,7 @@ const AllStudentGradesPage = () => {
 
   return (
     <UiAppBar title={"Notas da turma: ${idTurma}"}>
-      <Box sx={{ marginBottom: "10px" }}>
+      <Box sx={classes.marginBottom_box}>
         <FormControl fullWidth>
           <InputLabel id="Select-Subject">Disciplina</InputLabel>
           <Select
@@ -305,7 +306,7 @@ const AllStudentGradesPage = () => {
         <Alert
           variant="outlined"
           severity="warning"
-          sx={{ marginBottom: "10px" }}
+          sx={classes.margin_alert}
         >
           Todas as notas devem ser inseridas em base 10
         </Alert>
@@ -569,13 +570,13 @@ const AllStudentGradesPage = () => {
           <Alert
             onClose={handleSnackbarClose}
             severity={snackbarSeverity}
-            sx={{ width: "100%" }}
+            sx={classes.width_alert}
           >
             {snackbarMessage}
           </Alert>
         </Snackbar>
       </Box>
-      <Box style={{ marginTop: "20px" }}>
+      <Box style={classes.marginTop_box}>
         <Button variant="contained" color="primary" onClick={handleSaveGrades}>
           Salvar Notas
         </Button>
