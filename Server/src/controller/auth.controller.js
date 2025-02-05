@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const db = require("../db/db");
 
 // Função para login
-const login = async (req, res) => {
+const login = async (req, __) => {
   const { email, senha } = req.body;
 
   try {
@@ -28,13 +28,12 @@ const login = async (req, res) => {
 
     res.json({ message: "Autenticação bem-sucedida", token });
   } catch (err) {
-    console.error("Erro ao tentar autenticar o usuário", err);
-    res.status(500).json({ message: "Erro no servidor." });
+    throw new Error("Erro ao efetuar login: ", err)
   }
 };
 
 // Função para proteger a rota com token JWT
-const profile = async (req, res) => {
+const profile = async (req, __) => {
   const token = req.headers["authorization"];
   if (!token) {
     return res.status(403).json({ message: "Token de autenticação não fornecido." });
@@ -48,8 +47,7 @@ const profile = async (req, res) => {
     const user = await db.one("SELECT * FROM usuario WHERE id_usuario = $1", [decoded.id]);
     res.json(user);
   } catch (err) {
-    console.error("Erro ao verificar o token", err);
-    res.status(401).json({ message: "Token inválido." });
+    throw new Error("erro ao procurar usuario: ", err)
   }
 };
 
