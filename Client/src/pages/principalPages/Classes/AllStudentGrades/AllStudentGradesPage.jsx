@@ -66,20 +66,23 @@ const AllStudentGradesPage = () => {
 
   const formatGrade = (value) => {
     if (value === "") return "";
-    const number = parseInt(value, 10);
+    const number = parseFloat(value);
     if (isNaN(number) || number > 999) return ""; // Restrição para números acima de 999
-
+  
+    let formattedNumber;
     if (number <= 9) {
-      return number.toFixed(1); // Mantém o formato correto para números pequenos
+      formattedNumber = number.toFixed(1); // Mantém o formato correto para números pequenos
+    } else if (number == 10) {
+      formattedNumber = number.toFixed(1); // Mantém o formato correto para números pequenos
+    } else if (number <= 99) {
+      formattedNumber = (number / 10).toFixed(1); // Divide por 10 para notas entre 10 e 99
+    } else {
+      formattedNumber = (number / 100).toFixed(2); // Divide por 100 para notas a partir de 100
     }
-    if (number == 10) {
-      return number.toFixed(1); // Mantém o formato correto para números pequenos
-    }
-    if (number <= 99) {
-      return (number / 10).toFixed(1); // Divide por 10 para notas entre 10 e 99
-    }
-
-    return (number / 100).toFixed(2); // Divide por 100 para notas a partir de 100
+  
+    // Arredondamento
+    const roundedNumber = Math.round(parseFloat(formattedNumber) * 10) / 10;
+    return roundedNumber.toFixed(1);
   };
 
   const formatFaltas = (value) => {
@@ -225,24 +228,30 @@ const AllStudentGradesPage = () => {
   };
 
   const calculateFinalGrade = (studentId) => {
-    const student = editedGrades[studentId];
-    if (!student) return "-";
-
-    const gradeFields = [
-      "parcial1",
-      "semestre1",
-      "parcial2",
-      "semestre2",
-      "ais_b10",
-      "ppi_b10",
-      "mostra_de_ciencias",
+    const student = studentGrades.find((s) => s.id_aluno === studentId);
+    if (!student) return 0;
+  
+    const { parcial1, semestre1, parcial2, semestre2, ais_b10, ppi_b10, mostra_de_ciencias } = student;
+  
+    // Exemplo de cálculo de média ponderada
+    const grades = [
+      parseFloat(parcial1) || 0,
+      parseFloat(semestre1) || 0,
+      parseFloat(parcial2) || 0,
+      parseFloat(semestre2) || 0,
+      parseFloat(ais_b10) || 0,
+      parseFloat(ppi_b10) || 0,
+      parseFloat(mostra_de_ciencias) || 0,
     ];
-
-    const grades = gradeFields.map((field) => parseFloat(student[field]) || 0);
-    const total = grades.reduce((acc, grade) => acc + grade, 0);
-    const average = (total / gradeFields.length).toFixed(2);
-
-    return average;
+  
+    const weights = [1, 2, 1, 2, 1, 1, 1]; // Exemplo de pesos para cada nota
+  
+    const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
+    const weightedSum = grades.reduce((acc, grade, index) => acc + grade * weights[index], 0);
+  
+    const finalGrade = weightedSum / totalWeight;
+  
+    return finalGrade.toFixed(2); // Retorna a média final com duas casas decimais
   };
 
   const getStatus = (studentId) => {
