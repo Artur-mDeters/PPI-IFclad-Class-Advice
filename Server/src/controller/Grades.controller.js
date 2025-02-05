@@ -1,4 +1,3 @@
-
 const db = require("../db/db");  // Certifique-se de que o caminho para o arquivo está correto
 
 exports.getAllGradesBySubject = async function (req, res) {
@@ -23,15 +22,12 @@ exports.getAllGradesBySubject = async function (req, res) {
     );
     console.log("Resultado da busca:", result);
 
-
     // Retornando os resultados
     res.status(200).json(result);
   } catch (error) {
-    console.error("Erro ao buscar notas:", error);
-    res.status(500).send({ message: "Erro ao buscar as notas.", error: error.message });
+    throw new Error("Erro ao buscar notas: " + error);
   }
 };
-
 
 exports.addGrades = async (req, res) => {
   const { idDisciplina } = req.params;
@@ -106,15 +102,9 @@ exports.addGrades = async (req, res) => {
 
     res.status(200).json({ message: "Notas atualizadas com sucesso!" });
   } catch (error) {
-    console.error("Erro ao atualizar as notas:", error);
-    res.status(500).json({
-      message: "Erro ao atualizar as notas",
-      error: error.message,
-    });
+    throw new Error("Erro ao atualizar as notas: " + error);
   }
 };
-
-
 
 exports.getGradesToPDF = async (req, res) => {
   const { idTurma } = req.params;
@@ -153,11 +143,6 @@ exports.getGradesToPDF = async (req, res) => {
     // Retornando os resultados
     res.status(200).json(response.rows);
   } catch (error) {
-    console.error("Erro ao buscar as notas:", error);
-    res.status(500).json({
-      message: "Erro ao buscar as notas",
-      error: error.message,
-      idTurma: idTurma,
-    });
+    throw new Error("Erro ao buscar as notas: " + error);
   }
 };
