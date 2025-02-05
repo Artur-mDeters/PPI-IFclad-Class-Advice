@@ -22,8 +22,7 @@ exports.getClass = async (___, res) => {
     const response = await db.query("SELECT * FROM turma");
     res.status(200).json(response);
   } catch (err) {
-    throw new Error(err);
-    res.status(500).send(err);
+    throw new Error("Erro ao procurar turma: ", err);
   }
 };
 
@@ -35,8 +34,7 @@ exports.getClassByID = async (req, res) => {
     ]);
     res.status(200).send(response);
   } catch (err) {
-    console.error("GET TURMA BY ID", err);
-    res.status(500).send(err);
+    throw new Error("Erro ao procurar turma: ", err)
   }
 };
 
@@ -64,7 +62,7 @@ exports.addClass = async (req, res) => {
     res.status(200).json(response);
 
   } catch (err) {
-    res.status(500).send(err);
+    throw new Error("Erro ao adicionar turma: ",err)
   }
 };
 
@@ -85,8 +83,7 @@ exports.editClass = async (req, res) => {
 
   } catch (err) {
     
-    throw new Error(err);
-    res.status(500).json(err);
+    throw new Error("Erro ao editar turma: ", err);
   }
 };
 
@@ -122,7 +119,7 @@ exports.deleteClass = async (req, res) => {
 
     res.status(204).send(); // Sucesso
   } catch (err) {
-    res.status(500).json({ error: err.message }); // Erro interno
+    throw new Error("Nao foi possivel deletar a turma: ", err)
   }
 };
 
@@ -140,8 +137,8 @@ exports.AddClassCouncil = async (req, res) => {
       return res.status(404).json({ message: "Class not found" });
     }
 
-    res.status(200).json({ message: "Class council scheduled successfully" });
+    res.status(200).json({ message: "Conselho de classe agendado com sucesso" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+   throw new Error("Nao foi possivel agendar conselho de classe: ",err)
   }
 };
