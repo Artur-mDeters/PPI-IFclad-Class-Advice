@@ -35,8 +35,7 @@ const saveBase64Image = (base64String, id_student) => {
     
     return `${fileName}`;
   } catch (error) {
-    console.error('Erro ao salvar imagem:', error);
-    return null;
+    throw new Error ("Erro ao salvar imagem:", error);
   }
 };
 
@@ -106,14 +105,10 @@ exports.addStudent = async (req, res) => {
       id: id_student 
     });
   } catch (err) {
-    console.error("Erro detalhado ao inserir aluno:", err);
-    res.status(500).send({ 
-      error: "Erro ao inserir aluno.", 
-      details: err.message,
-      stack: err.stack
-    });
+    throw new Error ("Erro detalhado ao inserir aluno:", err);
   }
-};
+  }
+;
 
 exports.updateStudent = [upload.single("photo"), async (req, res) => {
   const id_student = req.params.idStudent;
@@ -154,8 +149,7 @@ exports.updateStudent = [upload.single("photo"), async (req, res) => {
 
     res.status(200).json(response);
   } catch (err) {
-    console.error("Erro ao atualizar aluno:", err);
-    res.status(500).send("Erro interno do servidor");
+    throw new Error("Erro ao atualizar aluno:", err);
   }
 }];
 
@@ -164,26 +158,27 @@ exports.getStudent = async (req, res) => {
   try {
     const response = await db.query(
       "SELECT * FROM aluno WHERE id_turma = $1",
-      id
+      [id]
     );
-    res.status(200).json(response);
+    res.status(200).json(response.rows);
   } catch (err) {
-    res.status(500).send(err);
+    throw new Error("Erro ao buscar aluno", err);
   }
 };
+
 exports.getStudentByID = async (req, res) => {
-  // const idTurma = req.params.idTurma;
   const idStudent = req.params.idStudent;
   try {
     const response = await db.query(
-      "SELECT * FROM aluno WHERE id_aluno = $1 ",
-      idStudent
+      "SELECT * FROM aluno WHERE id_aluno = $1",
+      [idStudent] 
     );
-    res.status(200).json(response);
+    res.status(200).json(response.rows); 
   } catch (err) {
-    res.status(500).send(err);
+    throw new Error("Erro ao buscar aluno por ID", err);
   }
 };
+
 
 exports.excludeStudent = async (req, res) => {
   const idStudent = req.params.idStudent;
@@ -202,7 +197,7 @@ exports.excludeStudent = async (req, res) => {
       .send("Aluno e registros relacionados excluídos com sucesso.");
   } catch (err) {
     console.error("Erro ao excluir aluno:", err);
-    res.status(500).send("Erro interno do servidor ao tentar excluir aluno.");
+    res.status(500).json({ error: "Erro interno do servidor ao tentar excluir aluno." });
   }
 };
 
@@ -215,7 +210,7 @@ exports.getStudentsByClass = async (req, res) => {
     );
     res.status(200).json(response);
   } catch (err) {
-    res.status(500).send(err);
+    throw new Error("erro ao buscar alunos na turma: ", err)
   }
 };
 
@@ -226,8 +221,7 @@ exports.getStudentPhoto = async (req, res) => {
 
   res.sendFile(caminhoDaFoto, (err) => {
     if (err) {
-      console.error("Erro ao carregar a foto:", err);
-      res.status(404).send("Foto não encontrada.");
+      throw new Error("Erro ao carregar a foto:", err);
     }
   });
 }
