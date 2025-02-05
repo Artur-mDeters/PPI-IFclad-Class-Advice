@@ -5,16 +5,15 @@ const { v4: uuidv4 } = require("uuid");
 const TYPE_SECTOR = 3; // Definido como uma constante para maior clareza
 
 // Obter todos os setores
-exports.getSectors = async (req, res) => {
+exports.getSectors = async (__, res) => {
   try {
     const response = await db.query(
       "SELECT * FROM usuario WHERE usuario_tipo = $1",
       [TYPE_SECTOR]
     );
-    res.status(200).json(response); // Usar .rows para obter os dados
+    res.status(200).json(response);
   } catch (error) {
-    console.error("Erro ao ler dados dos setores:", error);
-    res.status(500).send("Erro ao ler dados dos setores");
+    throw new Error("Erro ao ler dados dos setores: ", error);
   }
 };
 
@@ -33,8 +32,7 @@ exports.editSectors = async (req, res) => {
 
     res.status(200).send("Setor atualizado com sucesso!");
   } catch (error) {
-    console.error("Erro ao atualizar setor:", error);
-    res.status(500).send("Erro ao atualizar setor");
+    throw new Error("Erro ao atualizar setor: " + error);
   }
 };
 
@@ -45,8 +43,7 @@ exports.excludeSectors = async (req, res) => {
     await db.query("DELETE FROM usuario WHERE id_usuario = $1", [id]);
     res.status(200).send("Setor excluído com sucesso!");
   } catch (error) {
-    console.error("Erro ao excluir setor:", error);
-    res.status(500).send("Erro ao excluir setor");
+    throw new Error("Erro ao excluir setor: ", error);
   }
 };
 
@@ -58,10 +55,9 @@ exports.getSectorsByID = async (req, res) => {
       "SELECT * FROM usuario WHERE id_usuario = $1",
       [id]
     );
-    res.status(200).json(response); // Retorna o primeiro resultado
+    res.status(200).json(response);
   } catch (error) {
-    console.error("Erro ao ler setor pelo ID:", error);
-    res.status(500).send("Erro ao ler setor pelo ID");
+    throw new Error("Erro ao ler setor pelo ID: " + error);
   }
 };
 
@@ -73,7 +69,7 @@ exports.addSector = async (req, res) => {
   }
 
   try {
-    const id_usuario = uuidv4(); // Gera um UUID válido
+    const id_usuario = uuidv4();
     const password = generator.generate({
       length: 7,
       numbers: true,
@@ -86,7 +82,6 @@ exports.addSector = async (req, res) => {
 
     res.status(201).send("Setor cadastrado com sucesso!");
   } catch (error) {
-    console.error("Erro ao adicionar um novo setor:", error);
-    res.status(500).send("Erro ao adicionar um novo setor");
+    throw new Error("Erro ao adicionar um novo setor: ", error);
   }
 };
