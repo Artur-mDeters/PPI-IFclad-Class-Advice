@@ -97,14 +97,14 @@ exports.deleteClass = async (req, res) => {
 
   try {
     await db.query(
-      DELETE FROM notas WHERE id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1),
+      'DELETE FROM notas WHERE id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1)',
       [id_class]
     );
 
     await db.query(
-      DELETE FROM aluno WHERE id_turma = $1,
+      'DELETE FROM aluno WHERE id_turma = $1',
       [id_class]
-    );
+    );
 
     // Exclui a turma
     const result = await db.query("DELETE FROM turma WHERE id_turma = $1", [id_class]);
