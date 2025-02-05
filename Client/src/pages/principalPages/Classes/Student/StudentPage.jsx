@@ -19,7 +19,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import padrao from "./fotos/padrao.png";
 import classes from "./StudentPage.Style";
-
+// testando
 const StudentPage = () => {
   const [dataAluno, setDataAluno] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
