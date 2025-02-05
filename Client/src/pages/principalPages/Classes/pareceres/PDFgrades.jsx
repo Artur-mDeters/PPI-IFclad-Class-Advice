@@ -14,6 +14,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { jsPDF } from "jspdf"; // Importa o jsPDF
 import html2canvas from "html2canvas";
+import classes from "./PDFgrades.style";
 
 const getAllGradesByStudents = async (idTurma) => {
   const data = await axios.get(
@@ -81,14 +82,9 @@ const downloadPDF = () => {
   return (
     <Theme>
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-          alignItems: "center",
-        }}
+        sx={classes.box_Theme}
       >
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
+        <FormControl sx={classes.formControl}>
           <InputLabel id="select-label">Selecione</InputLabel>
           <Select
             labelId="select-label"
@@ -108,27 +104,11 @@ const downloadPDF = () => {
       </Box>
       <Divider />
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          width: "100%",
-          alignItems: "center",
-          marginTop: "20px",
-        }}
+        sx={classes.box_Divider}
       >
         {/* Atribua uma classe para a div que contém o conteúdo que você quer exportar */}
         {allStudents.map((student) => (
-          <div className="content" style={{ flexDirection: "column",width: "600px", /* Largura menor para visualização */
-            height: "900px",
-            margin: "20px auto",
-            border: "1px solid black",
-            display: "flex",
-            alignItems:  "center",
-            justifyContent:  "center",
-            fontFamily :  "Arial, sans-serif",
-            backgroundColor: "white",
-            color: "black",
-          }} key={student.id_aluno}>
+          <div className="content" style={classes.div_Content} key={student.id_aluno}>
             <div>Notas de {student.nome}</div>
             <table border={1}>
               <thead>
