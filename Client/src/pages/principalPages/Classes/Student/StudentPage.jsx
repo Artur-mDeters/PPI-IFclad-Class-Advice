@@ -10,13 +10,14 @@ import {
   TextField,
   Snackbar,
   Alert,
+  Avatar,
 } from "@mui/material";
 import UiAppBar from "../../../../components/AppBar/AppBar";
 import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import padrao from "./img/fotos/padrao.png";
+import padrao from "../../../../../../Server/fotos/91a6bac5-f39e-4c2a-a630-7ac29afb0555.jpg";
 import classes from "./StudentPage.Style";
 
 const StudentPage = () => {
@@ -149,31 +150,42 @@ const StudentPage = () => {
         </Button>
       </SearchBar>
       <Box sx={classes.boxAlunos}>
-        {dataAluno.map((aluno) => (
-          <Paper key={aluno.id_aluno} elevation={8} sx={classes.paperAluno}>
-            <Box onClick={() => redirectToEditStudent(aluno.id_aluno)}>
-              <Box sx={classes.foto}>
-                <img
-                  src={padrao}
-                  alt="Imagem do aluno"
-                  style={{ height: "130px", borderRadius: "5px" }}
-                />
+        {dataAluno &&
+          dataAluno.map((aluno) => (
+            <Paper key={aluno.id_aluno} elevation={8} sx={classes.paperAluno}>
+              <Box onClick={() => redirectToEditStudent(aluno.id_aluno)}>
+                <Box sx={classes.foto}>
+                  <Avatar
+                    src={
+                      aluno.foto_path
+                        ? `http://localhost:3030/fotos/${aluno.foto_path}`
+                        : padrao
+                    }
+                    alt={aluno.nome}
+                    sx={{
+                      width: 160,
+                      height: 160,
+                      borderRadius: "5px",
+                    }}
+                  >
+                    {!aluno.foto_path && aluno.nome?.charAt(0).toUpperCase()}
+                  </Avatar>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="h6">{aluno.nome}</Typography>
+                </Box>
               </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="h6">{aluno.nome}</Typography>
+              <Box>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => redirectToStudentGradesPage(aluno.id_aluno)}
+                >
+                  Ver Notas
+                </Button>
               </Box>
-            </Box>
-            <Box>
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => redirectToStudentGradesPage(aluno.id_aluno)}
-              >
-                Ver Notas
-              </Button>
-            </Box>
-          </Paper>
-        ))}
+            </Paper>
+          ))}
       </Box>
 
       {/* Dialog para agendar conselho de classe */}

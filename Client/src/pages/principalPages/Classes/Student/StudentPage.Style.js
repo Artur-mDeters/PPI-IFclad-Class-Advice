@@ -27,7 +27,9 @@ const classes = {
     },
     foto: {
         width: "100%",
-        textAlign: 'center'
+        textAlign: 'center',
+        justifyContent: 'center',
+        display: 'flex',
     }
   };
   

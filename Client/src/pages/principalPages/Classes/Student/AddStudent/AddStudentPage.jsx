@@ -24,12 +24,15 @@ import {
   FormControl,
   InputAdornment,
   FormHelperText,
+  Avatar,
+  IconButton,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./AddStudentPage.Style";
+import { PhotoCamera } from '@mui/icons-material';
 
 // * Função para estilizar células da tabela
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -107,6 +110,7 @@ const AddStudentPage = () => {
     federativeUnity: "",
     internal: "",
     course: "",
+    photo: null
   });
   const [editingRowIndex, setEditingRowIndex] = useState(null); // Índice da linha sendo editada
   const [openCancelDialog, setOpenCancelDialog] = useState(false); // Estado para o diálogo de cancelamento
@@ -174,15 +178,77 @@ const AddStudentPage = () => {
     } else if (name === "city") {
       formattedValue = value.replace(/[0-9]/g, ""); // Remove números da cidade
     }
-  
+    
+    
     setStudent((prevStudent) => ({
       ...prevStudent,
       [name]: formattedValue,
       course: idTurma,
     }));
+    console.log(student);
   };
   
 
+  // Adicione esta função de compressão
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Comprimir para JPEG com qualidade 0.7 (70%)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(compressedDataUrl);
+        };
+      };
+    });
+  };
+
+  // Modifique a função handleImageUpload
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const compressedImage = await compressImage(file);
+        setStudent(prev => ({
+          ...prev,
+          photo: compressedImage
+        }));
+      } catch (error) {
+        console.error('Erro ao processar imagem:', error);
+        setAlertMessage("Erro ao processar a imagem");
+        setAlert(true);
+      }
+    }
+  };
 
   // * Função para adicionar ou editar um aluno na tabela
   const addItem = () => {
@@ -192,10 +258,10 @@ const AddStudentPage = () => {
       setAlert(true);
       return;
     }
-  
+    console.log(student)
     const newRow = {
       ...student,
-      internal: student.internal === "sim" ? (student.apartmentNumber || "Sim") : "não"
+      internal: student.internal === "sim" ? (student.apartmentNumber || "Sim") : "não",
     };
   
     if (editingRowIndex !== null) {
@@ -207,7 +273,7 @@ const AddStudentPage = () => {
     } else {
       setRows([...rows, newRow]);
     }
-  
+    
     setStudent({
       name: "",
       registration: "",
@@ -219,6 +285,7 @@ const AddStudentPage = () => {
       internal: "",
       apartmentNumber: "",
       course: "",
+      photo: undefined
     });
   };
   
@@ -236,6 +303,7 @@ const AddStudentPage = () => {
       federativeUnity: rowToEdit.federativeUnity,
       internal: rowToEdit.internal ? "sim" : "não",
       course: idTurma,
+      photo: rowToEdit.photo
     });
     setEditingRowIndex(index);
   };
@@ -245,7 +313,6 @@ const AddStudentPage = () => {
     try {
       let hasError = false;
 
-      // Verifica se há erros em cada aluno
       for (const aluno of rows) {
         const errors = validateStudent(aluno);
         if (Object.keys(errors).length > 0) {
@@ -256,11 +323,10 @@ const AddStudentPage = () => {
         }
       }
 
-      // Envia dados para o servidor se não houver erros
       if (!hasError) {
-        const responses = await Promise.all(
-          rows.map((aluno) =>
-            axios.post("http://localhost:3030/alunos", {
+        await Promise.all(
+          rows.map((aluno) => {
+            const studentData = {
               name: aluno.name,
               registration: courseYear[0]?.ano_inicio + aluno.registration,
               email: aluno.email,
@@ -268,13 +334,15 @@ const AddStudentPage = () => {
               dateOfBirth: aluno.dateOfBirth,
               city: aluno.city,
               federativeUnity: aluno.federativeUnity,
-              internal: aluno.internal,
-              course: aluno.course,
-            })
-          )
+              internal: aluno.internal === "sim" ? aluno.apartmentNumber || "Sim" : "não",
+              course: idTurma,
+              photo: aluno.photo
+            };
+
+            return axios.post("http://localhost:3030/alunos", studentData);
+          })
         );
 
-        console.log(responses);
         navigate("../turmas/" + idTurma + "/alunos/");
       } else {
         setTimeout(() => {
@@ -282,12 +350,14 @@ const AddStudentPage = () => {
           setAlertCountdown(5);
         }, 5000);
       }
-    } catch (err) {
-      console.error(err);
-      setAlertMessage("Ocorreu um erro ao salvar os dados");
+    } catch (error) {
+      console.error("Erro completo:", error);
+      const errorMessage = error.response?.data?.details || error.message;
+      setAlertMessage(`Erro ao salvar alunos: ${errorMessage}`);
       setAlert(true);
     }
   };
+  
 
   const handleCancel = () => {
     setOpenCancelDialog(true);
@@ -318,6 +388,7 @@ const AddStudentPage = () => {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
+                <StyledTableCell align="center">FOTO</StyledTableCell>
                 <StyledTableCell>NOME COMPLETO</StyledTableCell>
                 <StyledTableCell align="center">MATRICULA</StyledTableCell>
                 <StyledTableCell align="center">EMAIL</StyledTableCell>
@@ -335,6 +406,12 @@ const AddStudentPage = () => {
             <TableBody>
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
+                  <StyledTableCell align="center">
+                    <Avatar
+                      src={row.photo}
+                      sx={{ width: 40, height: 40, margin: 'auto' }}
+                    />
+                  </StyledTableCell>
                   <StyledTableCell align="center" name="name">
                     {row.name}
                   </StyledTableCell>
@@ -364,6 +441,37 @@ const AddStudentPage = () => {
                 </StyledTableRow>
               ))}
               <StyledTableRow>
+                <StyledTableCell align="center">
+                  <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                    <Avatar
+                      src={student.photo}
+                      sx={{ width: 40, height: 40 }}
+                    />
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      sx={{
+                        position: 'absolute',
+                        bottom: -10,
+                        right: -10,
+                        backgroundColor: 'white',
+                        padding: '4px',
+                        '& .MuiSvgIcon-root': {
+                          fontSize: '1rem'
+                        }
+                      }}
+                    >
+                      <input
+                        hidden
+                        accept="image/*"
+                        type="file"
+                        onChange={handleImageUpload}
+                      />
+                      <PhotoCamera />
+                    </IconButton>
+                  </Box>
+                </StyledTableCell>
                 <StyledTableCell align="right">
                   <TextField
                     name="name"
