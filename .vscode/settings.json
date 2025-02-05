@@ -74,5 +74,8 @@
         "valores",
         "Verifica",
         "Verificar"
+    ],
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
     ]
 }
