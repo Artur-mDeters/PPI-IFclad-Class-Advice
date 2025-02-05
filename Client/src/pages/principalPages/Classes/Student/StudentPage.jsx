@@ -17,7 +17,7 @@ import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-// import padrao from "../fotos/padrao.png";
+import padrao from "./fotos/padrao.png";
 import classes from "./StudentPage.Style";
 
 const StudentPage = () => {
