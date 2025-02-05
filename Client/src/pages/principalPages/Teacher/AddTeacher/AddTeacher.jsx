@@ -86,7 +86,7 @@ const AddTeacher = () => {
         id="teacherName"
         name="name"
         label="Nome do Docente"
-        value={teacherData.nome}
+        value={teacherData.name}
         onChange={handleInputsChange}
       />
       <TextField

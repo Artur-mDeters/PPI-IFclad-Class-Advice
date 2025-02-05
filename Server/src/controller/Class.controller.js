@@ -96,6 +96,13 @@ exports.deleteClass = async (req, res) => {
   const id_class = req.params.id;
 
   try {
+  feat
+    await db.query(
+      `DELETE FROM notas WHERE id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1)`,
+      [id_class]
+    );
+
+ main
     await db.query(
       'DELETE FROM notas WHERE id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1)',
       [id_class]
