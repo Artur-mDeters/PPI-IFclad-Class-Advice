@@ -12,7 +12,7 @@ const comparePassword = async (userEnteredPassword, hashedPassword) => {
     }
 }
 
-exports.getUserData = async (req, res) => {
+exports.getUserData = async (req, __) => {
     const {email, password} = req.body
     try {
         let userData = await db.query('SELECT * FROM usuario WHERE email = $1', [email])
@@ -31,7 +31,7 @@ exports.getUserData = async (req, res) => {
         }
         
     } catch (err) {
-        res.status(500).send(err)
+        throw new Error("Erro ao buscar usuário: " + err);
 
     }
 }
