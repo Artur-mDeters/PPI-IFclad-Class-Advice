@@ -26,6 +26,7 @@ const StudentPage = () => {
   const [notification, setNotification] = useState(false);
   const [errorNotification, setErrorNotification] = useState(false); // Nova variável de erro
   const [selectedDate, setSelectedDate] = useState(""); // Inicializa selectedDate como string vazia
+  const [nameClass, setNameClass] = useState("");
   const { idTurma } = useParams();
   const navigate = useNavigate();
 
@@ -92,11 +93,15 @@ const StudentPage = () => {
     }
   };
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const nameResult = await axios.get(`http://localhost:3030/turmas/`+idTurma);
         const result = await getDataAlunos();
         setDataAluno(result);
+        setNameClass(nameResult.data[0].nome);
+        console.log(nameResult.data[0].nome);
       } catch (err) {
         console.error(err);
       }
@@ -122,7 +127,7 @@ const StudentPage = () => {
   };
 
   return (
-    <UiAppBar title={"Turma:"}>
+    <UiAppBar title={"Turma "+nameClass }>
       <SearchBar>
         <Button
           variant="contained"
