@@ -23,9 +23,30 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import Theme from "../../../../theme.jsx";
-import UiAppBar from "../../../../components/AppBar/AppBar.jsx";
-import SearchBar from "../../../../components/UI/SearchBar/SearchBar.jsx";
+import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
+import classes from "./AllStudentGradesPage.style";
+// import { use } from "../../../../../../Server/src/routes/grades.routes";
+
+import GradeTextField from './GradeTextfield'; // Ajuste o caminho conforme necessário
+/**
+ * ? Função para buscar todas as disciplinas disponíveis.
+ * ! Endpoint: /todasAsDisciplinas
+ */
+const getAllSubjects = async () => {
+  const { data } = await axios.get("http://localhost:3030/todasAsDisciplinas");
+  return data;
+};
+
+/**
+ * ? Função para buscar as notas dos alunos em uma disciplina específica.
+ * ! Endpoint: /notas/{idSubject}/{idTurma}
+ */
+const getAllGradesByStudents = async (idSubject, idTurma) => {
+  const data  = await axios.get(
+    `http://localhost:3030/notas/${idSubject}/${idTurma}`
+  );
+  return(data.data);
+};
 
 const AllStudentGradesPage = () => {
   const { idTurma } = useParams();
@@ -259,159 +280,308 @@ const AllStudentGradesPage = () => {
   };
 
   return (
-    <Theme>
-      <UiAppBar title={`Notas da Turma: ${idTurma}`}>
-        <Box sx={{ padding: 3 }}>
-          <SearchBar />
+    <UiAppBar title={"Notas da turma: ${idTurma}"}>
+      <Box sx={classes.marginBottom_box}>
+        <FormControl fullWidth>
+          <InputLabel id="Select-Subject">Disciplina</InputLabel>
+          <Select
+            labelId="Select-Subject"
+            id="SelectSubject"
+            value={selectedSubject}
+            label="Disciplina"
+            onChange={handleChangeSubject}
+          >
+            {subjects.map((subject) => (
+              <MenuItem
+                key={subject.id_disciplina}
+                value={subject.id_disciplina}
+              >
+                {subject.nome}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box>
+        <Alert
+          variant="outlined"
+          severity="warning"
+          sx={classes.margin_alert}
+        >
+          Todas as notas devem ser inseridas em base 10
+        </Alert>
+      </Box>
+      <Box>
+        <Divider />
+        <TableContainer>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>Aluno</TableCell>
+                <TableCell>Parcial 1</TableCell>
+                <TableCell>Primeiro Semestre</TableCell>
+                <TableCell>Parcial 2</TableCell>
+                <TableCell>Segundo Semestre</TableCell>
+                <TableCell>PPI</TableCell>
+                <TableCell>Mostra de Ciências</TableCell>
+                <TableCell>AIS</TableCell>
+                <TableCell>Faltas</TableCell>
+                <TableCell>AIA</TableCell>
+                <TableCell>Nota Final</TableCell>
+                <TableCell>Observação</TableCell>
+              </TableRow>
+            </TableHead>
 
-          <FormControl fullWidth sx={{ marginBottom: 3 }}>
-            <InputLabel>Disciplina</InputLabel>
-            <Select
-              value={selectedSubject}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              label="Disciplina"
-            >
-              {subjects.map((subject) => (
-                <MenuItem
-                  key={subject.id_disciplina}
-                  value={subject.id_disciplina}
-                >
-                  {subject.nome}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            <TableBody>
+              {studentGradesInSubject.map((student) => (
+                <TableRow key={student.fk_aluno_id_aluno}>
+                  <TableCell>{student.nome}</TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.pars_primeiro_sem
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "pars_primeiro_sem",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_primeiro_sem
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_primeiro_sem",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.pars_segundo_sem
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "pars_segundo_sem",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_segundo_sem
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_segundo_sem",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ppi}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_ppi",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]
+                          ?.nota_mostra_de_ciencias
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_mostra_de_ciencias",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ais}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_ais",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.faltas}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "faltas",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_aia}
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_aia",
+                          value
+                        )
+                      }
+                      disabled={(() => {
+                        const grades =
+                          editedGrades[student.fk_aluno_id_aluno] || {};
+                        const notaPrimeiroSem =
+                          (grades.pars_primeiro_sem * 0.2 +
+                            grades.nota_ais * 0.3 +
+                            grades.nota_primeiro_sem * 0.5) *
+                          0.4;
 
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Aluno</TableCell>
-                  <TableCell>Parcial 1</TableCell>
-                  <TableCell>Semestre 1</TableCell>
-                  <TableCell>Parcial 2</TableCell>
-                  <TableCell>Semestre 2</TableCell>
-                  <TableCell>AIS</TableCell>
-                  <TableCell>PPI</TableCell>
-                  <TableCell>Mostra de Ciências</TableCell>
-                  <TableCell>Faltas</TableCell>
-                  <TableCell>AIA</TableCell>
-                  <TableCell>Nota Final</TableCell>
-                  <TableCell>Observação</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {studentGrades.map((student, rowIndex) => (
-                  <TableRow key={student.id_aluno}>
-                    <TableCell>{student.nome}</TableCell>
-                    {[
-                      "parcial1",
-                      "semestre1",
-                      "parcial2",
-                      "semestre2",
-                      "ais_b10",
-                      "ppi_b10",
-                      "mostra_de_ciencias",
-                      "faltas",
-                      "aia",
-                    ].map((field, colIndex) => (
-                      <TableCell key={field}>
-                        <TextField
-                          value={editedGrades[student.id_aluno]?.[field] || ""}
-                          onChange={(e) =>
-                            handleGradeChange(
-                              student.id_aluno,
-                              field,
-                              e.target.value
-                            )
-                          }
-                          onBlur={() => handleBlur(student.id_aluno, field)}
-                          onKeyDown={(e) =>
-                            handleKeyDown(e, rowIndex, colIndex + 1)
-                          }
-                          variant="standard"
-                          inputProps={{
-                            maxLength: 4,
-                            style: { width: "50px" },
-                          }}
-                        />
-                      </TableCell>
-                    ))}
-                    <TableCell>
-                      {calculateFinalGrade(student.id_aluno)}
-                    </TableCell>
-                    <TableCell>
-                      {(() => {
-                        const status = getStatus(student.id_aluno);
-                        return status === "--" ? (
-                          "--"
-                        ) : (
-                          <Chip label={status.label} color={status.color} />
+                        const notaSegundoSem =
+                          (grades.pars_segundo_sem * 0.2 +
+                            grades.nota_ppi * 0.2 +
+                            grades.nota_mostra_de_ciencias * 0.2 +
+                            grades.nota_segundo_sem * 0.5) *
+                          0.6;
+
+                        const notaFinal = notaPrimeiroSem + notaSegundoSem;
+
+                        return (
+                          grades.pars_primeiro_sem == null ||
+                          grades.nota_ais == null ||
+                          grades.nota_primeiro_sem == null ||
+                          grades.pars_segundo_sem == null ||
+                          grades.nota_ppi == null ||
+                          grades.nota_mostra_de_ciencias == null ||
+                          grades.nota_segundo_sem == null ||
+                          notaFinal >= 7
                         );
                       })()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleOpenDialog(student.id_aluno)}
-                      >
-                        Editar
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Box sx={{ marginTop: 3 }}>
-            <Button
-              variant="contained"
-              onClick={handleSaveGrades}
-              sx={{ marginRight: 2 }}
-            >
-              Salvar Notas
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GradeTextField
+                      value={
+                        editedGrades[student.fk_aluno_id_aluno]?.nota_final_nf
+                      }
+                      onChange={(value) =>
+                        handleChangeGrade(
+                          student.fk_aluno_id_aluno,
+                          "nota_final_nf",
+                          value
+                        )
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        handleOpenDialog(student.fk_aluno_id_aluno)
+                      }
+                    >
+                      Observação
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
+          <DialogTitle>Adicionar Observação</DialogTitle>
+          <DialogContent>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              defaultValue={editedGrades[currentStudentId]?.observation || ""}
+              onChange={(e) => {
+                const observation = e.target.value;
+                setEditedGrades((prevGrades) => ({
+                  ...prevGrades,
+                  [currentStudentId]: {
+                    ...prevGrades[currentStudentId],
+                    observation: observation,
+                  },
+                }));
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Cancelar
             </Button>
-          </Box>
-          <Dialog
-            open={openDialog}
-            onClose={handleCloseDialog}
-            maxWidth="md"
-            fullWidth
-          >
-            <DialogTitle>Editar Observação</DialogTitle>
-            <DialogContent>
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                value={observation}
-                onChange={(e) => setObservation(e.target.value)}
-                variant="outlined"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancelar</Button>
-              <Button onClick={handleSaveObservation} variant="contained">
-                Salvar
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Snackbar
-            open={snackbar.open}
-            autoHideDuration={6000}
-            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          >
-            <Alert
-              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-              severity={snackbar.severity}
-              sx={{ width: "100%" }}
+            <Button
+              onClick={() =>
+                handleSaveObservation(
+                  editedGrades[currentStudentId]?.observation || ""
+                )
+              }
+              color="primary"
             >
-              {snackbar.message}
-            </Alert>
-          </Snackbar>
-        </Box>
-      </UiAppBar>
-    </Theme>
+              Salvar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ open: false, message: "" })}
+          message={snackbar.message}
+        />
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={4000} // Fecha automaticamente após 4 segundos
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }} // Posição da notificação
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            sx={classes.width_alert}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Box>
+      <Box style={classes.marginTop_box}>
+        <Button variant="contained" color="primary" onClick={handleSaveGrades}>
+          Salvar Notas
+        </Button>
+      </Box>
+    </UiAppBar>
   );
 };
 
