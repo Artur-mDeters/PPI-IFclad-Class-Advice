@@ -6,8 +6,8 @@ exports.getSubjects = async (_req, res) => {
     try {
         const response = await db.query("SELECT * FROM disciplina");
         res.status(200).json(response); // Usei `response.rows` para retornar apenas os dados
-    } catch (error) {
-        res.status(500).send("Erro ao encontrar disciplinas: " + error);
+    } catch (err) {
+        throw new Error("Erro ao encontrar disciplinas: " + err);
     }
 };
 
@@ -16,8 +16,8 @@ exports.getSubjectById = async (req, res) => {
     try {
         const response = await db.query("SELECT * FROM disciplina WHERE id_disciplina = $1", id)
         res.status(200).json(response)
-    } catch (error) {
-        res.status(500).send(error)
+    } catch (err) {
+        throw new Error("Erro ao buscar disciplina: ", err)
     }
 }
 
@@ -34,8 +34,7 @@ exports.addSubject = async (req, res) => {
             nome, 
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Erro ao adicionar a disciplina: " + err);
+        throw new Error("Erro ao adicionar a disciplina: ", err);
     }
 };
 
@@ -56,8 +55,8 @@ exports.editSubject = async (req, res) => {
             id,
             nome,
         });
-    } catch (error) {
-        res.status(500).send("Erro ao editar a disciplina: " + error);
+    } catch (err) {
+        throw new Error("Erro ao editar a disciplina: ", err);
     }
 };
 
@@ -76,7 +75,7 @@ exports.excludeSubject = async (req, res) => {
 
         res.status(200).send("Disciplina excluída com sucesso e registros associados removidos!");
     } catch (error) {
-        res.status(500).send('Erro ao excluir disciplina e registros associados: ' + error);
+        throw new Error('Erro ao excluir disciplina e registros associados: ', error);
     }
 };
 
@@ -89,7 +88,7 @@ exports.getNameAndIDFromAllSubjects = async (req, res) => {
         }
         
         res.status(200).json(response)
-    } catch (error) {
-        res.status(500).send("Erro ao ler os valores 'nome' e 'id_disciplina' da tabela disciplina")
+    } catch (err) {
+        throw new Error("Erro ao ler os valores 'nome' e 'id_disciplina' da tabela disciplina", err)
     }    
 }
