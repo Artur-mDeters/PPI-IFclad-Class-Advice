@@ -9,38 +9,24 @@ exports.getAllGradesBySubject = async function (req, res) {
     // Executando a consulta SQL
     const result = await db.query(
       `SELECT 
-            aluno_disciplina.fk_aluno_id_aluno,
-            aluno.nome,
-            aluno_disciplina.pars_primeiro_sem,
-            aluno_disciplina.nota_primeiro_sem,
-            aluno_disciplina.pars_segundo_sem,
-            aluno_disciplina.nota_segundo_sem,
-            aluno_disciplina.nota_ais,
-            aluno_disciplina.nota_ppi,
-            aluno_disciplina.nota_mostra_de_ciencias,
-            aluno_disciplina.faltas,
-            aluno_disciplina.nota_aia,
-            aluno_disciplina.observation,
-            aluno_disciplina.nota_final_nf
+            notas.*,
+            aluno.nome
         FROM 
-            aluno_disciplina
+            notas
         JOIN 
-            aluno ON aluno.id_aluno = aluno_disciplina.fk_aluno_id_aluno
+            aluno ON aluno.id_aluno = notas.id_aluno
         WHERE 
-            aluno_disciplina.fk_disciplina_id_disciplina = $1
+            notas.fk_id_disciplina = $1
         AND
             aluno.id_turma = $2;`,
       [idDisciplina, idTurma]
     );
+    console.log("Resultado da busca:", result);
 
-    // Adicionando um log para inspecionar o conteúdo de `result`
-    console.log(result);
 
-    // Verificando se result e result.rows existem antes de acessar `length`
-      res.status(200).json(result);
-    
+    // Retornando os resultados
+    res.status(200).json(result);
   } catch (error) {
-    // Em caso de erro, registra o erro no console e retorna status 500
     console.error("Erro ao buscar notas:", error);
     res.status(500).send({ message: "Erro ao buscar as notas.", error: error.message });
   }
@@ -53,88 +39,68 @@ exports.addGrades = async (req, res) => {
 
   console.log("Grades recebidas:", grades); // Logando as notas recebidas
 
-  if (!grades || typeof grades !== 'object') {
-    return res.status(400).json({ message: "Grades inválidas fornecidas." });
-  }
-
   const gradesArray = Object.values(grades);
-
-  // Definindo os pesos de cada componente
-  const peso_primeiro_sem = 0.2;
-  const peso_segundo_sem = 0.5;
-  const peso_ais = 0.2;
-  const peso_ppi = 0.2;
-  const peso_aia = 0.4;
-  const peso_mostra_de_ciencias = 0.1;
 
   try {
     for (let i = 0; i < gradesArray.length; i++) {
       const aluno = gradesArray[i];
+      const { nota_final } = aluno; // Obtendo o valor de nota_final de cada aluno
 
-      // Cálculo da nota do primeiro semestre
-      const nota_primeiro_semestre_calculada =
-        aluno.pars_primeiro_sem * peso_primeiro_sem +
-        aluno.nota_primeiro_sem * peso_primeiro_sem;
-
-      // Cálculo da nota final
-      const nota_final_nf = (
-        aluno.pars_primeiro_sem * peso_primeiro_sem +
-        aluno.nota_primeiro_sem * peso_primeiro_sem +
-        aluno.pars_segundo_sem * peso_segundo_sem +
-        aluno.nota_segundo_sem * peso_segundo_sem +
-        aluno.nota_ais * peso_ais +
-        aluno.nota_ppi * peso_ppi +
-        aluno.nota_aia * peso_aia +
-        aluno.nota_mostra_de_ciencias * peso_mostra_de_ciencias
-      ).toFixed(2); 
-
-      // Logando as notas antes de atualizar no banco
-      console.log("Notas para o aluno:", aluno);
-
+      console.log("Parametros SQL:", [
+        nota_final,
+        aluno.ppi_b10,
+        aluno.faltas,
+        aluno.aia,
+        aluno.parcial1,
+        aluno.parcial2,
+        aluno.semestre1,
+        aluno.semestre2,
+        aluno.observacao,
+        aluno.ais_b10,
+        aluno.mostra_de_ciencias,
+        aluno.id_aluno,
+        idDisciplina
+      ]);
+      
       // Atualização das notas no banco de dados
       const result = await db.query(
-        `UPDATE aluno_disciplina
+        `UPDATE notas
           SET
-              nota_final_nf = $1,
-              nota_ppi = $2,
+              nota_final = $1,
+              ppi_b10 = $2,
               faltas = $3,
-              nota_aia = $4,
-              pars_primeiro_sem = $5,
-              pars_segundo_sem = $6,
-              nota_segundo_sem = $7,
-              nota_primeiro_sem = $8,
-              observation = $9,
-              nota_ais = $10,
-              nota_mostra_de_ciencias = $11,
-              nota_primeiro_semestre_calculada = $12
+              aia = $4,
+              parcial1 = $5,
+              parcial2 = $6,
+              semestre1 = $7,
+              semestre2 = $8,
+              observacao = $9,
+              ais_b10 = $10,
+              mostra_de_ciencias = $11
           WHERE
-              fk_aluno_id_aluno = $13
+              id_aluno = $12
           AND
-              fk_disciplina_id_disciplina = $14`,
+              fk_id_disciplina = $13`,
         [
-          nota_final_nf,
-          aluno.nota_ppi,
+          nota_final || null,
+          aluno.ppi_b10 || null,
           aluno.faltas,
-          aluno.nota_aia,
-          aluno.pars_primeiro_sem,
-          aluno.pars_segundo_sem,
-          aluno.nota_segundo_sem,
-          aluno.nota_primeiro_sem,
-          aluno.observation,
-          aluno.nota_ais,
-          aluno.nota_mostra_de_ciencias,
-          nota_primeiro_semestre_calculada, // Atualizando o campo calculado
-          aluno.fk_aluno_id_aluno,
-          idDisciplina,
+          aluno.aia,
+          aluno.parcial1,
+          aluno.parcial2,
+          aluno.semestre1,
+          aluno.semestre2,
+          aluno.observacao,
+          aluno.ais_b10,
+          aluno.mostra_de_ciencias,
+          aluno.id_aluno,
+          idDisciplina
         ]
       );
-      
 
       // Verificando se o aluno foi encontrado e atualizado
       if (result.rowCount === 0) {
-        return res
-          .status(404)
-          .json({ message: "Nenhum registro encontrado para atualizar" });
+        return res.status(404).json({ message: `Aluno ${aluno.id_aluno} não encontrado.` });
       }
     }
 
@@ -147,6 +113,8 @@ exports.addGrades = async (req, res) => {
     });
   }
 };
+
+
 
 exports.getGradesToPDF = async (req, res) => {
   const { idTurma } = req.params;
@@ -173,17 +141,17 @@ exports.getGradesToPDF = async (req, res) => {
       WHERE
         td.fk_turma_id_turma = $1
       ORDER BY 
-        a.nome;
-`,
+        a.nome;`,
       [idTurma]
     );
-    
-    console.log("Resposta da consulta ao banco: ", response);
-    
-    
-    
-    res.status(200).json(response);
-    
+
+    // Verificando se há resultados
+    if (!response.rows || response.rows.length === 0) {
+      return res.status(404).json({ message: "Nenhuma nota encontrada." });
+    }
+
+    // Retornando os resultados
+    res.status(200).json(response.rows);
   } catch (error) {
     console.error("Erro ao buscar as notas:", error);
     res.status(500).json({

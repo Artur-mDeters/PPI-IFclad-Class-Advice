@@ -17,6 +17,7 @@ import {
   highContrast,
 } from "./themes";
 import { useThemeContext } from "./Themecontext";
+import classes from "./ThemeSelector.style"
 
 const themes = {
   defaultDark,
@@ -46,7 +47,7 @@ const ThemeSelector = () => {
   };
 
   return (
-    <FormControl fullWidth style={{ marginBottom: "20px" }}>
+    <FormControl fullWidth style={classes.formControl}>
       <InputLabel id="theme-select-label">Escolha um tema</InputLabel>
       <Select
         labelId="theme-select-label"

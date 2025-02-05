@@ -10,19 +10,21 @@ const EditSector = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [sectorData, setSectorData] = useState({
     name: "",
-    email: "",
+    email: "", // Mantido para exibição, mas sem campo de edição
   });
 
   const navigate = useNavigate();
 
-//   Fetch sector data when component mounts
+  // Buscar dados do setor ao carregar a página
   useEffect(() => {
     const fetchSectorData = async () => {
       try {
         const response = await axios.get(`http://localhost:3030/setores/${id}`);
         setSectorData({
-          name: response.data.name || "",
+          name: response.data[0].nome || "",
+          email: response.data[0].email || "", // Para uso futuro se necessário
         });
+        console.log("Dados do setor carregados com sucesso:", response.data[0]);
       } catch (err) {
         console.error("Erro ao carregar os dados do setor:", err);
       }
@@ -33,6 +35,13 @@ const EditSector = () => {
 
   const handleInputsChange = (e) => {
     const { name, value } = e.target;
+
+    // Validação para impedir números, permitindo acentos e espaços
+    if (name === "name") {
+      const regex = /^[a-zA-Z\u00C0-\u017F\s]*$/;
+      if (!regex.test(value)) return;
+    }
+
     setSectorData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -50,57 +59,40 @@ const EditSector = () => {
     }
   };
 
-  const handleDeleteClick = () => {
-    setDialogOpen(true);
-  };
-
-  // Optional: Add a function to handle delete confirmation
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3030/setores/${id}`);
       navigate("/setores");
     } catch (err) {
-      console.error("Erro ao excluir o setor:", err);
+      console.error("Erro ao deletar o setor:", err);
     }
-    setDialogOpen(false);
   };
 
   return (
-    <>
-      <EditPage
-        title={"Setores"}
-        buttonExcludeName={"Excluir Setor"}
-        returnTo={"/setores"}
-        buttonExcludeFunction={handleDeleteClick}
-        buttonSaveFunction={saveAndRedirect}
-      >
-        <TextField
-          id="sectorName"
-          name="name"
-          label="Nome do Setor"
-          value={sectorData.name}
-          onChange={handleInputsChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          id="sectorEmail"
-          name="email"
-          label="Email do Setor"
-          value={sectorData.email}
-          onChange={handleInputsChange}
-          disabled
-          fullWidth
-          margin="normal"
-        />
-      </EditPage>
+    <EditPage
+      title={"Setores"}
+      buttonExcludeName={"Excluir Setor"}
+      returnTo={"/setores"}
+      buttonExcludeFunction={setDialogOpen}
+      buttonSaveFunction={saveAndRedirect}
+    >
+      <TextField
+        id="sectorName"
+        name="name"
+        label="Nome do Setor"
+        value={sectorData.name}
+        onChange={handleInputsChange}
+        fullWidth
+      />
+
       <ConfirmDeleteDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={handleDelete}
-        textAlert="Este setor (incluindo os dados associados) será excluído."
+        title="Confirmar Exclusão"
+        message="Tem certeza que deseja excluir este setor?"
       />
-    </>
+    </EditPage>
   );
 };
 

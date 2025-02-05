@@ -25,6 +25,27 @@ const EditSubjectPage = () => {
     return valid;
   };
 
+  useEffect(() => {
+    const fetchSectorData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3030/disciplina/${id}`
+        );
+        setSubjectData({
+          nome: response.data[0].nome || "",
+        });
+        console.log(
+          "Dados da disciplina carregados com sucesso:",
+          response.data[0].nome
+        );
+      } catch (err) {
+        console.error("Erro ao carregar os dados da disciplina:", err);
+      }
+    };
+
+    fetchSectorData();
+  }, [id]);
+
   const handleInputsChange = (e) => {
     const { name, value } = e.target;
     let formattedValue = value;
@@ -59,25 +80,9 @@ const EditSubjectPage = () => {
     }
   };
 
-  useEffect(() => {
-    const setDataOnce = async () => {
-      try {
-        const result = await axios.get(
-          `http://localhost:3030/disciplina/${id}`
-        );
-        setSubjectData(result.data); // Corrigido para usar result.data
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    setDataOnce();
-  }, [id]);
-
   const handleDeleteClick = () => {
     setDialogOpen(true);
   };
-
 
   const handleDelete = async () => {
     try {
@@ -112,7 +117,7 @@ const EditSubjectPage = () => {
         </Box>
       </EditPage>
       <ConfirmDeleteDialog
-        open={dialogOpen} 
+        open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={handleDelete}
         textAlert="este curso ( incluindo os alunos )"

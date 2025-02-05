@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 // GradeTextField.js
 import { TextField } from '@mui/material';
+import classes from './GradeTextfield.style';
 
 // eslint-disable-next-line no-unused-vars
 const GradeTextField = ({ value, onChange, onBlur, fieldName, studentId, ...props }) => {
@@ -20,7 +21,7 @@ const GradeTextField = ({ value, onChange, onBlur, fieldName, studentId, ...prop
       value={value || ""}
       variant="standard"
       size="small"
-      style={{ width: "80px" }}
+      style={classes.width_textField}
       onChange={(e) => onChange(e.target.value)}
       onBlur={handleBlur}
       onKeyDown={(e) => {

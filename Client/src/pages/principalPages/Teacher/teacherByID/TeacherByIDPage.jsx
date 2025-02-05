@@ -28,7 +28,7 @@ const getSubjectsData = async () => {
 const getTeacherData = async (id) => {
   try {
     const response = await axios.get(`http://localhost:3030/professores/${id}`);
-    return response.data;
+    return response.data[0];
   } catch (error) {
     console.error("Erro ao buscar dados do professor:", error);
     throw error;
@@ -56,9 +56,9 @@ const EditTeacher = () => {
         ]);
         setSubjectsData(subjectsResponse);
         setTeacherData({
-          name: teacherResponse.name || "",
+          name: teacherResponse.nome || "",
           bio: teacherResponse.bio || "",
-          subjects: teacherResponse.subjects || [], // IDs das disciplinas
+          subjects: teacherResponse.id_disciplina || [], // IDs das disciplinas
         });
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -66,6 +66,12 @@ const EditTeacher = () => {
     };
     fetchData();
   }, [id]);
+  
+  // Acompanhar a mudança de subjectsData
+  useEffect(() => {
+    console.log(subjectsData, "disciplinas");
+  }, [subjectsData]);
+  
 
   // Função para lidar com a mudança nos inputs de texto
   const handleInputsChange = (e) => {
@@ -87,10 +93,10 @@ const EditTeacher = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3030/setores/${id}`);
+      await axios.delete(`http://localhost:3030/professores/${id}`);
       navigate("/professores");
     } catch (err) {
-      console.error("Erro ao excluir o setor:", err);
+      console.error("Erro ao excluir o professor:", err);
     }
     setDialogOpen(false);
   };
@@ -139,33 +145,33 @@ const EditTeacher = () => {
           fullWidth
           margin="normal"
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="subjects">Disciplinas</InputLabel>
-          <Select
-            labelId="subjects"
-            label="Disciplinas"
-            id="subjects"
-            name="subjects"
-            multiple
-            value={teacherData.subjects} // Array de IDs selecionados
-            onChange={handleSubjectsChange}
-            renderValue={(selected) =>
-              subjectsData
-                .filter((subject) => selected.includes(subject.id_disciplina))
-                .map((subject) => subject.nome)
-                .join(", ")
-            }
-          >
-            {subjectsData.map((option) => (
-              <MenuItem key={option.id_disciplina} value={option.id_disciplina}>
-                <Checkbox
-                  checked={teacherData.subjects.includes(option.id_disciplina)}
-                />
-                <ListItemText primary={option.nome} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FormControl fullWidth>
+        <InputLabel id="subjects">Disciplinas</InputLabel>
+        <Select
+          labelId="subjects"
+          label="Disciplinas"
+          id="subjects"
+          name="subjects"
+          multiple
+          value={teacherData.subjects} // Array de IDs selecionados
+          onChange={handleSubjectsChange}
+          renderValue={(selected) =>
+            subjectsData
+              .filter((subject) => selected.includes(subject.id_disciplina))
+              .map((subject) => subject.nome)
+              .join(", ")
+          }
+        >
+          {subjectsData.map((option) => (
+            <MenuItem key={option.id_disciplina} value={option.id_disciplina}>
+              <Checkbox
+                checked={teacherData.subjects.includes(option.id_disciplina)}
+              />
+              <ListItemText primary={option.nome} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       </EditPage>
       <ConfirmDeleteDialog
         open={dialogOpen}

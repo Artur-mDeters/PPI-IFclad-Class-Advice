@@ -36,7 +36,7 @@ const EditCourse = () => {
     const setDataOnce = async () => {
       try {
         const result = await axios.get("http://localhost:3030/cursos/" + id);
-        setCourseData(result);
+        setCourseData(result.data[0]);
       } catch (err) {
         console.error(err);
       }
@@ -53,7 +53,9 @@ const EditCourse = () => {
 
     setDataOnce();
     fetchTeachers();
+    console.log("Dados do curso carregados com sucesso!: ", courseData);
   }, [id]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

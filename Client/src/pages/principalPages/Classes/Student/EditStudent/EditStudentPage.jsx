@@ -4,6 +4,8 @@ import classes from "./EditAluno.style";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ConfirmDeleteDialog from "../../../../../components/UI/confirmDeleteDialog/ConfirmDeteteDialog";
+import { PhotoCamera } from '@mui/icons-material';
+import { Avatar, IconButton } from "@mui/material";
 
 import {
   Box,
@@ -122,6 +124,20 @@ const EditStudentPage = () => {
     }
   };
 
+  // Função para lidar com upload de imagem
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setStudentData(prev => [{
+          ...prev[0],
+          foto_path: reader.result
+        }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   console.log(studentData[0]);
 
@@ -135,6 +151,41 @@ const EditStudentPage = () => {
       buttonExcludeFunction={handleDeleteClick}
     >
       <Box sx={classes.principalBox}>
+        <Box sx={{ position: 'relative', display: 'inline-block', marginBottom: 2 }}>
+          <Avatar
+            src={studentData[0]?.foto_path}
+            sx={{ 
+              width: 100, 
+              height: 100,
+              bgcolor: studentData[0]?.foto_path ? 'transparent' : 'grey.300'
+            }}
+          >
+            {!studentData[0]?.foto_path && studentData[0]?.nome?.charAt(0).toUpperCase()}
+          </Avatar>
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            sx={{
+              position: 'absolute',
+              bottom: -10,
+              right: -10,
+              backgroundColor: 'white',
+              padding: '4px',
+              '& .MuiSvgIcon-root': {
+                fontSize: '1rem'
+              }
+            }}
+          >
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={handleImageUpload}
+            />
+            <PhotoCamera />
+          </IconButton>
+        </Box>
         <Box sx={classes.boxInputs}>
           <TextField
             fullWidth
@@ -163,7 +214,7 @@ const EditStudentPage = () => {
             onChange={handleInputChange}
           />
           <FormControl margin="dense" fullWidth>
-            <InputLabel id="gender_label">Sexo</InputLabel>
+            <InputLabel id="gender_label">Gênero</InputLabel>
             <Select
               labelId="gender_label"
               label="Sexo"

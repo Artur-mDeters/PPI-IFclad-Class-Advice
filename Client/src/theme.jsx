@@ -28,7 +28,7 @@ const Theme = ({ children }) => {
   return (
     <>
       {/* <ThemeSelector onThemeChange={setTheme} /> */}
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={greenDark}>
         <CssBaseline />
         {children}
       </ThemeProvider>

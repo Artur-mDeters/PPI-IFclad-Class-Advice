@@ -12,6 +12,7 @@ import {
   FormControl,
   MenuItem,
 } from "@mui/material/";
+import classes from "./CreateCourse.stle";
 
 
 const getTeachersData = async () => {
@@ -143,14 +144,14 @@ const CreateCourse = () => {
             id="pattern"
             label="Padrão de nome de turma"
             margin="dense"
-            value={courseData[0]?.pattern || ""}
+            value={courseData[0]?.pattern || ""} 
             onChange={handleInputChange}
             error={!!errors.pattern} // Mostra o erro
             helperText={errors.pattern} // Mensagem de erro
           />
         </Box>
       </Box>
-      <Typography variant="body1" textAlign="center" sx={{ mt: 2 }}>
+      <Typography variant="body1" textAlign="center" sx={classes.Box_aviso}>
         O padrão de nome de turma segue o formato T+(número do período)+(número
         do curso), onde o último número identifica o curso técnico. Insira o
         número que corresponde ao curso!
@@ -160,3 +161,4 @@ const CreateCourse = () => {
 };
 
 export default CreateCourse;
+// teste

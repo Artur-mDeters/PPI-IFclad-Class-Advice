@@ -1,6 +1,6 @@
-const db = require('../db/db');
+const db = require('../db/db'); 
 const { v4: uuidv4 } = require("uuid");
-const { trace } = require('../routes/subject.routes');
+// const { trace } = require('../routes/subject.routes');
 
 exports.getSubjects = async (_req, res) => {
     try {
@@ -66,7 +66,7 @@ exports.excludeSubject = async (req, res) => {
     try {
         // Primeiro, excluímos os registros na tabela aluno_disciplina relacionados à disciplina
         await db.query(
-            "DELETE FROM aluno_disciplina WHERE fk_disciplina_id_disciplina = $1", [id]
+            "DELETE FROM notas WHERE fk_id_disciplina = $1", [id]
         );
 
         // Depois, excluímos a disciplina na tabela disciplina

@@ -24,12 +24,15 @@ import {
   FormControl,
   InputAdornment,
   FormHelperText,
+  Avatar,
+  IconButton,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import classes from "./AddStudentPage.Style";
+import { PhotoCamera } from '@mui/icons-material';
 
 // * Função para estilizar células da tabela
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -54,27 +57,50 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // * Função de validação dos dados do aluno
 const validateStudent = (student) => {
-  const errors = {};  // Armazena os erros de validação
+  const errors = {}; // Armazena os erros de validação
+  const currentYear = new Date().getFullYear();
 
-  if (/[^a-zA-Z\s]/.test(student.name)) errors.name = "Nome não pode conter números";
-  if (!/^\d+$/.test(student.registration)) errors.registration = "Matrícula deve conter apenas números";
+  if (/[^a-zA-Z\u00C0-\u017F\s]/.test(student.name)) {
+    errors.name = "Nome não pode conter números ou caracteres especiais";
+  }
+  if (!/^\d{6}$/.test(student.registration)) {
+    errors.registration = "Matrícula deve conter exatamente 6 números";
+  }
   if (!student.email.includes("@")) errors.email = "Email deve conter um '@'";
-  if (!["masculino", "feminino"].includes(student.gender.toLowerCase())) errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth)) errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
+  if (!["masculino", "feminino"].includes(student.gender.toLowerCase()))
+    errors.gender = "Gênero deve ser 'masculino' ou 'feminino'";
+
+  // Validação de data de nascimento
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(student.dateOfBirth)) {
+    errors.dateOfBirth = "Data de nascimento deve estar no formato dd/mm/aaaa";
+  } else {
+    const [day, month, year] = student.dateOfBirth.split("/").map(Number);
+
+    if (day < 1 || day > 31) {
+      errors.dateOfBirth = "O dia deve ser entre 01 e 31";
+    } else if (month < 1 || month > 12) {
+      errors.dateOfBirth = "O mês deve ser entre 01 e 12";
+    } else if (year > currentYear) {
+      errors.dateOfBirth = `O ano não pode ser maior que ${currentYear}`;
+    }
+  }
+
   if (/[\d]/.test(student.city)) errors.city = "Cidade não pode conter números";
-  if (!/^[A-Z]{2}$/.test(student.federativeUnity)) errors.federativeUnity = "UF deve conter duas letras maiúsculas";
+  if (!/^[A-Z]{2}$/.test(student.federativeUnity))
+    errors.federativeUnity = "UF deve conter duas letras maiúsculas";
 
   return errors;
 };
 
 // * Componente de adição e edição de alunos
 const AddStudentPage = () => {
-  const { idTurma } = useParams();  // Pega o parâmetro da URL (id da turma)
-  const [alert, setAlert] = useState(false);  // Estado de alerta
-  const [alertMessage, setAlertMessage] = useState("");  // Mensagem do alerta
-  const [alertCountdown, setAlertCountdown] = useState(5);  // Contagem regressiva do alerta
-  const [rows, setRows] = useState([]);  // Linhas da tabela
-  const [student, setStudent] = useState({  // Dados do aluno sendo adicionado ou editado
+  const { idTurma } = useParams(); // Pega o parâmetro da URL (id da turma)
+  const [alert, setAlert] = useState(false); // Estado de alerta
+  const [alertMessage, setAlertMessage] = useState(""); // Mensagem do alerta
+  const [alertCountdown, setAlertCountdown] = useState(5); // Contagem regressiva do alerta
+  const [rows, setRows] = useState([]); // Linhas da tabela
+  const [student, setStudent] = useState({
+    // Dados do aluno sendo adicionado ou editado
     name: "",
     registration: "",
     email: "",
@@ -84,12 +110,13 @@ const AddStudentPage = () => {
     federativeUnity: "",
     internal: "",
     course: "",
+    photo: null
   });
-  const [editingRowIndex, setEditingRowIndex] = useState(null);  // Índice da linha sendo editada
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);  // Estado para o diálogo de cancelamento
-  const [courseYear, setCourseYear] = useState([]);  // Ano do curso
+  const [editingRowIndex, setEditingRowIndex] = useState(null); // Índice da linha sendo editada
+  const [openCancelDialog, setOpenCancelDialog] = useState(false); // Estado para o diálogo de cancelamento
+  const [courseYear, setCourseYear] = useState([]); // Ano do curso
 
-  const navigate = useNavigate();  // Função para navegação entre páginas
+  const navigate = useNavigate(); // Função para navegação entre páginas
 
   // * Função para pegar o ano do curso via API
   const getCourseYear = async () => {
@@ -108,7 +135,7 @@ const AddStudentPage = () => {
       setAlert(false);
       setAlertCountdown(5);
     }
-    return () => clearInterval(timer);  // Limpeza do intervalo ao desmontar o componente
+    return () => clearInterval(timer); // Limpeza do intervalo ao desmontar o componente
   }, [alert, alertCountdown]);
 
   // * Hook para buscar dados do curso uma única vez
@@ -130,9 +157,9 @@ const AddStudentPage = () => {
   // * Função de manipulação de alteração nos campos de input
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+  
     let formattedValue = value;
-
+  
     if (name === "dateOfBirth") {
       const digitsOnly = value.replace(/\D/g, "").slice(0, 8);
       formattedValue = digitsOnly;
@@ -143,16 +170,84 @@ const AddStudentPage = () => {
         formattedValue = `${formattedValue.slice(0, 5)}/${formattedValue.slice(5)}`;
       }
     } else if (name === "registration") {
-      formattedValue = value.replace(/[^\d]/g, "");
+      formattedValue = value.replace(/[^\d]/g, "").slice(0, 6); // Permite apenas 6 números
     } else if (name === "federativeUnity") {
-      formattedValue = value.toUpperCase();
+      formattedValue = value.toUpperCase().slice(0, 2); // Permite apenas 2 caracteres maiúsculos
+    } else if (name === "name") {
+      formattedValue = value.replace(/[^a-zA-Z\u00C0-\u017F\s]/g, ""); // Remove números e caracteres especiais
+    } else if (name === "city") {
+      formattedValue = value.replace(/[0-9]/g, ""); // Remove números da cidade
     }
-
+    
+    
     setStudent((prevStudent) => ({
       ...prevStudent,
       [name]: formattedValue,
       course: idTurma,
     }));
+    console.log(student);
+  };
+  
+
+  // Adicione esta função de compressão
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Comprimir para JPEG com qualidade 0.7 (70%)
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          resolve(compressedDataUrl);
+        };
+      };
+    });
+  };
+
+  // Modifique a função handleImageUpload
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const compressedImage = await compressImage(file);
+        setStudent(prev => ({
+          ...prev,
+          photo: compressedImage
+        }));
+      } catch (error) {
+        console.error('Erro ao processar imagem:', error);
+        setAlertMessage("Erro ao processar a imagem");
+        setAlert(true);
+      }
+    }
   };
 
   // * Função para adicionar ou editar um aluno na tabela
@@ -163,12 +258,12 @@ const AddStudentPage = () => {
       setAlert(true);
       return;
     }
-
+    console.log(student)
     const newRow = {
       ...student,
-      internal: student.internal === "sim" ? "Sim" : "Não", 
+      internal: student.internal === "sim" ? (student.apartmentNumber || "Sim") : "não",
     };
-
+  
     if (editingRowIndex !== null) {
       const updatedRows = rows.map((row, index) =>
         index === editingRowIndex ? newRow : row
@@ -178,7 +273,7 @@ const AddStudentPage = () => {
     } else {
       setRows([...rows, newRow]);
     }
-
+    
     setStudent({
       name: "",
       registration: "",
@@ -188,9 +283,12 @@ const AddStudentPage = () => {
       city: "",
       federativeUnity: "",
       internal: "",
+      apartmentNumber: "",
       course: "",
+      photo: undefined
     });
   };
+  
 
   // * Função para preparar edição de um aluno na tabela
   const handleEdit = (index) => {
@@ -205,6 +303,7 @@ const AddStudentPage = () => {
       federativeUnity: rowToEdit.federativeUnity,
       internal: rowToEdit.internal ? "sim" : "não",
       course: idTurma,
+      photo: rowToEdit.photo
     });
     setEditingRowIndex(index);
   };
@@ -214,7 +313,6 @@ const AddStudentPage = () => {
     try {
       let hasError = false;
 
-      // Verifica se há erros em cada aluno
       for (const aluno of rows) {
         const errors = validateStudent(aluno);
         if (Object.keys(errors).length > 0) {
@@ -225,11 +323,10 @@ const AddStudentPage = () => {
         }
       }
 
-      // Envia dados para o servidor se não houver erros
       if (!hasError) {
-        const responses = await Promise.all(
-          rows.map((aluno) =>
-            axios.post("http://localhost:3030/alunos", {
+        await Promise.all(
+          rows.map((aluno) => {
+            const studentData = {
               name: aluno.name,
               registration: courseYear[0]?.ano_inicio + aluno.registration,
               email: aluno.email,
@@ -237,13 +334,15 @@ const AddStudentPage = () => {
               dateOfBirth: aluno.dateOfBirth,
               city: aluno.city,
               federativeUnity: aluno.federativeUnity,
-              internal: aluno.internal,
-              course: aluno.course,
-            })
-          )
+              internal: aluno.internal === "sim" ? aluno.apartmentNumber || "Sim" : "não",
+              course: idTurma,
+              photo: aluno.photo
+            };
+
+            return axios.post("http://localhost:3030/alunos", studentData);
+          })
         );
 
-        console.log(responses);
         navigate("../turmas/" + idTurma + "/alunos/");
       } else {
         setTimeout(() => {
@@ -251,12 +350,14 @@ const AddStudentPage = () => {
           setAlertCountdown(5);
         }, 5000);
       }
-    } catch (err) {
-      console.error(err);
-      setAlertMessage("Ocorreu um erro ao salvar os dados");
+    } catch (error) {
+      console.error("Erro completo:", error);
+      const errorMessage = error.response?.data?.details || error.message;
+      setAlertMessage(`Erro ao salvar alunos: ${errorMessage}`);
       setAlert(true);
     }
   };
+  
 
   const handleCancel = () => {
     setOpenCancelDialog(true);
@@ -287,6 +388,7 @@ const AddStudentPage = () => {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
+                <StyledTableCell align="center">FOTO</StyledTableCell>
                 <StyledTableCell>NOME COMPLETO</StyledTableCell>
                 <StyledTableCell align="center">MATRICULA</StyledTableCell>
                 <StyledTableCell align="center">EMAIL</StyledTableCell>
@@ -297,13 +399,22 @@ const AddStudentPage = () => {
                 <StyledTableCell align="center">CIDADE</StyledTableCell>
                 <StyledTableCell align="center">UF</StyledTableCell>
                 <StyledTableCell align="center">INTERNO</StyledTableCell>
+                {student.internal === "sim" ? (<StyledTableCell align="center">NÚMERO DO APARTAMENTO</StyledTableCell>) : null}
                 <StyledTableCell align="center">AÇÕES</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.map((row, index) => (
                 <StyledTableRow key={index}>
-                  <StyledTableCell align="center">{row.name}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Avatar
+                      src={row.photo}
+                      sx={{ width: 40, height: 40, margin: 'auto' }}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell align="center" name="name">
+                    {row.name}
+                  </StyledTableCell>
                   <StyledTableCell align="center">
                     {courseYear[0]?.ano_inicio + row.registration}
                   </StyledTableCell>
@@ -330,6 +441,37 @@ const AddStudentPage = () => {
                 </StyledTableRow>
               ))}
               <StyledTableRow>
+                <StyledTableCell align="center">
+                  <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                    <Avatar
+                      src={student.photo}
+                      sx={{ width: 40, height: 40 }}
+                    />
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="label"
+                      sx={{
+                        position: 'absolute',
+                        bottom: -10,
+                        right: -10,
+                        backgroundColor: 'white',
+                        padding: '4px',
+                        '& .MuiSvgIcon-root': {
+                          fontSize: '1rem'
+                        }
+                      }}
+                    >
+                      <input
+                        hidden
+                        accept="image/*"
+                        type="file"
+                        onChange={handleImageUpload}
+                      />
+                      <PhotoCamera />
+                    </IconButton>
+                  </Box>
+                </StyledTableCell>
                 <StyledTableCell align="right">
                   <TextField
                     name="name"
@@ -418,27 +560,39 @@ const AddStudentPage = () => {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <FormControl variant="standard" fullWidth>
+                  <FormControl fullWidth variant="standard">
                     <Select
-                      labelId="internal-label"
                       name="internal"
                       value={student.internal}
                       onChange={handleChange}
-                      error={!!student.errors?.internal}
                     >
                       <MenuItem value="sim">Sim</MenuItem>
                       <MenuItem value="não">Não</MenuItem>
                     </Select>
-                    <FormHelperText>{student.errors?.internal}</FormHelperText>
                   </FormControl>
                 </StyledTableCell>
+
+                {/* Se 'sim' for selecionado em "interno", exibe o campo para o número do apartamento */}
+                {student.internal === "sim" && (
+                  <StyledTableCell align="right">
+                    <TextField
+                      name="apartmentNumber"
+                      variant="standard"
+                      value={student.apartmentNumber}
+                      onChange={handleChange}
+                      inputProps={{ maxLength: 3 }}
+                      error={!!student.errors?.apartmentNumber}
+                      helperText={student.errors?.apartmentNumber}
+                    />
+                  </StyledTableCell>
+                )}
                 <StyledTableCell align="right">
                   <Button variant="contained" onClick={addItem}>
                     {editingRowIndex !== null ? "Atualizar" : "OK"}
                   </Button>
                 </StyledTableCell>
               </StyledTableRow>
-            </TableBody>
+            </TableBody>  
           </Table>
         </TableContainer>
       </Box>
