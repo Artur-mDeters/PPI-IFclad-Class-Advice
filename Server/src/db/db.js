@@ -10,3 +10,4 @@ const dbData = {
 
 const db = pgp(`postgres://${dbData.username}:${dbData.password}@${dbData.host}:${dbData.port}/${dbData.name}`);
 module.exports = db;
+///testando
