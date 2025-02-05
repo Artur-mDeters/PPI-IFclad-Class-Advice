@@ -108,8 +108,7 @@ exports.editTeacher = async (req, res) => {
 
     res.status(200).send("Dados do professor atualizados com sucesso");
   } catch (err) {
-    console.error('Erro ao atualizar professor:', err.message);
-    res.status(500).send({ error: 'Erro ao atualizar o professor', details: err.message });
+    throw new Error('Erro ao atualizar o professor',err)
   }
 };
 
@@ -122,8 +121,7 @@ exports.getProfessores = async (_, res) => {
       const resposta = await db.query("SELECT * FROM usuario WHERE usuario_tipo = $1", [tipoUsuarioProfessor]);
       res.status(200).json(resposta);
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Erro ao buscar usuários", details: err.message });
+      throw new Error("Erro ao buscar usuários: ", err);
   }
 };
 
@@ -133,7 +131,7 @@ exports.getProfessorById = async (req, res) => {
       const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1 AND usuario_tipo = $2", [id_user, tipoUsuarioProfessor])
       res.status(200).send(resposta)
   } catch (err) {
-      res.status(404).send(err)
+      throw new Error("Erro ao buscar professor: ", err)
   }
 }
 
@@ -160,7 +158,6 @@ exports.deleteTeacher = async (req, res) => {
 
     res.status(200).send("Professor excluído com sucesso");
   } catch (err) {
-    console.error('Erro ao excluir professor:', err.message);
-    res.status(500).send({ error: 'Erro ao excluir o professor', details: err.message });
+    throw new Error('Erro ao excluir professor:', err);
   }
 };
