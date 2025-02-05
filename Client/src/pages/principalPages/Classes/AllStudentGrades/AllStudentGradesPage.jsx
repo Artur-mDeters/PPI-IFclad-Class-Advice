@@ -41,6 +41,7 @@ const AllStudentGradesPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [currentStudentId, setCurrentStudentId] = useState(null);
   const [observation, setObservation] = useState("");
+  const [nomeTurma, setNomeTurma] = useState('');
 
   const handleOpenDialog = (idAluno) => {
     setCurrentStudentId(idAluno);
@@ -130,6 +131,19 @@ const AllStudentGradesPage = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const fetchNomeTurma = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3030/turmas/${idTurma}`);
+        setNomeTurma(response.data[0].nome);
+      } catch (error) {
+        console.error("Erro ao buscar o nome da turma:", error);
+      }
+    };
+
+    fetchNomeTurma();
+  }, [idTurma]);
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -258,7 +272,7 @@ const AllStudentGradesPage = () => {
 
   return (
     <Theme>
-      <UiAppBar title={`Notas da Turma: ${idTurma}`}>
+      <UiAppBar title={`Notas da Turma: ${nomeTurma}`}>
         <Box sx={{ padding: 3 }}>
           <SearchBar />
 
