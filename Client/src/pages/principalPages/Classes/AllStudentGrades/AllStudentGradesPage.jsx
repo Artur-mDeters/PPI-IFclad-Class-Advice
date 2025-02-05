@@ -95,7 +95,6 @@ const AllStudentGradesPage = () => {
         [field]: value,
       },
     }));
-    console.log(editedGrades);
   };
 
   const handleBlur = (idAluno, field) => {
@@ -172,7 +171,7 @@ const AllStudentGradesPage = () => {
               aia: student.aia || "",
               observacao: student.observacao || "",
               nota_final: student.nota_final || "",
-              id: student.id_aluno, // ID do aluno incluído aqui
+              id_aluno: student.id_aluno, // ID do aluno incluído aqui
             };
             return acc;
           }, {});

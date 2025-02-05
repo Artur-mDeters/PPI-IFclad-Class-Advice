@@ -32,76 +32,61 @@ exports.getAllGradesBySubject = async function (req, res) {
   }
 };
 
-
 exports.addGrades = async (req, res) => {
   const { idDisciplina } = req.params;
   const grades = req.body.grades;
 
-  console.log("Grades recebidas:", grades); // Logando as notas recebidas
-
-  const gradesArray = Object.values(grades);
-
   try {
-    for (let i = 0; i < gradesArray.length; i++) {
-      const aluno = gradesArray[i];
-      const { nota_final } = aluno; // Obtendo o valor de nota_final de cada aluno
-
-      console.log("Parametros SQL:", [
+    for (let alunoId in grades) {
+      const aluno = grades[alunoId];
+      const {
         nota_final,
-        aluno.ppi_b10,
-        aluno.faltas,
-        aluno.aia,
-        aluno.parcial1,
-        aluno.parcial2,
-        aluno.semestre1,
-        aluno.semestre2,
-        aluno.observacao,
-        aluno.ais_b10,
-        aluno.mostra_de_ciencias,
-        aluno.id_aluno,
-        idDisciplina
-      ]);
-      
-      // Atualização das notas no banco de dados
-      const result = await db.query(
+        ppi_b10,
+        faltas,
+        aia,
+        parcial1,
+        parcial2,
+        semestre1,
+        semestre2,
+        observacao,
+        ais_b10,
+        mostra_de_ciencias
+      } = aluno;
+
+      await db.query(
         `UPDATE notas
           SET
-              nota_final = $1,
-              ppi_b10 = $2,
-              faltas = $3,
-              aia = $4,
-              parcial1 = $5,
-              parcial2 = $6,
-              semestre1 = $7,
-              semestre2 = $8,
-              observacao = $9,
-              ais_b10 = $10,
-              mostra_de_ciencias = $11
+            nota_final = $1,
+            ppi_b10 = $2,
+            faltas = $3,
+            aia = $4,
+            parcial1 = $5,
+            parcial2 = $6,
+            semestre1 = $7,
+            semestre2 = $8,
+            observacao = $9,
+            ais_b10 = $10,
+            mostra_de_ciencias = $11
           WHERE
-              id_aluno = $12
+            id_aluno = $12
           AND
-              fk_id_disciplina = $13`,
+            fk_id_disciplina = $13`,
         [
           nota_final || null,
-          aluno.ppi_b10 || null,
-          aluno.faltas,
-          aluno.aia,
-          aluno.parcial1,
-          aluno.parcial2,
-          aluno.semestre1,
-          aluno.semestre2,
-          aluno.observacao,
-          aluno.ais_b10,
-          aluno.mostra_de_ciencias,
-          aluno.id_aluno,
+          ppi_b10 || null,
+          faltas || null,
+          aia || null,
+          parcial1 || null,
+          parcial2 || null,
+          semestre1 || null,
+          semestre2 || null,
+          observacao || null,
+          ais_b10 || null,
+          mostra_de_ciencias || null,
+          alunoId,
           idDisciplina
         ]
       );
-
-      // Verificando se o aluno foi encontrado e atualizado
-      if (result.rowCount === 0) {
-        return res.status(404).json({ message: `Aluno ${aluno.id_aluno} não encontrado.` });
-      }
     }
 
     res.status(200).json({ message: "Notas atualizadas com sucesso!" });
@@ -113,8 +98,6 @@ exports.addGrades = async (req, res) => {
     });
   }
 };
-
-
 
 exports.getGradesToPDF = async (req, res) => {
   const { idTurma } = req.params;
