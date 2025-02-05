@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import * as React from "react";
 import "./AppBar.css";
-
-import { defaultDark } from "../../themes/themes";
+import NavigationBar from "../UI/navigationBar/NavigationBar.jsx";
 import logo from "../../assets/logoIF.png";
 import dataButtons from "./dataButtons.jsx";
 
@@ -185,8 +184,9 @@ export default function UiAppBar({ children, title }) {
         </Drawer>
         <AppBar position="absolute" open={open}>
           <Box sx={{ display: "flex", alignItems: 'center' }}>
-            <Box sx={{ flex: 1, marginLeft: '20px' }}>
-              <Typography variant="h3">{title}</Typography>
+            <Box sx={{ paddingLeft:"10px", flex: 1, flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+              <NavigationBar/>
+              <Typography sx={{marginLeft: "10px"}}  variant="h3">{title}</Typography>
             </Box>
             <Box>
               <Toolbar

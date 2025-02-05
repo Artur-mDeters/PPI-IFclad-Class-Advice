@@ -1,20 +1,31 @@
-#principal-container {
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(45deg,  #edeaff, #e2baff, #c1b8fc);
-  background-size: 600% 600%;
-  animation: gradientAnimation 6s ease infinite;
-  display: flex;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 700px;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.title {
+    display: flex;
+    flex: 1;
+    margin-bottom: 100px;
+}
+
+.inputs {
+    display: flex;
+    width: 60%;
+    flex-direction: column;
+    margin: 0 auto;
+
+}
+
+
+.input-area {
 }

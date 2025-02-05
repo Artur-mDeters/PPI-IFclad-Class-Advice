@@ -43,6 +43,145 @@ const AllStudentGradesPage = () => {
   const [observation, setObservation] = useState("");
   const [nomeTurma, setNomeTurma] = useState('');
 
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3030/turmas/disciplinas/" + idTurma
+        );
+        console.log(response)
+        setSubjects(response.data);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: "Erro ao buscar disciplinas.",
+          severity: "error",
+        });
+      }
+    };
+    fetchSubjects();
+  }, []);
+
+  useEffect(() => {
+    const fetchNomeTurma = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3030/turmas/${idTurma}`);
+        setNomeTurma(response.data.nome);
+      } catch (error) {
+        console.error("Erro ao buscar o nome da turma:", error);
+      }
+    };
+
+    fetchNomeTurma();
+  }, [idTurma]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3030/disciplina`);
+        setSubjects(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar disciplinas:", error);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  useEffect(() => {
+    const fetchGrades = async () => {
+      if (idTurma && selectedSubject) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3030/notas/${selectedSubject}/${idTurma}`
+          );
+          setStudentGrades(response.data);
+
+          const initialEditedGrades = response.data.reduce((acc, student) => {
+            acc[student.id_aluno] = {
+              parcial1: student.parcial1 || "",
+              semestre1: student.semestre1 || "",
+              parcial2: student.parcial2 || "",
+              semestre2: student.semestre2 || "",
+              ais_b10: student.ais_b10 || "",
+              ppi_b10: student.ppi_b10 || "",
+              mostra_de_ciencias: student.mostra_de_ciencias || "",
+              aia: student.aia || "",
+              observacao: student.observacao || "",
+            };
+            return acc;
+          }, {});
+
+          setEditedGrades(initialEditedGrades);
+        } catch (error) {
+          console.error("Erro ao buscar notas:", error);
+        }
+      }
+    };
+
+    fetchGrades();
+  }, [idTurma, selectedSubject]);
+
+  const handleGradeChange = (studentId, field, value) => {
+    setEditedGrades((prev) => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        [field]: value,
+      },
+    }));
+  };
+
+  const calculateFinalGrade = (studentId) => {
+    const student = editedGrades[studentId];
+    if (!student) return 0;
+
+    const { parcial1, semestre1, parcial2, semestre2, ais_b10, ppi_b10, mostra_de_ciencias, aia } = student;
+
+    const grades = [
+      parseFloat(parcial1) || 0,
+      parseFloat(ais_b10) || 0,
+      parseFloat(semestre1) || 0,
+      parseFloat(parcial2) || 0,
+      parseFloat(mostra_de_ciencias) || 0,
+      parseFloat(ppi_b10) || 0,
+      parseFloat(semestre2) || 0,
+    ];
+
+    let finalGrade = (((grades[0]* 0.2)+(grades[1]* 0.3) + (grades[2]*0.5))*0.4) + (((grades[3]* 0.2)+(grades[4]* 0.1) + (grades[5]*0.2) + (grades[6]*0.5))*0.6);
+    if (!aia){
+      return finalGrade.toFixed(1);
+    } else{
+      finalGrade = (finalGrade * 0.6) + (parseFloat(aia) * 0.4);
+      return finalGrade.toFixed(1);
+    }
+  };
+
+  const getStatus = (studentId) => {
+    const student = editedGrades[studentId];
+    const requiredFields = [
+      "parcial1",
+      "semestre1",
+      "ais_b10",
+      "parcial2",
+      "semestre2",
+      "mostra_de_ciencias",
+      "ppi_b10",
+    ];
+
+    const allGradesFilled = requiredFields.every(
+      (field) => student[field] !== undefined && student[field] !== ""
+    );
+    if (!allGradesFilled) return "--";
+
+    const finalGrade = parseFloat(calculateFinalGrade(studentId));
+    const aia = parseFloat(student["aia"] || 0);
+
+    if (finalGrade < 5 && aia) return { label: "REPROVADO", color: "error" };
+    if (finalGrade < 7 && !aia) return { label: "EXAME", color: "warning" };
+    return { label: "APROVADO", color: "success" };
+  };
+
   const handleOpenDialog = (idAluno) => {
     setCurrentStudentId(idAluno);
     setObservation(editedGrades[idAluno]?.observacao || "");
@@ -89,16 +228,6 @@ const AllStudentGradesPage = () => {
     const number = parseInt(value, 10);
     if (isNaN(number)) return "";
     return Math.min(Math.max(number, 0), 9999);
-  };
-
-  const handleGradeChange = (idAluno, field, value) => {
-    setEditedGrades((prev) => ({
-      ...prev,
-      [idAluno]: {
-        ...prev[idAluno],
-        [field]: value,
-      },
-    }));
   };
 
   const handleBlur = (idAluno, field) => {
@@ -150,23 +279,7 @@ const AllStudentGradesPage = () => {
     fetchNomeTurma();
   }, [idTurma]);
 
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3030/turmas/disciplinas/" + idTurma
-        );
-        setSubjects(response.data);
-      } catch (error) {
-        setSnackbar({
-          open: true,
-          message: "Erro ao buscar disciplinas.",
-          severity: "error",
-        });
-      }
-    };
-    fetchSubjects();
-  }, []);
+  
 
   useEffect(() => {
     const fetchGrades = async () => {
@@ -227,60 +340,6 @@ const AllStudentGradesPage = () => {
     }
   };
 
-  const calculateFinalGrade = (studentId) => {
-    const student = studentGrades.find((s) => s.id_aluno === studentId);
-    if (!student) return 0;
-  
-    const { parcial1, semestre1, parcial2, semestre2, ais_b10, ppi_b10, mostra_de_ciencias } = student;
-  
-    // Exemplo de cálculo de média ponderada
-    const grades = [
-      parseFloat(parcial1) || 0,
-      parseFloat(semestre1) || 0,
-      parseFloat(parcial2) || 0,
-      parseFloat(semestre2) || 0,
-      parseFloat(ais_b10) || 0,
-      parseFloat(ppi_b10) || 0,
-      parseFloat(mostra_de_ciencias) || 0,
-    ];
-  
-    const weights = [1, 2, 1, 2, 1, 1, 1]; // Exemplo de pesos para cada nota
-  
-    const totalWeight = weights.reduce((acc, weight) => acc + weight, 0);
-    const weightedSum = grades.reduce((acc, grade, index) => acc + grade * weights[index], 0);
-  
-    const finalGrade = weightedSum / totalWeight;
-  
-    return finalGrade.toFixed(2); // Retorna a média final com duas casas decimais
-  };
-
-  const getStatus = (studentId) => {
-    const student = editedGrades[studentId];
-    if (!student) return "--";
-
-    const requiredFields = [
-      "parcial1",
-      "semestre1",
-      "parcial2",
-      "semestre2",
-      "ais_b10",
-      "ppi_b10",
-      "mostra_de_ciencias",
-    ];
-
-    const allGradesFilled = requiredFields.every(
-      (field) => student[field] !== undefined && student[field] !== ""
-    );
-    if (!allGradesFilled) return "--";
-
-    const finalGrade = parseFloat(calculateFinalGrade(studentId));
-    const aia = parseFloat(student["aia"] || 0);
-
-    if (finalGrade < 5 && aia) return { label: "REPROVADO", color: "error" };
-    if (finalGrade < 7) return { label: "EXAME", color: "warning" };
-    return { label: "APROVADO", color: "success" };
-  };
-
   return (
     <Theme>
       <UiAppBar title={`Notas da Turma ${nomeTurma}`}>
@@ -312,14 +371,15 @@ const AllStudentGradesPage = () => {
                   <TableCell>Aluno</TableCell>
                   <TableCell>Parcial 1</TableCell>
                   <TableCell>Semestre 1</TableCell>
+                  <TableCell>AIS</TableCell>
                   <TableCell>Parcial 2</TableCell>
                   <TableCell>Semestre 2</TableCell>
-                  <TableCell>AIS</TableCell>
-                  <TableCell>PPI</TableCell>
                   <TableCell>Mostra de Ciências</TableCell>
+                  <TableCell>PPI</TableCell>
                   <TableCell>Faltas</TableCell>
                   <TableCell>AIA</TableCell>
                   <TableCell>Nota Final</TableCell>
+                  <TableCell>Situação</TableCell>
                   <TableCell>Observação</TableCell>
                 </TableRow>
               </TableHead>
@@ -330,11 +390,11 @@ const AllStudentGradesPage = () => {
                     {[
                       "parcial1",
                       "semestre1",
+                      "ais_b10",
                       "parcial2",
                       "semestre2",
-                      "ais_b10",
-                      "ppi_b10",
                       "mostra_de_ciencias",
+                      "ppi_b10",
                       "faltas",
                       "aia",
                     ].map((field, colIndex) => (
@@ -361,7 +421,7 @@ const AllStudentGradesPage = () => {
                       </TableCell>
                     ))}
                     <TableCell>
-                      {calculateFinalGrade(student.id_aluno)}
+                    {calculateFinalGrade(student.id_aluno)}
                     </TableCell>
                     <TableCell>
                       {(() => {
@@ -413,7 +473,7 @@ const AllStudentGradesPage = () => {
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancelar</Button>
+              <Button onClick={handleCloseDialog} color="error" variant="contained">Cancelar</Button>
               <Button onClick={handleSaveObservation} variant="contained">
                 Salvar
               </Button>

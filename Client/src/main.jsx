@@ -5,9 +5,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 
-import Login from './pages/login/Login.jsx'
+import Login from '../src/pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
-import Register from './pages/register/Register.jsx'
 
 //* Courses pages imports
 import Course from './pages/principalPages/Course/CoursePage.jsx'
@@ -63,12 +62,6 @@ const route = createBrowserRouter([
     element: <Home />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/register",
-    element: <Register />,
-    errorElement: <ErrorPage />,
-  },
-
   //! Course page routes
   {
     path: "/cursos",

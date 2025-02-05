@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 // import ThemeSelector from "./themes/ThemeSelector";
@@ -28,7 +29,7 @@ const Theme = ({ children }) => {
   return (
     <>
       {/* <ThemeSelector onThemeChange={setTheme} /> */}
-      <ThemeProvider theme={greenDark}>
+      <ThemeProvider theme={defaultDark}>
         <CssBaseline />
         {children}
       </ThemeProvider>

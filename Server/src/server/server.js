@@ -14,6 +14,9 @@ app.use(fileupload());
 // Servir a pasta de fotos diretamente
 app.use("/fotos", express.static(path.join(__dirname, "..", "fotos")));
 
+const EventEmitter = require('events');
+EventEmitter.defaultMaxListeners = 20; 
+
 // Rotas da API
 app.use(apiRoutes);
 

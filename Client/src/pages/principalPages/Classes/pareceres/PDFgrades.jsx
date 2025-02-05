@@ -20,7 +20,7 @@ const getAllGradesByStudents = async (idTurma) => {
   const data = await axios.get(
     `http://localhost:3030/notasCalculadas/${idTurma}`
   );
-  
+
   return data.data;
 };
 
@@ -50,40 +50,50 @@ const PDFgrades = () => {
         console.error("Erro ao buscar as notas:", error);
       }
     };
+    console.log(allGradesAndNames);
 
     fetchGradesData();
   }, [idTurma]);
 
-   // Importa a biblioteca html2canvas
+  // Importa a biblioteca html2canvas
 
-const downloadPDF = () => {
-  const doc = new jsPDF();
-
-  const contentElements = document.getElementsByClassName("content");
-  const totalPages = contentElements.length;
-
-  Array.from(contentElements).forEach((content, index) => {
-    html2canvas(content).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      doc.addImage(imgData, "PNG", 10, 10, 190, 0); // Ajuste a largura e altura conforme necessário
-
-      if (index < totalPages - 1) {
-        doc.addPage(); // Adiciona uma nova página se não for o último elemento
-      }
-
-      // Salva o PDF apenas quando o último conteúdo for adicionado
-      if (index === totalPages - 1) {
-        doc.save("Notas.pdf");
-      }
+  const downloadPDF = () => {
+    const doc = new jsPDF("p", "mm", "a4"); // Garante o formato A4
+    const contentElements = document.getElementsByClassName("content");
+    const totalPages = contentElements.length;
+  
+    Array.from(contentElements).forEach((content, index) => {
+      html2canvas(content, {
+        scale: 3, // Aumenta a resolução da renderização
+        useCORS: true, // Para garantir que fontes e imagens externas funcionem bem
+        allowTaint: true,
+      }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+  
+        const imgWidth = 190; // Largura do conteúdo no A4
+        // const pageHeight = 287; // Altura da página A4
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+        let position = 10;
+  
+        doc.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+  
+        if (index < totalPages - 1) {
+          doc.addPage();
+        }
+  
+        if (index === totalPages - 1) {
+          doc.save("Notas.pdf");
+        }
+      });
     });
-  });
-};
+  };
+  
+  
 
   return (
     <Theme>
-      <Box
-        sx={classes.box_Theme}
-      >
+      <Box sx={classes.box_Theme}>
         <FormControl sx={classes.formControl}>
           <InputLabel id="select-label">Selecione</InputLabel>
           <Select
@@ -99,43 +109,56 @@ const downloadPDF = () => {
           </Select>
         </FormControl>
         <Box>
-          <Button variant="contained" onClick={downloadPDF}>Baixar</Button>
+          <Button variant="contained" onClick={downloadPDF}>
+            Baixar
+          </Button>
         </Box>
       </Box>
       <Divider />
-      <Box
-        sx={classes.box_Divider}
-      >
+      <Box sx={classes.box_Divider}>
         {/* Atribua uma classe para a div que contém o conteúdo que você quer exportar */}
-        {allStudents.map((student) => (
-          <div className="content" style={classes.div_Content} key={student.id_aluno}>
-            <div>Notas de {student.nome}</div>
-            <table border={1}>
-              <thead>
-                <tr>
-                  <th>Disciplina</th>
-                  <th>Parcial 1</th>
-                  <th>Primeiro Semestre</th>
-                  <th>Parcial 2</th>
-                  <th>Segundo Semestre</th>
-                  <th>Faltas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allGradesAndNames.map((grade) => (
-                  <tr key={grade.fk_aluno_id_aluno}>
-                    <td>{grade.disciplina}</td>
-                    <td>{grade.pars_primeiro_sem}</td>
-                    <td>{grade.nota_primeiro_semestre_calculada}</td>
-                    <td>{grade.pars_segundo_sem}</td>
-                    <td>{grade.nota_final_nf}</td>
-                    <td>{grade.faltas}</td>
+        <div className="container">
+          {allStudents.map((student) => (
+            <div
+              className="content"
+              style={classes.div_Content}
+              key={student.id_aluno}
+            >
+              <div>Instituto Federal Farroupilha - campus Frederico Westphalen</div>
+              <div>Nome do Estudante: {student.nome}</div>
+              <div>Matrícula: {student.matricula}</div>
+              <div></div>
+              <table border={1}>
+                <thead>
+                  <tr>
+                    <th>Disciplina</th>
+                    <th>Parcial 1</th>
+                    <th>Primeiro Semestre</th>
+                    <th>Parcial 2</th>
+                    <th>Segundo Semestre</th>
+                    <th>Faltas</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
+                </thead>
+                <tbody>
+                  {allGradesAndNames
+                    .filter(
+                      (grade) => grade.id_aluno === student.id_aluno
+                    )
+                    .map((grade) => (
+                      <tr key={grade.id_aluno + grade.disciplina}>
+                        <td>{grade.disciplina}</td>
+                        <td>{grade.parcial1}</td>
+                        <td>{grade.semestre1}</td>
+                        <td>{grade.parcial2}</td>
+                        <td>{grade.semestre2}</td>
+                        <td>{grade.faltas}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
       </Box>
     </Theme>
   );
