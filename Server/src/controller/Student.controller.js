@@ -196,8 +196,7 @@ exports.excludeStudent = async (req, res) => {
       .status(205)
       .send("Aluno e registros relacionados excluídos com sucesso.");
   } catch (err) {
-    console.error("Erro ao excluir aluno:", err);
-    res.status(500).json({ error: "Erro interno do servidor ao tentar excluir aluno." });
+    throw new Error("Erro ao excluir aluno:", err);
   }
 };
 
