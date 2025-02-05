@@ -164,4 +164,3 @@ exports.deleteTeacher = async (req, res) => {
     res.status(500).send({ error: 'Erro ao excluir o professor', details: err.message });
   }
 };
-
