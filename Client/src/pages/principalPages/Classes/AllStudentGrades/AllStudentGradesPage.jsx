@@ -133,6 +133,8 @@ const AllStudentGradesPage = () => {
   };
 
   useEffect(() => {
+
+
     const fetchNomeTurma = async () => {
       try {
         const response = await axios.get(`http://localhost:3030/turmas/${idTurma}`);
@@ -149,7 +151,7 @@ const AllStudentGradesPage = () => {
     const fetchSubjects = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3030/todasAsDisciplinas"
+          "http://localhost:3030/turmas/disciplinas/" + idTurma
         );
         setSubjects(response.data);
       } catch (error) {
@@ -272,7 +274,7 @@ const AllStudentGradesPage = () => {
 
   return (
     <Theme>
-      <UiAppBar title={`Notas da Turma: ${nomeTurma}`}>
+      <UiAppBar title={`Notas da Turma ${nomeTurma}`}>
         <Box sx={{ padding: 3 }}>
           <SearchBar />
 
@@ -288,7 +290,7 @@ const AllStudentGradesPage = () => {
                   key={subject.id_disciplina}
                   value={subject.id_disciplina}
                 >
-                  {subject.nome}
+                  {subject.nome_disciplina}
                 </MenuItem>
               ))}
             </Select>
