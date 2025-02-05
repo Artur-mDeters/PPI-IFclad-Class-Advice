@@ -45,9 +45,7 @@ exports.addTeacher = async (req, res) => {
 
     res.status(200).send("Usuário registrado com sucesso");
   } catch (err) {
-    console.error('Erro:', err.message); 
-    console.error('Detalhes do erro:', err); 
-    res.status(500).send({ error: 'Erro ao registrar o usuário', details: err.message });
+    throw new Error("Erro ao registrar o usuário: ", err)
   }
 };
 
