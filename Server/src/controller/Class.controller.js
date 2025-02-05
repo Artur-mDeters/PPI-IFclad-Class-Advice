@@ -96,9 +96,13 @@ exports.deleteClass = async (req, res) => {
   const id_class = req.params.id;
 
   try {
+    await db.query(
+      DELETE FROM notas WHERE id_aluno IN (SELECT id_aluno FROM aluno WHERE id_turma = $1),
+      [id_class]
+    );
 
     await db.query(
-      `DELETE FROM aluno WHERE id_turma = $1`,
+      DELETE FROM aluno WHERE id_turma = $1,
       [id_class]
     );
 
@@ -111,8 +115,8 @@ exports.deleteClass = async (req, res) => {
 
     res.status(204).send(); // Sucesso
   } catch (err) {
-    res.status(500).json({ error: err.message }); // Erro interno
-  }
+    res.status(500).json({ error: err.message }); // Erro interno
+  }
 };
 
 exports.AddClassCouncil = async (req, res) => {
