@@ -17,10 +17,7 @@ exports.getUsers = async (req, res) => {
     const resposta = await db.query("SELECT * FROM usuario");
     res.status(200).json(resposta);
   } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "Erro ao buscar usuários", details: err.message });
+    throw new Error("Erro ao buscar usuários",err);
   }
 };
 
@@ -36,8 +33,7 @@ exports.addUser = async (req, res) => {
     );
     res.status(200).send("Usuário registrado com sucesso");
   } catch (err) {
-    console.error(err); 
-    res.status(500).send("Erro ao registrar o usuário");
+    throw new Error("Erro ao registrar o usuário", err);
   }
 };
 
@@ -47,7 +43,7 @@ exports.getUserById = async (req, res) => {
     const resposta = await db.query("SELECT * FROM usuario WHERE id_usuario = $1", [id_user])
     res.status(200).send(resposta)
   } catch (err) {
-    res.status(404).send(err)
+    throw new Error("Erro ao buscar usuario: ", err)
   }
 }
 
@@ -57,7 +53,7 @@ exports.deleteUser = async (req, res) => {
     await db.query('DELETE FROM usuario WHERE id_usuario = $1', [id_user])
     res.status(204).send()
   } catch (err) {
-    res.status(500).json({"err": err})
+    throw new Error("Erro ao deletar usuario: ", err)
   }
 
 }
