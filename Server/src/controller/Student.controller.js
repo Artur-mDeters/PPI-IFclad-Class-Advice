@@ -34,12 +34,12 @@ const saveBase64Image = (base64String, id_student) => {
     fs.writeFileSync(path.join(uploadDir, fileName), base64Data, 'base64');
     
     return `${fileName}`;
-  } catch (error) {
-    throw new Error ("Erro ao salvar imagem:", error);
+  } catch (err) {
+    throw new Error ("Erro ao salvar imagem:", err);
   }
 };
 
-exports.addStudent = async (req, res) => {
+exports.addStudent = async (req, __) => {
   try {
     const {
       name,

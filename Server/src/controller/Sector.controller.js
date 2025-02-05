@@ -12,8 +12,8 @@ exports.getSectors = async (__, res) => {
       [TYPE_SECTOR]
     );
     res.status(200).json(response);
-  } catch (error) {
-    throw new Error("Erro ao ler dados dos setores: ", error);
+  } catch (err) {
+    throw new Error("Erro ao ler dados dos setores: ", err);
   }
 };
 
@@ -31,8 +31,8 @@ exports.editSectors = async (req, res) => {
     ]);
 
     res.status(200).send("Setor atualizado com sucesso!");
-  } catch (error) {
-    throw new Error("Erro ao atualizar setor: " + error);
+  } catch (err) {
+    throw new Error("Erro ao atualizar setor: ", err);
   }
 };
 
@@ -42,8 +42,8 @@ exports.excludeSectors = async (req, res) => {
   try {
     await db.query("DELETE FROM usuario WHERE id_usuario = $1", [id]);
     res.status(200).send("Setor excluído com sucesso!");
-  } catch (error) {
-    throw new Error("Erro ao excluir setor: ", error);
+  } catch (err) {
+    throw new Error("Erro ao excluir setor: ", err);
   }
 };
 
@@ -56,8 +56,8 @@ exports.getSectorsByID = async (req, res) => {
       [id]
     );
     res.status(200).json(response);
-  } catch (error) {
-    throw new Error("Erro ao ler setor pelo ID: " + error);
+  } catch (err) {
+    throw new Error("Erro ao ler setor pelo ID: ", err);
   }
 };
 
@@ -81,7 +81,7 @@ exports.addSector = async (req, res) => {
     );
 
     res.status(201).send("Setor cadastrado com sucesso!");
-  } catch (error) {
-    throw new Error("Erro ao adicionar um novo setor: ", error);
+  } catch (err) {
+    throw new Error("Erro ao adicionar um novo setor: ", err);
   }
 };

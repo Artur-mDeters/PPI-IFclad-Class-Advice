@@ -7,7 +7,7 @@ exports.getSubjects = async (_req, res) => {
         const response = await db.query("SELECT * FROM disciplina");
         res.status(200).json(response); // Usei `response.rows` para retornar apenas os dados
     } catch (err) {
-        throw new Error("Erro ao encontrar disciplinas: " + err);
+        throw new Error("Erro ao encontrar disciplinas: ", err);
     }
 };
 
@@ -74,8 +74,8 @@ exports.excludeSubject = async (req, res) => {
         );
 
         res.status(200).send("Disciplina excluída com sucesso e registros associados removidos!");
-    } catch (error) {
-        throw new Error('Erro ao excluir disciplina e registros associados: ', error);
+    } catch (err) {
+        throw new Error('Erro ao excluir disciplina e registros associados: ', err);
     }
 };
 

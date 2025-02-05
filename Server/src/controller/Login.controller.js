@@ -31,7 +31,7 @@ exports.getUserData = async (req, __) => {
         }
         
     } catch (err) {
-        throw new Error("Erro ao buscar usuário: " + err);
+        throw new Error("Erro ao buscar usuário: ", err);
 
     }
 }

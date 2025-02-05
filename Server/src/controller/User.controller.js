@@ -8,7 +8,7 @@ const hashPassword = async (password) => {
     const hashedPassword = await bcrypt.hash(password, saltsRounds)
     return hashedPassword 
   } catch (err) {
-    throw new Error('Erro ao criar um hash da senha')
+    throw new Error('Erro ao criar um hash da senha', err)
   }
 }
 

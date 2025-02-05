@@ -24,8 +24,8 @@ exports.getAllGradesBySubject = async function (req, res) {
 
     // Retornando os resultados
     res.status(200).json(result);
-  } catch (error) {
-    throw new Error("Erro ao buscar notas: " + error);
+  } catch (err) {
+    throw new Error("Erro ao buscar notas: ", err);
   }
 };
 
@@ -101,8 +101,8 @@ exports.addGrades = async (req, res) => {
     }
 
     res.status(200).json({ message: "Notas atualizadas com sucesso!" });
-  } catch (error) {
-    throw new Error("Erro ao atualizar as notas: " + error);
+  } catch (err) {
+    throw new Error("Erro ao atualizar as notas: ", err);
   }
 };
 
@@ -142,7 +142,7 @@ exports.getGradesToPDF = async (req, res) => {
 
     // Retornando os resultados
     res.status(200).json(response.rows);
-  } catch (error) {
-    throw new Error("Erro ao buscar as notas: " + error);
+  } catch (err) {
+    throw new Error("Erro ao buscar as notas: ", err);
   }
 };

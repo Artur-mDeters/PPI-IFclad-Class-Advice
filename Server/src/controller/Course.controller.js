@@ -6,7 +6,7 @@ exports.getCourses = async (req, res) => {
     const response = await db.query("SELECT * FROM curso");
     res.status(200).json(response);
   } catch (err) {
-    throw new Error("Erro ao buscar cursos: " + err);
+    throw new Error("Erro ao buscar cursos: ", err);
   }
 };
 
@@ -18,7 +18,7 @@ exports.getCourseByID = async (req, res) => {
     ]);
     res.status(200).json(response);
   } catch (err) {
-    throw new Error("Erro ao buscar curso por ID: " + err);
+    throw new Error("Erro ao buscar curso por ID: ", err);
   }
 };
 
@@ -32,7 +32,7 @@ exports.addCourse = async (req, res) => {
     );
     res.status(201).send(response);
   } catch (err) {
-    throw new Error("Erro ao adicionar curso: " + err);
+    throw new Error("Erro ao adicionar curso: ", err);
   }
 };
 
@@ -47,7 +47,7 @@ exports.editCourse = async (req, res) => {
     );
     res.send(result.rows);
   } catch (err) {
-    throw new Error("Erro ao editar curso: " + err);
+    throw new Error("Erro ao editar curso: ", err);
   }
 };
 
@@ -69,6 +69,6 @@ exports.deleteCourse = async (req, res) => {
 
     res.status(204).send(); // Sucesso
   } catch (err) {
-    throw new Error("Erro ao excluir curso: " + err);
+    throw new Error("Erro ao excluir curso: ", err);
   }
 };
