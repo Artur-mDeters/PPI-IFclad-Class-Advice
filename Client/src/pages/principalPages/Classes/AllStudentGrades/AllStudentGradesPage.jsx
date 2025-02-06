@@ -49,7 +49,7 @@ const AllStudentGradesPage = () => {
         const response = await axios.get(
           "http://localhost:3030/turmas/disciplinas/" + idTurma
         );
-        console.log(response)
+        console.log(response.data)
         setSubjects(response.data);
       } catch (error) {
         setSnackbar({

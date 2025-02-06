@@ -49,9 +49,11 @@ const StudentPage = () => {
     try {
       const formattedDate = councilDate.toISOString().split("T")[0];
 
-      const response = await axios.put(
+      const response = await axios.post(
         `http://localhost:3030/turmas/conselho/${idTurma}`,
-        { conselho: formattedDate }
+        { conselho: formattedDate,
+          nameClass,
+         }
       );
 
       setNotification(true); // Exibe notificação de sucesso

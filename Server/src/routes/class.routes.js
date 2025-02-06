@@ -10,7 +10,7 @@ routes.get('/turmas', classController.getClass)
 routes.put('/turmas/editar/:id', classController.editClass)
 routes.get('/turmas/editar/:id', classController.getClassByID)
 routes.delete('/turmas/:id', classController.deleteClass)
-routes.put('/turmas/conselho/:id', classController.AddClassCouncil)
+routes.post('/turmas/conselho/:id', classController.AddClassCouncil)
 routes.get('/turmas/disciplinas/:id', classController.getAllSubjectsOfClass)
 
 module.exports = routes 

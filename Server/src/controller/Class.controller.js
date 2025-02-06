@@ -2,6 +2,39 @@ const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const path = require("path");
+const nodemailer = require("nodemailer");
+const templates = require("../../emails/templates.email");
+// require('dotenv').config();
+
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: emailUser,
+    pass: emailPass,
+  }
+});
+
+async function sendEmail(dia, nome, email, subject) {
+  try {
+    const info = await transporter.sendMail({
+      from: '"IFCLAD - Class Advice" <ifclad@proton.me>',
+      to: email,
+      subject,
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background-color: #f9f9f9; padding: 20px;">
+        <h2 style="color:rgb(206, 48, 0);">Atenção!!</h2>
+        <p>Conselho de classe da turma ${nome} foi agendado para o dia: ${dia}</p>
+        Fique atento para adicionar as notas dentro do prazo!
+      </div>`
+    });
+
+    console.log("Email enviado:", info.response);
+  } catch (error) {
+    console.error("Erro ao enviar email:", error);
+  }
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -61,8 +94,8 @@ exports.addClass = async (req, res) => {
         );
       }
     }
-
-    res.status(200).json(response);
+  
+    res.status(200).json(response); 
   } catch (err) {
     res.status(500).send(err);
   }
@@ -124,24 +157,40 @@ exports.deleteClass = async (req, res) => {
 
 exports.AddClassCouncil = async (req, res) => {
   const id_class = req.params.id; // ID da turma vindo dos parâmetros
-  const { conselho } = req.body; // Data do conselho vindo no corpo da requisição
+  const { conselho, nameClass } = req.body; // Data do conselho vindo no corpo da requisição
 
   try {
+    const id_conselho = uuidv4();
+
+    console.log(conselho, id_class, id_conselho);
+
+    // Inserção do conselho de classe
     const result = await db.query(
-      "UPDATE turma SET conselho = $1 WHERE id_turma = $2",
-      [conselho, id_class]
+      "INSERT INTO conselho_de_classe (id_conselho, id_turma, data) VALUES ($1, $2, $3)",
+      [id_conselho, id_class, conselho]
     );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Class not found" });
+    // Recuperando todos os emails dos usuários
+    const allEmailsAndNames = await db.query("SELECT email FROM usuario");
+
+    // Envio de emails para cada usuário
+    for (const user of allEmailsAndNames) {
+      if (user.email) {
+        try {
+          await sendEmail(conselho, nameClass, user.email, "Novo conselho de classe agendado");
+        } catch (emailErr) {
+          console.error(`Erro ao enviar e-mail para ${user.email}:`, emailErr);
+        }
+      }
     }
 
+    // Resposta ao cliente
     res.status(200).json({ message: "Class council scheduled successfully" });
   } catch (err) {
+    console.error("Erro ao agendar conselho de classe:", err);
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.getAllSubjectsOfClass = async (req, res) => {
   const id_class = req.params.id;
   try {
