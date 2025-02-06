@@ -1,16 +1,71 @@
 const db = require("../db/db");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require('bcrypt')
+const nodemailer = require('nodemailer');
+const templates = require('../../emails/templates.email');
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'arturdamotta@gmail.com',
+    pass: '@inj3u6nA26300802'
+  }
+});
+
+function sendEmail(type, data) {
+  let subject = '';
+  let htmlContent = '';
+
+  switch (type) {
+    case 'welcome':
+      subject = '🎉 Bem-vindo!';
+      htmlContent = templates.welcomeEmail(data.name);
+      break;
+    case 'reset':
+      subject = '🔑 Redefinição de Senha';
+      htmlContent = templates.passwordResetEmail(data.resetLink);
+      break;
+    case 'notification':
+      subject = '📢 Nova Notificação';
+      htmlContent = templates.notificationEmail(data.message);
+      break;
+    default:
+      console.log('Tipo de e-mail inválido.');
+      return;
+  }
+
+  const mailOptions = {
+    from: 'arturdamotta@gmai.com',
+    to: 'artur.2021301162@aluno.iffar.edu.br',
+    subject,
+    html: htmlContent
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Erro ao enviar e-mail:', error);
+    } else {
+      console.log('E-mail enviado com sucesso:', info.response);
+    }
+  });
+}
+
+sendEmail('welcome',  { name: 'Artur' });
+sendEmail('reset', { resetLink: 'https://seusite.com/reset/123' });
+sendEmail('notification', { message: 'Temos novidades para você!' });
+
+//##################################################################
 
 const hashPassword = async (password) => {
   try {
-    const saltsRounds = 10 // número de saltos para aumentar a segurança do hash 
-    const hashedPassword = await bcrypt.hash(password, saltsRounds)
-    return hashedPassword 
+    const saltRounds = 10; // número de saltos para aumentar a segurança do hash 
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
   } catch (err) {
-    throw new Error('Erro ao criar um hash da senha')
+    throw new Error('Erro ao criar um hash da senha');
   }
-}
+};
 
 exports.getUsers = async (req, res) => {
   try {
