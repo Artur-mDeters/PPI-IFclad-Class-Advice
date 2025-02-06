@@ -4,39 +4,14 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const templates = require("../../emails/templates.email");
 
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "arturdamotta@gmail.com",
-      pass: "xwge rpem fwpy dpja"
-    }
-  });
-  
-  async function sendEmail() {
-    try {
-      const info = await transporter.sendMail({
-        from: '"Seu Nome" <seuemail@gmail.com>',
-        to: "artur.2021301162@aluno.iffar.edu.br",
-        subject: "DEU CERTO ESTA PORRA",
-        text: "Este é um teste de e-mail usando Nodemailer!",
-        html: templates.welcomeEmail("Artur")
-      });
-  
-      console.log("Email enviado:", info.response);
-    } catch (error) {
-      console.error("Erro ao enviar email:", error);
-    }
-  }
-  
-  sendEmail();
+
+
 
 // Example usage
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     console.log("email:", email);
     console.log("password:", password);
-
-    sendEmail('welcome', { name: 'Artur' });
 
   try {
     const response = await db.query(`SELECT * FROM usuario WHERE email = $1`, [
@@ -69,6 +44,20 @@ exports.login = async (req, res) => {
     }
   } catch (err) {
     console.error("Erro durante o login:", err);
+    res.status(500).send({ message: "Erro interno do servidor" });
+  }
+};
+
+exports.recoveryPassword = async (req, res) => {
+  const { password, id_usuario} = req.body;
+
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.query('UPDATE usuario SET senha = $1 WHERE id_usuario = $2', [hashedPassword, id_usuario.id])
+    res.status(200).send({ message: "Senha alterada com sucesso" });
+  } catch (err) {
+    console.error("Erro ao alterar a senha:", err);
     res.status(500).send({ message: "Erro interno do servidor" });
   }
 };

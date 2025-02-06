@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 
 import Login from '../src/pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
+import RecoverPassword from './pages/login/recoverPassword/RecoverPassword.jsx'
 
 //* Courses pages imports
 import Course from './pages/principalPages/Course/CoursePage.jsx'
@@ -55,6 +56,11 @@ const route = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/recover-password/:id",
+    element: <RecoverPassword />,
     errorElement: <ErrorPage />,
   },
   {

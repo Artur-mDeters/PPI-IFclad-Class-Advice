@@ -2,6 +2,41 @@ const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
 const generator = require('generate-password');
 
+const nodemailer = require("nodemailer");
+const templates = require("../../emails/templates.email");
+require('dotenv').config();
+
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: emailUser,
+    pass: emailPass,
+  }
+});
+
+async function sendEmail(id_usuario, nome, email, subject) {
+  try {
+    const info = await transporter.sendMail({
+      from: '"IFCLAD - Class Advice" <ifclad@proton.me>',
+      to: email,
+      subject,
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background-color: #f9f9f9; padding: 20px;">
+        <h2 style="color: #004080;">Bem-vindo, ${nome}!</h2>
+        <p>Você foi cadastrado no IFClad - Class Advice. Ficamos felizes em ter você conosco!</p>
+        Clique no botão abaixo para adicionar uma senha!
+        <a href="http://localhost:5173/recover-password/${id_usuario}" style="background-color:rgb(165, 0, 187); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Alterar senha</a>
+      </div>`
+    });
+
+    console.log("Email enviado:", info.response);
+  } catch (error) {
+    console.error("Erro ao enviar email:", error);
+  }
+}
+
 const tipoUsuarioProfessor = "1";
 
 exports.addTeacher = async (req, res) => {
@@ -9,12 +44,11 @@ exports.addTeacher = async (req, res) => {
   const type = 1;
 
   try {
-    // Verificar se o e-mail já está registrado
-    // const existingEmail = await db.query("SELECT * FROM usuario WHERE email = $1", [email]);
+    const existingEmail = await db.query("SELECT * FROM usuario WHERE email = $1", [email]);
     
-    // if (existingEmail.rowCount > 0) {
-    //   return res.status(400).send({ error: 'O e-mail já está registrado.' });
-    // }
+    if (existingEmail.rowCount > 0) {
+      return res.status(400).send({ error: 'O e-mail já está registrado.' });
+    }
 
     const id_usuario = uuidv4(); // Gera um UUID válido
     console.log(`Gerando senha para o usuário: ${email}`);
@@ -43,6 +77,7 @@ exports.addTeacher = async (req, res) => {
       }
     }
 
+    await sendEmail(id_usuario, name, email, "Bem-vindo ao IFClad!");
     res.status(200).send("Usuário registrado com sucesso");
   } catch (err) {
     console.error('Erro:', err.message); 
