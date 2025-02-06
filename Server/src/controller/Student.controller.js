@@ -159,6 +159,17 @@ exports.updateStudent = [upload.single("photo"), async (req, res) => {
   }
 }];
 
+exports.getAllStudent = async(req, res) => {
+  try{
+    const response = await db.query(
+      `SELECT * from aluno`
+    )
+    res.status(200).json(response)
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
 exports.getStudent = async (req, res) => {
   const id = req.params.idTurma;
   try {
@@ -171,6 +182,65 @@ exports.getStudent = async (req, res) => {
     res.status(500).send(err);
   }
 };
+
+// Lado do servidor
+exports.getStudentPDF = async (req, res) => {
+  const id = req.params.idTurma;
+  try {
+    const response = await db.query(`
+      SELECT 
+        notas.nota_final,
+        aluno.nome AS nome,
+        aluno.id_aluno,
+        aluno.matricula,
+        turma.nome AS turma,
+        curso.nome AS curso
+      FROM 
+        aluno
+      JOIN 
+        notas ON aluno.id_aluno = notas.id_aluno
+      JOIN 
+        turma ON aluno.id_turma = turma.id_turma
+      JOIN 
+        curso ON turma.id_curso = curso.id_curso
+      WHERE
+        turma.id_turma = $1
+      ORDER BY 
+        aluno.nome
+    `, [id]);
+
+    // Criando uma estrutura de dados com chave única por nome do aluno
+    const students = [];
+    response.forEach(student => {
+      // Verificando se o aluno já foi adicionado, se não, adiciona a entrada
+      const existingStudent = students.find(s => Object.keys(s)[0] === student.nome);
+      if (existingStudent) {
+        existingStudent[student.nome].push({
+          matricula: student.matricula,
+          turma: student.turma,
+          curso: student.curso,
+          nota_final: student.nota_final
+        });
+      } else {
+        students.push({
+          [student.nome]: [{
+            matricula: student.matricula,
+            turma: student.turma,
+            curso: student.curso,
+            nota_final: student.nota_final
+          }]
+        });
+      }
+    });
+
+    res.status(200).json(students);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+
+
 exports.getStudentByID = async (req, res) => {
   // const idTurma = req.params.idTurma;
   const idStudent = req.params.idStudent;

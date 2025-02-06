@@ -48,6 +48,7 @@ import Settings from './pages/principalPages/config/Configuracoes.jsx'
 import StudentGradesPage from './pages/principalPages/Classes/Student/StudentGrades/StudentGradesPage.jsx'
 import PDFgrades from './pages/principalPages/Classes/pareceres/PDFgrades.jsx'
 import ApresentationMode from './pages/principalPages/Classes/Student/ApresentationMode.jsx'
+import AddScienceShowPage from './pages/principalPages/ScienceShow/addScienceShowPage.jsx/AssScienceShowPage.jsx'
 
 
 
@@ -203,6 +204,11 @@ const route = createBrowserRouter([
     path: "/mostra",
     element: <ScienceShowPage />,
     errorElement: <ErrorPage />,
+  },
+  {
+    path: '/addGrupoMostra',
+    element: <AddScienceShowPage />,
+    errorElement: <ErrorPage />
   },
   {
     path: "/config",
