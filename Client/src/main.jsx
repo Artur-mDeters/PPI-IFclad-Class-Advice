@@ -47,7 +47,7 @@ import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.
 import Settings from './pages/principalPages/config/Configuracoes.jsx'
 import StudentGradesPage from './pages/principalPages/Classes/Student/StudentGrades/StudentGradesPage.jsx'
 import PDFgrades from './pages/principalPages/Classes/pareceres/PDFgrades.jsx'
-
+import ApresentationMode from './pages/principalPages/Classes/Student/ApresentationMode.jsx'
 
 
 
@@ -60,10 +60,16 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: "/apresentacao",
+    element: <ApresentationMode />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: "/recover-password/:id",
     element: <RecoverPassword />,
     errorElement: <ErrorPage />,
   },
+
   {
     path: "/",
     element: <PrivateRoute><Home /></PrivateRoute>,
