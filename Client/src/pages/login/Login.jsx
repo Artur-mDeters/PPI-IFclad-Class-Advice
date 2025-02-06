@@ -1,140 +1,111 @@
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  ThemeProvider,
-} from "@mui/material";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import "./Login.css";
-import imgTest from "../../assets/Education-amico.svg";
-import { defaultLight } from "../../themes/themes";
-import { useState } from "react";
 import axios from "axios";
-
-const boxFormStyle = {
-  border: "1px solid #ccc",
-  boxShadow: "0 0 5px #bebebe",
-  padding: "20px 48px",
-  borderRadius: 5,
-  textAlign: "center",
-  bgcolor: "#efecfc",
-  width: "800px",
-};
+import { Box, Typography, TextField, Button, OutlinedInput, Link } from "@mui/material";
+import { useState } from "react";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
+import Theme from "../../theme";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Para exibir mensagens de erro
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSetEmail = (e) => setEmail(e.target.value);
-  const handleSetPassword = (e) => setPassword(e.target.value);
+  const handleShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (e) => e.preventDefault();
 
-  const handleSubmit = async () => {
+  const handleLogin = async () => {
     try {
       const response = await axios.post("http://localhost:3030/login", {
         email,
-        senha: password,
+        password,
       });
-
-      if (response.status === 200) {
-        const { token } = response.data; // Recebe o token do backend
-
-        // Armazena o token no localStorage
-        localStorage.setItem("jwt_token", token);
-
-        // Redireciona ou realiza outra ação
-        console.log("Login bem-sucedido!");
-      }
-    } catch (err) {
-      console.error(err);
-
-      // Define a mensagem de erro
-      if (err.response && err.response.data) {
-        setError(err.response.data.message || "Erro ao fazer login.");
-      } else {
-        setError("Erro ao conectar ao servidor.");
-      }
+      const { token, userType, name } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("userType", userType);
+      localStorage.setItem("userName", name);
+      
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      navigate("/");
+    } catch (error) {
+      setError("Email ou senha incorretos");
     }
   };
 
   return (
-    <ThemeProvider theme={defaultLight}>
-      <div id="principal-container">
-        <Box sx={boxFormStyle} margin="auto" pt={0}>
-          <Typography
-            variant="h4"
-            mb="20px"
-            pb="10px"
-            color="initial"
-            sx={{ borderBottom: "1px solid #d8d8d8" }}
-          >
-            IF Clad - Class Advice
+    <Theme>
+      <Box sx={{ display: "flex" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: 560,
+            height: "100vh",
+            textAlign: "center",
+            paddingBottom: "90px",
+          }}
+        >
+          <Typography variant="h2" sx={{ marginTop: "90px" }}>
+            Login
           </Typography>
-          <Box display="flex">
-            <Box height={300} width={400} paddingRight={10}>
-              <img src={imgTest} alt="imagem-login" />
-            </Box>
-            <Box width={300}>
-              <Box width={300} mb={2} textAlign="center">
-                <Typography
-                  borderBottom="1px solid #d8d8d8"
-                  pb="15px"
-                  variant="h3"
-                >
-                  Login
-                </Typography>
-              </Box>
-              <Box width={300} display="flex" flexDirection="column">
-                <TextField
-                  sx={{ marginBottom: 3 }}
-                  id="email"
-                  label="Email"
-                  type="email"
-                  variant="filled"
-                  value={email}
-                  onChange={handleSetEmail}
-                />
-                <TextField
-                  id="password"
-                  label="Senha"
-                  type="password"
-                  variant="filled"
-                  value={password}
-                  onChange={handleSetPassword}
-                />
-              </Box>
-              {error && (
-                <Typography color="error" mt={2}>
-                  {error}
-                </Typography>
-              )}
-              <Box mt="15px">
-                <Button
-                  sx={{ margin: 2 }}
-                  size="large"
-                  variant="outlined"
-                  color="error"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  sx={{ margin: 2 }}
-                  size="large"
-                  variant="contained"
-                  onClick={handleSubmit}
-                >
-                  Entrar
-                </Button>
-              </Box>
-            </Box>
+          <Typography variant="body2" sx={{ marginTop: "15px" }}>
+            Insira suas informações de login nos campos abaixo
+          </Typography>
+          {error && <Typography color="error">{error}</Typography>}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              width: "90%",
+              margin: "250px auto",
+            }}
+          >
+            <TextField
+              id="email"
+              label="E-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              variant="outlined"
+              sx={{ paddingBottom: 2 }}
+            />
+            <InputLabel htmlFor="password">Senha</InputLabel>
+            <OutlinedInput
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            <Link href="#">Esqueci minha senha...</Link>
+            <Button
+              onClick={handleLogin}
+              sx={{ marginTop: 2 }}
+              variant="contained"
+            >
+              Entrar
+            </Button>
           </Box>
         </Box>
-      </div>
-    </ThemeProvider>
+        <Box sx={{ background: "#5d1c8b", height: "100vh", width: "100%" }} />
+      </Box>
+    </Theme>
   );
 };
 

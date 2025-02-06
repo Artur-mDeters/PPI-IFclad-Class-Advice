@@ -5,9 +5,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 
-import Login from './pages/login/Login.jsx'
+import Login from '../src/pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
-import Register from './pages/register/Register.jsx'
+import RecoverPassword from './pages/login/recoverPassword/RecoverPassword.jsx'
+import PrivateRoute from './components/PrivateRoute/PrivateRoute.jsx'
 
 //* Courses pages imports
 import Course from './pages/principalPages/Course/CoursePage.jsx'
@@ -46,7 +47,7 @@ import ScienceShowPage from './pages/principalPages/ScienceShow/ScienceShowPage.
 import Settings from './pages/principalPages/config/Configuracoes.jsx'
 import StudentGradesPage from './pages/principalPages/Classes/Student/StudentGrades/StudentGradesPage.jsx'
 import PDFgrades from './pages/principalPages/Classes/pareceres/PDFgrades.jsx'
-
+import ApresentationMode from './pages/principalPages/Classes/Student/ApresentationMode.jsx'
 
 
 
@@ -59,16 +60,21 @@ const route = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/",
-    element: <Home />,
+    path: "/apresentacao",
+    element: <ApresentationMode />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "/recover-password/:id",
+    element: <RecoverPassword />,
     errorElement: <ErrorPage />,
   },
 
+  {
+    path: "/",
+    element: <PrivateRoute><Home /></PrivateRoute>,
+    errorElement: <ErrorPage />,
+  },
   //! Course page routes
   {
     path: "/cursos",

@@ -1,37 +1,52 @@
 const classes = {
+    div_Content: {
+      display: "flex",
+      flexDirection: "column",
+      width: "794px",
+      height: "1123px",
+      margin: "0 auto",
+      padding: "20px",
+      border: "1px solid black",
+      backgroundColor: "white",
+      color: "black",
+      fontFamily: "Arial, sans-serif",
+      fontSize: "16px",
+      lineHeight: "1.6",
+      boxSizing: "border-box",
+    },
+  
+    table: {
+      width: "100%",
+      borderCollapse: "collapse",
+      marginTop: "15px",
+      fontSize: "12px", // Tamanho da fonte ajustado para caber mais conteúdo
+    },
+  
+    th: {
+      backgroundColor: "#f0f0f0",
+      padding: "10px",
+      border: "1px solid black",
+      fontWeight: "bold",
+      textAlign: "center",
+      fontSize: "13px", // Fontes um pouco maiores para títulos
+    },
+  
+    td: {
+      padding: "8px",
+      border: "1px solid black",
+      textAlign: "center",
+    },
     box_Theme: {
         display: "flex",
+        alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        alignItems: "center",
     },
-
     formControl: {
-        m: 1, 
-        minWidth: 120
+        margin: "10px",
+        minWidth: 120,
     },
-
-    box_Divider: {
-        display: "flex",
-        justifyContent: "center",
-        width: "100%",
-        alignItems: "center",
-        marginTop: "20px",
-    },
-
-    div_Content: {
-        flexDirection: "column",
-        width: "600px", /* Largura menor para visualização */
-        height: "900px",
-        margin: "20px auto",
-        border: "1px solid black",
-        display: "flex",
-        alignItems:  "center",
-        justifyContent:  "center",
-        fontFamily :  "Arial, sans-serif",
-        backgroundColor: "white",
-        color: "black",
-    }
-}
-
-export default classes 
+  };
+  
+  export default classes;
+  

@@ -23,30 +23,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import SearchBar from "../../../../components/UI/SearchBar/SearchBar";
-import classes from "./AllStudentGradesPage.style";
-// import { use } from "../../../../../../Server/src/routes/grades.routes";
-
-import GradeTextField from './GradeTextfield'; // Ajuste o caminho conforme necessário
-/**
- * ? Função para buscar todas as disciplinas disponíveis.
- * ! Endpoint: /todasAsDisciplinas
- */
-const getAllSubjects = async () => {
-  const { data } = await axios.get("http://localhost:3030/todasAsDisciplinas");
-  return data;
-};
-
-/**
- * ? Função para buscar as notas dos alunos em uma disciplina específica.
- * ! Endpoint: /notas/{idSubject}/{idTurma}
- */
-const getAllGradesByStudents = async (idSubject, idTurma) => {
-  const data  = await axios.get(
-    `http://localhost:3030/notas/${idSubject}/${idTurma}`
-  );
-  return(data.data);
-};
+import Theme from "../../../../theme.jsx";
+import UiAppBar from "../../../../components/AppBar/AppBar.jsx";
+import SearchBar from "../../../../components/UI/SearchBar/SearchBar.jsx";
 
 const AllStudentGradesPage = () => {
   const { idTurma } = useParams();
@@ -62,6 +41,146 @@ const AllStudentGradesPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [currentStudentId, setCurrentStudentId] = useState(null);
   const [observation, setObservation] = useState("");
+  const [nomeTurma, setNomeTurma] = useState('');
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3030/turmas/disciplinas/" + idTurma
+        );
+        console.log(response.data)
+        setSubjects(response.data);
+      } catch (error) {
+        setSnackbar({
+          open: true,
+          message: "Erro ao buscar disciplinas.",
+          severity: "error",
+        });
+      }
+    };
+    fetchSubjects();
+  }, []);
+
+  useEffect(() => {
+    const fetchNomeTurma = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3030/turmas/${idTurma}`);
+        setNomeTurma(response.data.nome);
+      } catch (error) {
+        console.error("Erro ao buscar o nome da turma:", error);
+      }
+    };
+
+    fetchNomeTurma();
+  }, [idTurma]);
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3030/disciplina`);
+        setSubjects(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar disciplinas:", error);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  useEffect(() => {
+    const fetchGrades = async () => {
+      if (idTurma && selectedSubject) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3030/notas/${selectedSubject}/${idTurma}`
+          );
+          setStudentGrades(response.data);
+
+          const initialEditedGrades = response.data.reduce((acc, student) => {
+            acc[student.id_aluno] = {
+              parcial1: student.parcial1 || "",
+              semestre1: student.semestre1 || "",
+              parcial2: student.parcial2 || "",
+              semestre2: student.semestre2 || "",
+              ais_b10: student.ais_b10 || "",
+              ppi_b10: student.ppi_b10 || "",
+              mostra_de_ciencias: student.mostra_de_ciencias || "",
+              aia: student.aia || "",
+              observacao: student.observacao || "",
+            };
+            return acc;
+          }, {});
+
+          setEditedGrades(initialEditedGrades);
+        } catch (error) {
+          console.error("Erro ao buscar notas:", error);
+        }
+      }
+    };
+
+    fetchGrades();
+  }, [idTurma, selectedSubject]);
+
+  const handleGradeChange = (studentId, field, value) => {
+    setEditedGrades((prev) => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        [field]: value,
+      },
+    }));
+  };
+
+  const calculateFinalGrade = (studentId) => {
+    const student = editedGrades[studentId];
+    if (!student) return 0;
+
+    const { parcial1, semestre1, parcial2, semestre2, ais_b10, ppi_b10, mostra_de_ciencias, aia } = student;
+
+    const grades = [
+      parseFloat(parcial1) || 0,
+      parseFloat(ais_b10) || 0,
+      parseFloat(semestre1) || 0,
+      parseFloat(parcial2) || 0,
+      parseFloat(mostra_de_ciencias) || 0,
+      parseFloat(ppi_b10) || 0,
+      parseFloat(semestre2) || 0,
+    ];
+
+    let finalGrade = (((grades[0]* 0.2)+(grades[1]* 0.3) + (grades[2]*0.5))*0.4) + (((grades[3]* 0.2)+(grades[4]* 0.1) + (grades[5]*0.2) + (grades[6]*0.5))*0.6);
+    if (!aia){
+      return finalGrade.toFixed(1);
+    } else{
+      finalGrade = (finalGrade * 0.6) + (parseFloat(aia) * 0.4);
+      return finalGrade.toFixed(1);
+    }
+  };
+
+  const getStatus = (studentId) => {
+    const student = editedGrades[studentId];
+    const requiredFields = [
+      "parcial1",
+      "semestre1",
+      "ais_b10",
+      "parcial2",
+      "semestre2",
+      "mostra_de_ciencias",
+      "ppi_b10",
+    ];
+
+    const allGradesFilled = requiredFields.every(
+      (field) => student[field] !== undefined && student[field] !== ""
+    );
+    if (!allGradesFilled) return "--";
+
+    const finalGrade = parseFloat(calculateFinalGrade(studentId));
+    const aia = parseFloat(student["aia"] || 0);
+
+    if (finalGrade < 5 && aia) return { label: "REPROVADO", color: "error" };
+    if (finalGrade < 7 && !aia) return { label: "EXAME", color: "warning" };
+    return { label: "APROVADO", color: "success" };
+  };
 
   const handleOpenDialog = (idAluno) => {
     setCurrentStudentId(idAluno);
@@ -86,37 +205,29 @@ const AllStudentGradesPage = () => {
 
   const formatGrade = (value) => {
     if (value === "") return "";
-    const number = parseInt(value, 10);
+    const number = parseFloat(value);
     if (isNaN(number) || number > 999) return ""; // Restrição para números acima de 999
-
+  
+    let formattedNumber;
     if (number <= 9) {
-      return number.toFixed(1); // Mantém o formato correto para números pequenos
+      formattedNumber = number.toFixed(1); // Mantém o formato correto para números pequenos
+    } else if (number == 10) {
+      formattedNumber = number.toFixed(1); // Mantém o formato correto para números pequenos
+    } else if (number <= 99) {
+      formattedNumber = (number / 10).toFixed(1); // Divide por 10 para notas entre 10 e 99
+    } else {
+      formattedNumber = (number / 100).toFixed(2); // Divide por 100 para notas a partir de 100
     }
-    if (number == 10) {
-      return number.toFixed(1); // Mantém o formato correto para números pequenos
-    }
-    if (number <= 99) {
-      return (number / 10).toFixed(1); // Divide por 10 para notas entre 10 e 99
-    }
-
-    return (number / 100).toFixed(2); // Divide por 100 para notas a partir de 100
+  
+    // Arredondamento
+    const roundedNumber = Math.round(parseFloat(formattedNumber) * 10) / 10;
+    return roundedNumber.toFixed(1);
   };
 
   const formatFaltas = (value) => {
     const number = parseInt(value, 10);
     if (isNaN(number)) return "";
     return Math.min(Math.max(number, 0), 9999);
-  };
-
-  const handleGradeChange = (idAluno, field, value) => {
-    setEditedGrades((prev) => ({
-      ...prev,
-      [idAluno]: {
-        ...prev[idAluno],
-        [field]: value,
-      },
-    }));
-    console.log(editedGrades);
   };
 
   const handleBlur = (idAluno, field) => {
@@ -154,22 +265,21 @@ const AllStudentGradesPage = () => {
   };
 
   useEffect(() => {
-    const fetchSubjects = async () => {
+
+
+    const fetchNomeTurma = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3030/todasAsDisciplinas"
-        );
-        setSubjects(response.data);
+        const response = await axios.get(`http://localhost:3030/turmas/${idTurma}`);
+        setNomeTurma(response.data[0].nome);
       } catch (error) {
-        setSnackbar({
-          open: true,
-          message: "Erro ao buscar disciplinas.",
-          severity: "error",
-        });
+        console.error("Erro ao buscar o nome da turma:", error);
       }
     };
-    fetchSubjects();
-  }, []);
+
+    fetchNomeTurma();
+  }, [idTurma]);
+
+  
 
   useEffect(() => {
     const fetchGrades = async () => {
@@ -182,20 +292,19 @@ const AllStudentGradesPage = () => {
 
           const initialEditedGrades = response.data.reduce((acc, student) => {
             acc[student.id_aluno] = {
-              parcial1: student.parcial1 || null,
-              semestre1: student.semestre1 || null,
-              parcial2: student.parcial2 || null,
-              semestre2: student.semestre2 || null,
-              ais_b10: student.ais_b10 || null,
-              ppi_b10: student.ppi_b10 || null,
-              mostra_de_ciencias: student.mostra_de_ciencias || null,
-              faltas: student.faltas || null,
-              aia: student.aia || null,
-              observacao: student.observacao || null,
-              nota_final: student.nota_final || null,
+              parcial1: student.parcial1 || "",
+              semestre1: student.semestre1 || "",
+              parcial2: student.parcial2 || "",
+              semestre2: student.semestre2 || "",
+              ais_b10: student.ais_b10 || "",
+              ppi_b10: student.ppi_b10 || "",
+              mostra_de_ciencias: student.mostra_de_ciencias || "",
+              faltas: student.faltas || "",
+              aia: student.aia || "",
+              observacao: student.observacao || "",
+              nota_final: student.nota_final || "",
               id_aluno: student.id_aluno, // ID do aluno incluído aqui
             };
-            console.log("teste:",acc)
             return acc;
           }, {});
           
@@ -215,8 +324,8 @@ const AllStudentGradesPage = () => {
   const handleSaveGrades = async () => {
     try {
       await axios.post(`http://localhost:3030/notas/${selectedSubject}`, {
-        grades: editedGrades // Isso já contém o id_aluno de cada aluno
-      });      
+        grades: editedGrades
+      });
       setSnackbar({
         open: true,
         message: "Notas salvas com sucesso!",
@@ -231,357 +340,161 @@ const AllStudentGradesPage = () => {
     }
   };
 
-  const calculateFinalGrade = (studentId) => {
-    const student = editedGrades[studentId];
-    if (!student) return "-";
-
-    const gradeFields = [
-      "parcial1",
-      "semestre1",
-      "parcial2",
-      "semestre2",
-      "ais_b10",
-      "ppi_b10",
-      "mostra_de_ciencias",
-    ];
-
-    const grades = gradeFields.map((field) => parseFloat(student[field]) || 0);
-    const total = grades.reduce((acc, grade) => acc + grade, 0);
-    const average = (total / gradeFields.length).toFixed(2);
-
-    return average;
-  };
-
-  const getStatus = (studentId) => {
-    const student = editedGrades[studentId];
-    if (!student) return "--";
-
-    const requiredFields = [
-      "parcial1",
-      "semestre1",
-      "parcial2",
-      "semestre2",
-      "ais_b10",
-      "ppi_b10",
-      "mostra_de_ciencias",
-    ];
-
-    const allGradesFilled = requiredFields.every(
-      (field) => student[field] !== undefined && student[field] !== null
-    );
-    if (!allGradesFilled) return "--";
-
-    const finalGrade = parseFloat(calculateFinalGrade(studentId));
-    const aia = parseFloat(student["aia"] || 0);
-
-    if (finalGrade < 5 && aia) return { label: "REPROVADO", color: "error" };
-    if (finalGrade < 7) return { label: "EXAME", color: "warning" };
-    return { label: "APROVADO", color: "success" };
-  };
-
   return (
-    <UiAppBar title={"Notas da turma: ${idTurma}"}>
-      <Box sx={classes.marginBottom_box}>
-        <FormControl fullWidth>
-          <InputLabel id="Select-Subject">Disciplina</InputLabel>
-          <Select
-            labelId="Select-Subject"
-            id="SelectSubject"
-            value={selectedSubject}
-            label="Disciplina"
-            onChange={handleChangeSubject}
-          >
-            {subjects.map((subject) => (
-              <MenuItem
-                key={subject.id_disciplina}
-                value={subject.id_disciplina}
-              >
-                {subject.nome}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box>
-        <Alert
-          variant="outlined"
-          severity="warning"
-          sx={classes.margin_alert}
-        >
-          Todas as notas devem ser inseridas em base 10
-        </Alert>
-      </Box>
-      <Box>
-        <Divider />
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Aluno</TableCell>
-                <TableCell>Parcial 1</TableCell>
-                <TableCell>Primeiro Semestre</TableCell>
-                <TableCell>Parcial 2</TableCell>
-                <TableCell>Segundo Semestre</TableCell>
-                <TableCell>PPI</TableCell>
-                <TableCell>Mostra de Ciências</TableCell>
-                <TableCell>AIS</TableCell>
-                <TableCell>Faltas</TableCell>
-                <TableCell>AIA</TableCell>
-                <TableCell>Nota Final</TableCell>
-                <TableCell>Observação</TableCell>
-              </TableRow>
-            </TableHead>
+    <Theme>
+      <UiAppBar title={`Notas da Turma ${nomeTurma}`}>
+        <Box sx={{ padding: 3 }}>
+          <SearchBar />
 
-            <TableBody>
-              {studentGradesInSubject.map((student) => (
-                <TableRow key={student.fk_aluno_id_aluno}>
-                  <TableCell>{student.nome}</TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.pars_primeiro_sem
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "pars_primeiro_sem",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_primeiro_sem
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_primeiro_sem",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.pars_segundo_sem
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "pars_segundo_sem",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_segundo_sem
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_segundo_sem",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ppi}
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_ppi",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]
-                          ?.nota_mostra_de_ciencias
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_mostra_de_ciencias",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_ais}
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_ais",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={editedGrades[student.fk_aluno_id_aluno]?.faltas}
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "faltas",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={editedGrades[student.fk_aluno_id_aluno]?.nota_aia}
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_aia",
-                          value
-                        )
-                      }
-                      disabled={(() => {
-                        const grades =
-                          editedGrades[student.fk_aluno_id_aluno] || {};
-                        const notaPrimeiroSem =
-                          (grades.pars_primeiro_sem * 0.2 +
-                            grades.nota_ais * 0.3 +
-                            grades.nota_primeiro_sem * 0.5) *
-                          0.4;
+          <FormControl fullWidth sx={{ marginBottom: 3 }}>
+            <InputLabel>Disciplina</InputLabel>
+            <Select
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              label="Disciplina"
+            >
+              {subjects.map((subject) => (
+                <MenuItem
+                  key={subject.id_disciplina}
+                  value={subject.id_disciplina}
+                >
+                  {subject.nome_disciplina}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-                        const notaSegundoSem =
-                          (grades.pars_segundo_sem * 0.2 +
-                            grades.nota_ppi * 0.2 +
-                            grades.nota_mostra_de_ciencias * 0.2 +
-                            grades.nota_segundo_sem * 0.5) *
-                          0.6;
-
-                        const notaFinal = notaPrimeiroSem + notaSegundoSem;
-
-                        return (
-                          grades.pars_primeiro_sem == null ||
-                          grades.nota_ais == null ||
-                          grades.nota_primeiro_sem == null ||
-                          grades.pars_segundo_sem == null ||
-                          grades.nota_ppi == null ||
-                          grades.nota_mostra_de_ciencias == null ||
-                          grades.nota_segundo_sem == null ||
-                          notaFinal >= 7
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Aluno</TableCell>
+                  <TableCell>Parcial 1</TableCell>
+                  <TableCell>Semestre 1</TableCell>
+                  <TableCell>AIS</TableCell>
+                  <TableCell>Parcial 2</TableCell>
+                  <TableCell>Semestre 2</TableCell>
+                  <TableCell>Mostra de Ciências</TableCell>
+                  <TableCell>PPI</TableCell>
+                  <TableCell>Faltas</TableCell>
+                  <TableCell>AIA</TableCell>
+                  <TableCell>Nota Final</TableCell>
+                  <TableCell>Situação</TableCell>
+                  <TableCell>Observação</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {studentGrades.map((student, rowIndex) => (
+                  <TableRow key={student.id_aluno}>
+                    <TableCell>{student.nome}</TableCell>
+                    {[
+                      "parcial1",
+                      "semestre1",
+                      "ais_b10",
+                      "parcial2",
+                      "semestre2",
+                      "mostra_de_ciencias",
+                      "ppi_b10",
+                      "faltas",
+                      "aia",
+                    ].map((field, colIndex) => (
+                      <TableCell key={field}>
+                        <TextField
+                          value={editedGrades[student.id_aluno]?.[field] || ""}
+                          onChange={(e) =>
+                            handleGradeChange(
+                              student.id_aluno,
+                              field,
+                              e.target.value
+                            )
+                          }
+                          onBlur={() => handleBlur(student.id_aluno, field)}
+                          onKeyDown={(e) =>
+                            handleKeyDown(e, rowIndex, colIndex + 1)
+                          }
+                          variant="standard"
+                          inputProps={{
+                            maxLength: 4,
+                            style: { width: "50px" },
+                          }}
+                        />
+                      </TableCell>
+                    ))}
+                    <TableCell>
+                    {calculateFinalGrade(student.id_aluno)}
+                    </TableCell>
+                    <TableCell>
+                      {(() => {
+                        const status = getStatus(student.id_aluno);
+                        return status === "--" ? (
+                          "--"
+                        ) : (
+                          <Chip label={status.label} color={status.color} />
                         );
                       })()}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <GradeTextField
-                      value={
-                        editedGrades[student.fk_aluno_id_aluno]?.nota_final_nf
-                      }
-                      onChange={(value) =>
-                        handleChangeGrade(
-                          student.fk_aluno_id_aluno,
-                          "nota_final_nf",
-                          value
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() =>
-                        handleOpenDialog(student.fk_aluno_id_aluno)
-                      }
-                    >
-                      Observação
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>Adicionar Observação</DialogTitle>
-          <DialogContent>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              defaultValue={editedGrades[currentStudentId]?.observation || ""}
-              onChange={(e) => {
-                const observation = e.target.value;
-                setEditedGrades((prevGrades) => ({
-                  ...prevGrades,
-                  [currentStudentId]: {
-                    ...prevGrades[currentStudentId],
-                    observation: observation,
-                  },
-                }));
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} color="secondary">
-              Cancelar
-            </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleOpenDialog(student.id_aluno)}
+                      >
+                        Editar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box sx={{ marginTop: 3 }}>
             <Button
-              onClick={() =>
-                handleSaveObservation(
-                  editedGrades[currentStudentId]?.observation || ""
-                )
-              }
-              color="primary"
+              variant="contained"
+              onClick={handleSaveGrades}
+              sx={{ marginRight: 2 }}
             >
-              Salvar
+              Salvar Notas
             </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={3000}
-          onClose={() => setSnackbar({ open: false, message: "" })}
-          message={snackbar.message}
-        />
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={4000} // Fecha automaticamente após 4 segundos
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }} // Posição da notificação
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity={snackbarSeverity}
-            sx={classes.width_alert}
+          </Box>
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            maxWidth="md"
+            fullWidth
           >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </Box>
-      <Box style={classes.marginTop_box}>
-        <Button variant="contained" color="primary" onClick={handleSaveGrades}>
-          Salvar Notas
-        </Button>
-      </Box>
-    </UiAppBar>
+            <DialogTitle>Editar Observação</DialogTitle>
+            <DialogContent>
+              <TextField
+                fullWidth
+                multiline
+                rows={6}
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+                variant="outlined"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="error" variant="contained">Cancelar</Button>
+              <Button onClick={handleSaveObservation} variant="contained">
+                Salvar
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+          >
+            <Alert
+              onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+              severity={snackbar.severity}
+              sx={{ width: "100%" }}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+        </Box>
+      </UiAppBar>
+    </Theme>
   );
 };
 

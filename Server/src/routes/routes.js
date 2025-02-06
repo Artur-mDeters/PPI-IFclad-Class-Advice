@@ -9,9 +9,11 @@ const routeStudents = require("./student.routes");
 const routeSubjects = require("./subject.routes");
 const routeSectors = require('./sector.routes')
 const routeGrades = require('./grades.routes')
-const routeLogin = require('./login.routes')
+const routeAuth = require("./auth.routes");
+const apresentationRoutes = require('./apresentation.routes')
 
 routes.use(
+  routeAuth,
   routeUsers,
   routeClass,
   routeTeachers,
@@ -20,7 +22,7 @@ routes.use(
   routeSubjects,
   routeSectors,
   routeGrades,
-  routeLogin
+  apresentationRoutes
 );
 
 module.exports = routes;

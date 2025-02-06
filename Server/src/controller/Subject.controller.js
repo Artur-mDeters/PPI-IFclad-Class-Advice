@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 exports.getSubjects = async (_req, res) => {
     try {
         const response = await db.query("SELECT * FROM disciplina");
-        res.status(200).json(response); // Usei `response.rows` para retornar apenas os dados
+        res.status(200).json(response);
     } catch (error) {
         res.status(500).send("Erro ao encontrar disciplinas: " + error);
     }
