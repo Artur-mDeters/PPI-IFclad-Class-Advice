@@ -61,7 +61,7 @@ const CreateClassesPage = () => {
   const [subjectsData, setSubjectsData] = useState([]);
    // Para erros específicos
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const setCourseNamePattern = () => {
     const selectedCourse = courseData.find(

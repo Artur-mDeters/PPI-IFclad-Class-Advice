@@ -1,6 +1,7 @@
 const express = require('express');
 const studentController = require('../controller/Student.controller');
 const path = require("path");
+const { stdin } = require('process');
 
 
 const routes = express.Router();
@@ -10,6 +11,8 @@ routes.post('/alunos', studentController.addStudent);
 
 // Obtém todos os alunos de uma turma (se necessário)
 routes.get('/:idTurma/alunos', studentController.getStudent);
+
+routes.get("/:idTurma/alunosPDF", studentController.getStudentPDF)
 
 // Obtém um aluno específico pelo ID
 routes.get('/alunos/:idStudent', studentController.getStudentByID);
@@ -21,6 +24,8 @@ routes.put('/alunos/:idStudent', studentController.updateStudent);
 routes.delete('/alunos/:idStudent', studentController.excludeStudent);
 
 routes.get('/todosOsAlunos/:idTurma', studentController.getStudentsByClass);
+
+routes.get('/allStudents', studentController.getAllStudent);
 
 
 

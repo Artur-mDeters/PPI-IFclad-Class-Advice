@@ -68,5 +68,5 @@ exports.recoveryPassword = async (req, res) => {
   } catch (err) {
     console.error("Erro ao alterar a senha:", err);
     res.status(500).send({ message: "Erro interno do servidor" });
-  }
+}
 };

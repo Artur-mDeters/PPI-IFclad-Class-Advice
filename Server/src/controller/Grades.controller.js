@@ -113,6 +113,7 @@ exports.getGradesToPDF = async (req, res) => {
     notas.parcial2,
     notas.semestre2,
     notas.faltas,
+    notas.nota_final,
     disciplina.nome AS disciplina
   FROM 
     aluno 

@@ -11,6 +11,7 @@ const routeSectors = require('./sector.routes')
 const routeGrades = require('./grades.routes')
 const routeAuth = require("./auth.routes");
 const apresentationRoutes = require('./apresentation.routes')
+const routesmc = require('./mc.routes')
 
 routes.use(
   routeAuth,
@@ -22,7 +23,8 @@ routes.use(
   routeSubjects,
   routeSectors,
   routeGrades,
-  apresentationRoutes
+  apresentationRoutes,
+  routesmc
 );
 
 module.exports = routes;
