@@ -14,16 +14,8 @@ import imgTest from "../../assets/Education-amico.svg";
 import { defaultLight } from "../../themes/themes";
 import { useState } from "react";
 import axios from "axios";
+import classes from "./Login.style";
 
-const boxFormStyle = {
-  border: "1px solid #ccc",
-  boxShadow: "0 0 5px #bebebe",
-  padding: "20px 48px",
-  borderRadius: 5,
-  textAlign: "center",
-  bgcolor: "#efecfc",
-  width: "800px",
-};
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -64,13 +56,13 @@ const Login = () => {
   return (
     <ThemeProvider theme={defaultLight}>
       <div id="principal-container">
-        <Box sx={boxFormStyle} margin="auto" pt={0}>
+        <Box sx={classes.boxFormStyle} margin="auto" pt={0}>
           <Typography
             variant="h4"
             mb="20px"
             pb="10px"
             color="initial"
-            sx={{ borderBottom: "1px solid #d8d8d8" }}
+            sx={classes.typography}
           >
             IF Clad - Class Advice
           </Typography>
@@ -90,7 +82,7 @@ const Login = () => {
               </Box>
               <Box width={300} display="flex" flexDirection="column">
                 <TextField
-                  sx={{ marginBottom: 3 }}
+                  sx={classes.textField}
                   id="email"
                   label="Email"
                   type="email"
@@ -114,7 +106,7 @@ const Login = () => {
               )}
               <Box mt="15px">
                 <Button
-                  sx={{ margin: 2 }}
+                  sx={classes.button}
                   size="large"
                   variant="outlined"
                   color="error"
@@ -122,7 +114,7 @@ const Login = () => {
                   Cancelar
                 </Button>
                 <Button
-                  sx={{ margin: 2 }}
+                  sx={classes.button}
                   size="large"
                   variant="contained"
                   onClick={handleSubmit}

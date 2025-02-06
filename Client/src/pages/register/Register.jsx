@@ -17,6 +17,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import FileSelector from "../../components/UI/FileSelector/FileSelector";
 import Theme from "../../theme";
+import classes from "./Register.style";
 
 
 const Register = () => {
@@ -82,30 +83,18 @@ const Register = () => {
   return (
     <Theme>
       {/* <CssBaseline /> */}
-      <Box sx={{ display: "flex" }}>
+      <Box sx={classes.display_box}>
         <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: 560,
-            height: "100vh",
-            textAlign: "center",
-            paddingBottom: "90px",
-          }}
+          sx={classes.box1}
         >
-          <Typography variant="h2" sx={{ marginTop: "40px" }}>
+          <Typography variant="h2" sx={classes.typography_h2}>
             Cadastro
           </Typography>
-          <Typography variant="body2" sx={{ flex: 1, marginTop: "15px" }}>
+          <Typography variant="body2" sx={classes.typography_body2}>
             Insira suas informações de cadastro nos campos a baixo
           </Typography>
           <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "80%",
-              margin: "0 auto",
-            }}
+            sx={classes.box2}
             className="inputs"
           >
             <TextField
@@ -201,14 +190,14 @@ const Register = () => {
             </Box>
             <Button
               onClick={handleSubmit}
-              sx={{ marginTop: 2 }}
+              sx={classes.button}
               variant="contained"
             >
               Enviar
             </Button>
           </Box>
         </Box>
-        <Box sx={{ background: "#5d1c8b", height: "100vh", width: "100%" }}>
+        <Box sx={classes.box3}>
         </Box>
       </Box>
     </Theme>
