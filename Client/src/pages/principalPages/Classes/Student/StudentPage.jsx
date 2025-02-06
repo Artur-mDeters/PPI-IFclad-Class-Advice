@@ -125,21 +125,21 @@ const StudentPage = () => {
       <SearchBar>
         <Button
           variant="contained"
-          sx={{ marginRight: "15px" }}
+          sx={classes.button}
           onClick={redirectToAddStudent}
         >
           Adicionar Alunos
         </Button>
         <Button
           variant="contained"
-          sx={{ marginRight: "15px" }}
+          sx={classes.button}
           onClick={redirectToAllStudentsGradesPage}
         >
           Notas da Turma
         </Button>
         <Button
           variant="contained"
-          sx={{ marginRight: "15px" }}
+          sx={classes.button}
           onClick={handleOpenDialog}
         >
           Agendar Conselho de Classe
@@ -156,10 +156,10 @@ const StudentPage = () => {
                 <img
                   src={padrao}
                   alt="Imagem do aluno"
-                  style={{ height: "130px", borderRadius: "5px" }}
+                  style={classes.img}
                 />
               </Box>
-              <Box sx={{ flex: 1 }}>
+              <Box sx={classes.typography_box}>
                 <Typography variant="h6">{aluno.nome}</Typography>
               </Box>
             </Box>
@@ -185,7 +185,7 @@ const StudentPage = () => {
             fullWidth
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            sx={{ marginTop: 2 }}
+            sx={classes.textfield}
           />
         </DialogContent>
         <DialogActions>
@@ -211,7 +211,7 @@ const StudentPage = () => {
         <Alert
           onClose={handleCloseNotification}
           severity="success"
-          sx={{ width: "100%" }}
+          sx={classes.alert}
         >
           Conselho de classe agendado com sucesso!
         </Alert>
@@ -226,7 +226,7 @@ const StudentPage = () => {
         <Alert
           onClose={handleCloseErrorNotification}
           severity="error"
-          sx={{ width: "100%" }}
+          sx={classes.alert}
         >
           Ocorreu um erro! Verifique a data ou tente novamente mais tarde.
         </Alert>

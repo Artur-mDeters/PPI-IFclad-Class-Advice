@@ -26,8 +26,16 @@ const classes = {
         position: 'fixed'
       },
       foto: {
-          width: "100%",
-          textAlign: 'center'
+        width: "100%",
+        textAlign: 'center'
+      },
+      img: {
+        height: "130px", 
+        borderRadius: "5px" 
+      },
+      typography_box: {
+        display: 'flex', 
+        flexDirection: 'column' 
       }
 }
 

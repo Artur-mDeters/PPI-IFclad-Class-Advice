@@ -284,7 +284,7 @@ const AddStudentPage = () => {
       </Box>
       <Box>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <Table sx={classes.table} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>NOME COMPLETO</StyledTableCell>

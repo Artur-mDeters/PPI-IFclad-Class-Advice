@@ -56,11 +56,11 @@ const Teacher = () => {
           <Box sx={classes.foto}>
             <img
               src={foto}
-              style={{ height: "130px", borderRadius: "5px" }}
+              style={classes.img}
               alt="foto do professor"
             />
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={classes.typography_box}>
             <Typography variant="body">{user.nome}</Typography>
             <Typography variant="body">{user.siape}</Typography>
           </Box>
