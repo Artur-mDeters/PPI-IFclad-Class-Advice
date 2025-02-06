@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Login from '../src/pages/login/Login.jsx'
 import Home from './pages/home/Home.jsx'
 import RecoverPassword from './pages/login/recoverPassword/RecoverPassword.jsx'
+import PrivateRoute from './components/PrivateRoute/PrivateRoute.jsx'
 
 //* Courses pages imports
 import Course from './pages/principalPages/Course/CoursePage.jsx'
@@ -65,7 +66,7 @@ const route = createBrowserRouter([
   },
   {
     path: "/",
-    element: <Home />,
+    element: <PrivateRoute><Home /></PrivateRoute>,
     errorElement: <ErrorPage />,
   },
   //! Course page routes
