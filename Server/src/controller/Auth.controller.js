@@ -17,7 +17,7 @@ exports.login = async (req, res) => {
     const response = await db.query(`SELECT * FROM usuario WHERE email = $1`, [
       email,
     ]);
-    const user = response[0]; // Acesse o primeiro usuário retornado
+    const user = response[0];
 
     if (!user) {
       return res.status(401).send({ message: "Email ou senha inválidos" });
@@ -30,15 +30,24 @@ exports.login = async (req, res) => {
 
     if (isPasswordValid) {
       const token = jwt.sign(
-        { id: user.id_usuario, role: user.usuario_tipo },
+        { 
+          id: user.id_usuario, 
+          role: user.usuario_tipo,
+          name: user.nome
+        },
         process.env.JWT_SECRET,
         {
-          expiresIn: "24h", // 24 hours
+          expiresIn: "24h",
         }
       );
       res
         .status(200)
-        .send({ auth: true, token: token, role: user.usuario_tipo });
+        .send({ 
+          auth: true, 
+          token: token, 
+          role: user.usuario_tipo,
+          name: user.nome
+        });
     } else {
       res.status(401).send({ message: "Email ou senha inválidos" });
     }

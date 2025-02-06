@@ -25,9 +25,13 @@ const Login = () => {
         email,
         password,
       });
-      const { token, userType } = response.data;
+      const { token, userType, name } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("userType", userType);
+      localStorage.setItem("userName", name);
+      
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
       navigate("/");
     } catch (error) {
       setError("Email ou senha incorretos");

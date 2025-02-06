@@ -85,9 +85,13 @@ export default function UiAppBar({ children, title }) {
         setUserName(decoded.name || "Usuário");
       } catch (error) {
         console.error("Erro ao decodificar o token", error);
+        localStorage.removeItem("token");
+        navigate('/login');
       }
+    } else {
+      navigate('/login');
     }
-  }, []);
+  }, [navigate]);
 
   const handleOpen = (page) => {
     navigate("/");
